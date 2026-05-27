@@ -1,0 +1,64 @@
+/* Inbox Specific Theme Styles */
+
+.inbox-container {
+    background-color: var(--bg);
+}
+
+.inbox-header, .inbox-toolbar {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.email-list-container {
+    background-color: var(--bg);
+}
+
+.email-row {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--email-row-border);
+    transition: background-color 0.2s ease;
+}
+
+.email-row:hover {
+    background-color: var(--email-row-hover);
+}
+
+.email-row.unread {
+    background-color: var(--email-row-unread);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .email-row.unread {
+    background-color: rgba(59, 130, 246, 0.05); /* Slight blue tint for unread in dark mode */
+}
+
+.email-sender {
+    color: var(--text);
+}
+
+.email-subject {
+    color: var(--text);
+}
+
+.email-preview {
+    color: var(--text-secondary);
+}
+
+.email-date {
+    color: var(--text-secondary);
+}
+
+.risk-badge {
+    color: white !important;
+}
+
+/* Custom Checkbox */
+input[type="checkbox"] {
+    background-color: transparent;
+    border: 1px solid var(--border-alt);
+    border-radius: 4px;
+}
+
+[data-theme="dark"] input[type="checkbox"] {
+    border-color: var(--border);
+}

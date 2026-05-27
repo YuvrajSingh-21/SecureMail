@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Dashboard - SecureMail{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+    {% include "components/navbar.html" %}
+    
+    <div class="flex flex-1 overflow-hidden">
+        {% include "components/sidebar.html" %}
+        
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto">
+                <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 animate-slide-up">
+                    <div>
+                        <h1 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Security Center</h1>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Real-time threat monitoring and intelligence dashboard</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-black text-gray-900 dark:text-white hover:shadow-lg transition-all flex items-center gap-2">
+                            <i data-lucide="download-cloud" class="w-5 h-5 text-blue-600"></i>
+                            Export Intelligence
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 mb-12 animate-slide-up delay-1">
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                                <i data-lucide="mail" class="w-7 h-7 text-blue-600 dark:text-blue-400"></i>
+                            </div>
+                            <span class="px-2 py-1 rounded-lg bg-green-50 dark:bg-green-900/10 text-[10px] font-black text-green-600">+12%</span>
+                        </div>
+                        <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Total Analyzed</p>
+                        <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.total|default:"0" }}</h3>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
+                                <i data-lucide="check-circle" class="w-7 h-7 text-green-600 dark:text-green-400"></i>
+                            </div>
+                            <span class="px-2 py-1 rounded-lg bg-green-50 dark:bg-green-900/10 text-[10px] font-black text-green-600">SAFE</span>
+                        </div>
+                        <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Safe Emails</p>
+                        <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.safe|default:"0" }}</h3>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center">
+                                <i data-lucide="alert-circle" class="w-7 h-7 text-yellow-600 dark:text-yellow-400"></i>
+                            </div>
+                            <span class="px-2 py-1 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 text-[10px] font-black text-yellow-600">RISK</span>
+                        </div>
+                        <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Suspicious</p>
+                        <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.suspicious|default:"0" }}</h3>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                                <i data-lucide="alert-triangle" class="w-7 h-7 text-red-600 dark:text-red-400"></i>
+                            </div>
+                            <span class="px-2 py-1 rounded-lg bg-red-50 dark:bg-red-900/10 text-[10px] font-black text-red-600">THREAT</span>
+                        </div>
+                        <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Dangerous</p>
+                        <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.dangerous|default:"0" }}</h3>
+                    </div>
+                </div>
+
+                <!-- Charts & Activity -->
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-10 animate-slide-up delay-2">
+                    <div class="xl:col-span-2 bg-white dark:bg-gray-800 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group">
+                        <div class="flex items-center justify-between mb-12 relative z-10">
+                            <div>
+                                <h3 class="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs">Intelligence Feed</h3>
+                                <p class="text-[10px] text-gray-400 font-bold mt-1">7-DAY THREAT PROLIFERATION</p>
+                            </div>
+                            <select class="text-[10px] bg-gray-100 dark:bg-gray-700 border-none rounded-xl py-2 px-4 font-black text-gray-600 dark:text-gray-300 outline-none uppercase tracking-tighter">
+                                <option>Historical Data</option>
+                                <option>Predictive Model</option>
+                            </select>
+                        </div>
+                        <div class="h-72 flex items-end gap-5 px-2 relative z-10">
+                            {% for day in trend_data %}
+                            <div class="flex-1 flex flex-col items-center gap-5 group/bar">
+                                <div class="w-full bg-blue-50/50 dark:bg-blue-900/10 rounded-2xl transition-all group-hover/bar:bg-blue-100/50 dark:group-hover/bar:bg-blue-900/20 relative h-full">
+                                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-blue-600 to-cyan-400 rounded-2xl transition-all duration-1000 group-hover/bar:shadow-[0_0_30px_rgba(59,130,246,0.6)]" style="height: {{ day }}%"></div>
+                                </div>
+                                <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-tighter">{% cycle 'MON' 'TUE' 'WED' 'THU' 'FRI' 'SAT' 'SUN' %}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <!-- Background Accent -->
+                        <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors"></div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 p-10 rounded-[3rem] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <h3 class="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs mb-12 w-full text-left relative z-10">Global Score</h3>
+                        <div class="relative w-56 h-56 flex items-center justify-center relative z-10">
+                            <svg class="w-full h-full -rotate-90" viewBox="0 0 224 224">
+                                <circle cx="112" cy="112" r="100" stroke="currentColor" stroke-width="14" fill="transparent" class="text-gray-50 dark:text-gray-700/50"></circle>
+                                <circle cx="112" cy="112" r="100" stroke="currentColor" stroke-width="14" fill="transparent" stroke-dasharray="628.3" stroke-dashoffset="{{ stats.score_offset|default:'628.3' }}" stroke-linecap="round" class="text-blue-500 transition-all duration-1000 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"></circle>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="text-6xl font-black text-gray-900 dark:text-white tabular-nums tracking-tighter">{{ stats.security_score|default:"94" }}</span>
+                                <span class="text-[9px] font-black text-blue-500 tracking-[0.2em] mt-2">PROTECTED</span>
+                            </div>
+                        </div>
+                        <p class="text-[10px] font-black text-green-500 mt-10 uppercase tracking-[0.2em] relative z-10">Excellent Standing</p>
+                        <!-- Background Accent -->
+                        <div class="absolute -left-10 -top-10 w-48 h-48 bg-green-500/5 rounded-full blur-3xl group-hover:bg-green-500/10 transition-colors"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

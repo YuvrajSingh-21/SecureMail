@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ email.subject }} - SecureMail{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+    {% include "components/navbar.html" %}
+    
+    <div class="flex flex-1 overflow-hidden">
+        {% include "components/sidebar.html" %}
+        
+        <main class="flex-1 flex flex-col bg-slate-50 dark:bg-gray-900 transition-colors overflow-hidden p-4 md:p-8">
+            <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col overflow-hidden">
+                <!-- Toolbar -->
+                <div class="flex items-center justify-between mb-8 animate-slide-up">
+                    <div class="flex items-center gap-4">
+                        <a href="{% url 'inbox' %}" class="p-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 text-gray-500 hover:text-blue-600 hover:shadow-lg transition-all">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-2xl font-black text-gray-900 dark:text-white truncate max-w-xl tracking-tight">{{ email.subject }}</h1>
+                            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Message Thread Intelligence</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="p-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 text-gray-500 hover:text-yellow-500 transition-all">
+                            <i data-lucide="star" class="w-5 h-5 {% if email.starred %}fill-current text-yellow-500{% endif %}"></i>
+                        </button>
+                        <a href="{% url 'delete_email' email.id %}" class="p-3 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 text-gray-500 hover:text-red-600 transition-all">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 flex-1 overflow-hidden">
+                    <!-- Email Content Card -->
+                    <div class="xl:col-span-2 flex flex-col overflow-hidden">
+                        <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col flex-1 overflow-hidden animate-slide-up delay-1">
+                            <!-- Sender Info -->
+                            <div class="p-10 border-b border-gray-50 dark:border-gray-700/50">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-6">
+                                        <div class="w-16 h-16 rounded-3xl bg-blue-600 flex items-center justify-center text-white text-2xl font-black shadow-xl shadow-blue-500/30">
+                                            {{ email.sender_name|default:email.sender_email|slice:":1"|upper }}
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-3">
+                                                <h2 class="text-xl font-black text-gray-900 dark:text-white">{{ email.sender_name|default:email.sender_email }}</h2>
+                                                <span class="text-blue-600 dark:text-blue-400 font-mono text-xs font-bold px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 rounded-lg">&lt;{{ email.sender_email }}&gt;</span>
+                                            </div>
+                                            <p class="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Sent on {{ email.timestamp|date:"F d, Y • h:i A" }}</p>
+                                        </div>
+                                    </div>
+                                    <!-- RISK BADGE: Unified with ml_label -->
+                                    <div class="px-5 py-2 rounded-2xl text-[10px] font-black text-white shadow-xl shadow-black/10 tracking-widest 
+                                        {% if email.ml_label == 'PHISHING' %}bg-red-500
+                                        {% elif email.ml_label == 'SPAM' or email.ml_label == 'SUSPICIOUS' %}bg-amber-500
+                                        {% else %}bg-green-500{% endif %}">
+                                        {{ email.ml_label|default:"UNKNOWN" }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Email Body Rendering (Fixed) -->
+                            <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-900/10 min-h-[400px] flex flex-col" id="email-body-container" data-html="{{ email.html_body|escape }}" data-plain="{{ email.plain_body|default:email.body|escape }}">
+                                {% if email.html_body %}
+                                    <iframe 
+                                        id="email-frame"
+                                        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+                                        class="w-full flex-1 border-none"
+                                        onload="resizeIframe(this)"
+                                    ></iframe>
+                                {% else %}
+                                    <div class="p-10 prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 leading-[1.8] font-sans text-[15px] whitespace-pre-wrap">
+                                        {{ email.plain_body|default:email.body }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Attachments -->
+                            {% if email.has_attachments %}
+                            <div class="px-10 py-8 bg-gray-50/30 dark:bg-gray-800/30 border-t border-gray-100 dark:border-gray-700 shrink-0">
+                                <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-6">Secured Attachments</p>
+                                <div class="flex flex-wrap gap-5">
+                                    {% for attachment in email.attachments.all %}
+                                    <div class="flex items-center gap-5 p-4 bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-sm group cursor-pointer hover:border-blue-500 hover:shadow-xl transition-all duration-300">
+                                        <div class="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                                            <i data-lucide="file-text" class="w-6 h-6 text-red-500"></i>
+                                        </div>
+                                        <div class="pr-8">
+                                            <p class="text-sm font-black text-gray-900 dark:text-white">{{ attachment.filename }}</p>
+                                            <p class="text-[11px] font-bold text-gray-400 mt-0.5 tabular-nums uppercase">{{ attachment.size|filesizeformat }}</p>
+                                        </div>
+                                        <a href="{{ attachment.file.url }}" class="p-3 text-gray-400 hover:text-blue-500 transition-colors duration-300"><i data-lucide="download-cloud" class="w-5 h-5"></i></a>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Intelligence Side Panel -->
+                    <div class="xl:col-span-1 space-y-8 overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 transition-all duration-300">
+                            <div class="flex items-center gap-4 mb-10">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/40 animate-pulse">
+                                    <i data-lucide="brain-circuit" class="w-6 h-6 text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-black text-gray-900 dark:text-white uppercase tracking-widest text-xs">Intelligence Engine</h3>
+                                    <p class="text-[9px] font-bold text-gray-400 mt-1 uppercase">MULTI-LAYER ML CLASSIFIER</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 text-center">
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Threat Level</p>
+                                    <p class="text-sm font-black text-blue-600 dark:text-blue-400">{{ email.ml_label|default:"SAFE" }}</p>
+                                    <p class="text-[8px] text-gray-400 mt-1 font-bold">Threat Index: {{ email.ml_score|floatformat:1 }}</p>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 text-center">
+                                    <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Sender Rep</p>
+                                    <!-- FIX: Only show score if not default 50 -->
+                                    {% if email.sender_reputation == 50.0 %}
+                                        <p class="text-xs font-black text-gray-400">Not Calculated</p>
+                                    {% else %}
+                                        <p class="text-sm font-black {% if email.sender_reputation >= 80 %}text-green-500{% elif email.sender_reputation >= 40 %}text-yellow-500{% else %}text-red-500{% endif %}">{{ email.sender_reputation|floatformat:0 }}/100</p>
+                                    {% endif %}
+                                    <p class="text-[8px] text-gray-400 mt-1 font-bold">Historical Trust</p>
+                                </div>
+                            </div>
+
+                            <!-- Threat Index Gauge (Strictly bound to ml_score) -->
+                            <div class="flex flex-col items-center justify-center mb-12">
+                                <div class="relative w-48 h-48 flex items-center justify-center">
+                                    <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                                        <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="10" fill="transparent" class="text-gray-100 dark:text-gray-700/50"></circle>
+                                        <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="10" fill="transparent" stroke-dasharray="439.8" 
+                                            style="stroke-dashoffset: calc(439.8 * (1 - {{ email.ml_score|default:0 }} / 100))"
+                                            stroke-linecap="round" class="{% if email.ml_score >= 70 %}text-red-500{% elif email.ml_score >= 40 %}text-yellow-500{% else %}text-green-500{% endif %} transition-all duration-1000 drop-shadow-xl"></circle>
+                                    </svg>
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span class="text-5xl font-black text-gray-900 dark:text-white tabular-nums tracking-tighter">{{ email.ml_score|floatformat:0 }}</span>
+                                        <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">Threat Index</span>
+                                    </div>
+                                </div>
+                                <p class="text-[11px] font-black mt-4 {% if email.ml_label == 'PHISHING' %}text-red-600{% elif email.ml_label == 'SPAM' or email.ml_label == 'SUSPICIOUS' %}text-yellow-600{% else %}text-green-600{% endif %} uppercase tracking-[0.3em] bg-current/10 px-4 py-1 rounded-full">{{ email.ml_label|default:"SAFE" }} LEVEL</p>
+                            </div>
+
+                            <div class="space-y-8 mb-10">
+                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 dark:border-gray-700 pb-3">Explainable Analysis</p>
+                                <ul class="space-y-6">
+                                    {% if email.analysis_reasons %}
+                                        {% for reason in email.analysis_reasons %}
+                                        <li class="flex items-start gap-5 group">
+                                            <div class="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
+                                                <i data-lucide="shield-alert" class="w-4 h-4 text-red-600 dark:text-red-400"></i>
+                                            </div>
+                                            <span class="text-[13px] font-bold text-gray-700 dark:text-gray-300 leading-relaxed">{{ reason }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="flex items-center gap-4 text-green-500">
+                                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                            <span class="text-xs font-bold uppercase tracking-widest">Safe Profile Confirmed</span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+
+                            <div class="p-6 rounded-3xl 
+                                {% if email.ml_score < 40 %}bg-green-50/50 dark:bg-green-900/10 border-green-100/50 dark:border-green-800/30
+                                {% elif email.ml_score < 70 %}bg-yellow-50/50 dark:bg-yellow-900/10 border-yellow-100/50 dark:border-yellow-800/30
+                                {% else %}bg-red-50/50 dark:bg-red-900/10 border-red-100/50 dark:border-red-800/30{% endif %} border">
+                                <p class="text-[10px] font-black 
+                                    {% if email.ml_score >= 70 %}text-red-600
+                                    {% elif email.ml_score >= 40 %}text-yellow-600
+                                    {% else %}text-green-600{% endif %} mb-3 flex items-center gap-2 uppercase tracking-widest">
+                                    <i data-lucide="info" class="w-4 h-4"></i>
+                                    Engine Synopsis
+                                </p>
+                                <p class="text-[13px] text-gray-700 dark:text-gray-300 leading-relaxed font-bold">
+                                    {{ email.analysis.summary|default:"The local ML engine has verified the structural integrity and linguistic patterns of this communication." }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-blue-600 to-cyan-500 rounded-[2.5rem] p-10 text-white shadow-2xl shadow-blue-500/40 relative overflow-hidden group">
+                            <div class="relative z-10">
+                                <h4 class="text-2xl font-black mb-3 tracking-tight">Safe Link™</h4>
+                                <p class="text-xs text-blue-50 opacity-90 leading-relaxed mb-10 font-bold uppercase tracking-wider">Every URL in this message has been neutralized and wrapped in our real-time scanning proxy.</p>
+                                <button class="w-full py-4 bg-white/20 hover:bg-white/30 rounded-2xl text-[10px] font-black tracking-[0.3em] transition-all uppercase backdrop-blur-md">Full Technical Audit</button>
+                            </div>
+                            <i data-lucide="link-2" class="absolute -right-8 -bottom-8 w-48 h-48 text-white/10 -rotate-12 group-hover:scale-110 transition-transform duration-700"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('email-body-container');
+        const frame = document.getElementById('email-frame');
+        if (container && frame) {
+            let html = container.dataset.html;
+            
+            // Fix missing <style> tags if CSS is present at the start (common LinkedIn stripping issue)
+            if (html.trim().startsWith('@media') || html.trim().startsWith('body {') || html.trim().startsWith('.mercado')) {
+                 if (!html.toLowerCase().includes('<style')) {
+                     html = '<style>' + html + '</style>';
+                 }
+            }
+            
+            frame.srcdoc = html;
+            
+            // Fallback: If after 2s the frame is still empty or looks broken, show plain text
+            setTimeout(() => {
+                try {
+                    const doc = frame.contentDocument || frame.contentWindow.document;
+                    if (!doc.body || doc.body.innerHTML.length < 50) {
+                         container.innerHTML = `<div class="p-10 prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 whitespace-pre-wrap">${container.dataset.plain}</div>`;
+                    }
+                } catch(e) {}
+            }, 2000);
+        }
+    });
+
+    function resizeIframe(obj) {
+        try {
+            // Set a base height first
+            obj.style.height = '600px'; 
+            // Wait for internal layout
+            setTimeout(() => {
+                const scrollHeight = obj.contentWindow.document.body.scrollHeight;
+                const offsetHeight = obj.contentWindow.document.body.offsetHeight;
+                const finalHeight = Math.max(scrollHeight, offsetHeight, 400);
+                obj.style.height = finalHeight + 'px';
+            }, 100);
+        } catch (e) {
+            console.warn('Iframe resize failed:', e);
+        }
+    }
+</script>
+{% endblock %}

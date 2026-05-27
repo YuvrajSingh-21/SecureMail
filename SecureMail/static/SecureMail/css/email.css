@@ -1,0 +1,40 @@
+/* Email View Specific Theme Styles */
+
+.email-view-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+}
+
+.email-view-header {
+    background-color: var(--surface-alt);
+    border-bottom: 1px solid var(--border);
+}
+
+.email-body {
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.ai-analysis-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+}
+
+.analysis-indicator {
+    background-color: var(--surface-alt);
+    border: 1px solid var(--border);
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.attachment-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s ease;
+}
+
+.attachment-card:hover {
+    border-color: var(--cyber-accent);
+}

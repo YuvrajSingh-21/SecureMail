@@ -1,0 +1,35 @@
+/* Reports Page Specific Theme Styles */
+
+.report-header {
+    background-color: transparent;
+}
+
+.analytics-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.trend-chart {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 1.5rem;
+}
+
+.domain-item {
+    background-color: var(--surface-alt);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.domain-item:hover {
+    border-color: var(--border-alt);
+    background-color: var(--surface);
+}
+
+[data-theme="dark"] .domain-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}

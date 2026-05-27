@@ -1,0 +1,85 @@
+{% load static %}
+<aside class="w-64 shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 flex flex-col h-full transition-all duration-300">
+    <a href="{% url 'compose' %}" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl font-black mb-8 hover:scale-[1.02] transition shadow-xl shadow-blue-500/30">
+        <i data-lucide="plus" class="w-5 h-5"></i> Compose
+    </a>
+    
+    <nav class="space-y-1.5 flex-1 overflow-y-auto">
+        <a href="{% url 'inbox' %}" class="sidebar-item {% if current_folder == 'inbox' %}active{% endif %}" data-nav="inbox">
+            <i data-lucide="inbox" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Inbox</span>
+            {% if unread_count > 0 %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white font-black">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'inbox_folder' 'starred' %}" class="sidebar-item {% if current_folder == 'starred' %}active{% endif %}" data-nav="starred">
+            <i data-lucide="star" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Starred</span>
+            {% if starred_count > 0 %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ starred_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'inbox_folder' 'important' %}" class="sidebar-item {% if current_folder == 'important' %}active{% endif %}" data-nav="important">
+            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Important</span>
+        </a>
+        <a href="{% url 'inbox_folder' 'sent' %}" class="sidebar-item {% if current_folder == 'sent' %}active{% endif %}" data-nav="sent">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Sent</span>
+            {% if sent_count > 0 %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ sent_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'inbox_folder' 'drafts' %}" class="sidebar-item {% if current_folder == 'drafts' %}active{% endif %}" data-nav="drafts">
+            <i data-lucide="file" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Drafts</span>
+            {% if drafts_count > 0 %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ drafts_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'inbox_folder' 'spam' %}" class="sidebar-item {% if current_folder == 'spam' %}active{% endif %}" data-nav="spam">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Spam</span>
+            {% if spam_count > 0 %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-black">{{ spam_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'inbox_folder' 'trash' %}" class="sidebar-item {% if current_folder == 'trash' %}active{% endif %}" data-nav="trash">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            <span class="text-[13px] font-bold flex-1">Trash</span>
+            {% if trash_count > 0 %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ trash_count }}</span>
+            {% endif %}
+        </a>
+    </nav>
+
+    <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
+        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4 px-3">Cyber Intelligence</p>
+        <nav class="space-y-1.5">
+            <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" data-nav="dashboard">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                <span class="text-[13px] font-bold">Overview</span>
+            </a>
+            <a href="{% url 'reports' %}" class="sidebar-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" data-nav="reports">
+                <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                <span class="text-[13px] font-bold">Analytics</span>
+            </a>
+            <a href="{% url 'settings' %}" class="sidebar-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" data-nav="settings">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                <span class="text-[13px] font-bold">Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Security Health Widget -->
+    <div class="mt-8 p-5 rounded-3xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20">
+        <div class="flex items-center gap-2 mb-3">
+            <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
+            <span class="text-[10px] font-black text-blue-800 dark:text-blue-400 uppercase tracking-wider">Security State</span>
+        </div>
+        <p class="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">{{ user.profile.security_score|floatformat:0 }}% Protected</p>
+        <div class="w-full h-1.5 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
+            <div class="h-full bg-blue-600" style="width: {{ user.profile.security_score }}%"></div>
+        </div>
+    </div>
+</aside>

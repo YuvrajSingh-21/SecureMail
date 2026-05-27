@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SecureMail - Intelligent Email Security{% endblock %}
+
+{% block content %}
+    <div class="w-full min-h-full" style="background: linear-gradient(135deg, #0a0e1a 0%, #1e3a5f 50%, #0a0e1a 100%);">
+        <!-- Navigation -->
+        <nav class="w-full px-6 py-4 flex items-center justify-between max-w-7xl mx-auto">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center animate-glow">
+                    <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
+                </div>
+                <span class="text-white font-bold text-xl">SecureMail</span>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#features" class="text-white hover:text-cyan-400 transition text-sm font-bold">Features</a>
+                <a href="javascript:void(0)" class="text-white hover:text-cyan-400 transition text-sm font-bold">Pricing</a>
+                <a href="javascript:void(0)" class="text-white hover:text-cyan-400 transition text-sm font-bold">About</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'inbox' %}" class="text-white hover:text-cyan-400 transition text-sm font-bold">Inbox</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-white hover:text-cyan-400 transition text-sm font-bold">Sign In</a>
+                    <a href="{% url 'register' %}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-black transition shadow-lg shadow-blue-500/20">Get Started</a>
+                {% endif %}
+            </div>
+            <button class="md:hidden text-white"><i data-lucide="menu" class="w-6 h-6"></i></button>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col lg:flex-row items-center gap-12">
+            <div class="flex-1 animate-slide-up">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-cyan-400 text-[10px] font-black uppercase tracking-widest mb-6">
+                    <i data-lucide="zap" class="w-3 h-3"></i> AI-Powered Protection
+                </div>
+                <h1 class="text-4xl md:text-6xl font-black text-white leading-tight mb-6">Your AI-Powered <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Email Security</span> Assistant</h1>
+                <p class="text-lg text-gray-200 mb-8 max-w-xl font-medium">Read, analyze, and manage emails safely with real-time phishing and malware detection.</p>
+                <div class="flex flex-wrap gap-4">
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white rounded-2xl font-black transition transform hover:scale-105 text-center shadow-xl shadow-blue-500/30">Get Started Free</a>
+                    {% else %}
+                        <a href="{% url 'inbox' %}" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white rounded-2xl font-black transition transform hover:scale-105 text-center shadow-xl shadow-blue-500/30">Back to Inbox</a>
+                    {% endif %}
+                    <button class="px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-2xl font-black hover:bg-white/20 transition flex items-center justify-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i>
+                        Watch Demo
+                    </button>
+                </div>
+                <div class="mt-10 flex items-center gap-6 text-[11px] font-black text-gray-400 uppercase tracking-widest">
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> No credit card</span>
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Free forever plan</span>
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> GDPR Compliant</span>
+                </div>
+            </div>
+            <div class="flex-1 animate-slide-up delay-2">
+                <div class="relative">
+                    <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl animate-float">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50"></div>
+                            <span class="text-gray-400 text-[10px] ml-2 font-mono font-bold">securemail-ai://inbox</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-red-500/20 border border-red-500/30 shadow-lg">
+                                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400"></i>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm font-black uppercase tracking-tight">Phishing Detected</p>
+                                    <p class="text-gray-400 text-[11px] font-medium">security@amaz0n-verify.com</p>
+                                </div>
+                                <span class="px-3 py-1 text-[11px] font-black rounded-full bg-red-500 text-white">92 / 100</span>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 rounded-2xl bg-green-500/20 border border-green-500/30 shadow-lg">
+                                <i data-lucide="check-circle" class="w-6 h-6 text-green-400"></i>
+                                <div class="flex-1">
+                                    <p class="text-white text-sm font-black uppercase tracking-tight">Safe Email</p>
+                                    <p class="text-gray-400 text-[11px] font-medium">john.smith@company.com</p>
+                                </div>
+                                <span class="px-3 py-1 text-[11px] font-black rounded-full bg-green-500 text-white">8 / 100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-[80px]"></div>
+                    <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-500/20 rounded-full blur-[80px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="max-w-7xl mx-auto px-6 pb-32">
+            <div class="text-center mb-20 animate-slide-up delay-1">
+                <h2 class="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Powerful Security Features</h2>
+                <p class="text-gray-300 max-w-2xl mx-auto font-bold text-lg">Advanced AI-powered tools to keep your inbox safe from threats</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-300 group animate-slide-up delay-1 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
+                        <i data-lucide="brain" class="w-7 h-7 text-blue-400"></i>
+                    </div>
+                    <h3 class="text-white font-black text-xl mb-3 tracking-tight">Advanced Phishing Detection</h3>
+                    <p class="text-gray-300 text-sm font-medium leading-relaxed">Detect phishing emails using advanced logic and language analysis.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-300 group animate-slide-up delay-2 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
+                        <i data-lucide="link" class="w-7 h-7 text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-white font-black text-xl mb-3 tracking-tight">URL Scanner</h3>
+                    <p class="text-gray-300 text-sm font-medium leading-relaxed">Analyze suspicious links and detect phishing websites before clicking.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-300 group animate-slide-up delay-3 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
+                        <i data-lucide="file-scan" class="w-7 h-7 text-purple-400"></i>
+                    </div>
+                    <h3 class="text-white font-black text-xl mb-3 tracking-tight">Attachment Scanner</h3>
+                    <p class="text-gray-300 text-sm font-medium leading-relaxed">Scan PDF, ZIP, EXE, DOCX, APK files for malware.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-300 group animate-slide-up delay-4 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
+                        <i data-lucide="gauge" class="w-7 h-7 text-orange-400"></i>
+                    </div>
+                    <h3 class="text-white font-black text-xl mb-3 tracking-tight">Risk Scoring</h3>
+                    <p class="text-gray-300 text-sm font-medium leading-relaxed">Generate a security score from 0–100 for every email.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-300 group animate-slide-up delay-5 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
+                        <i data-lucide="message-circle" class="w-7 h-7 text-green-400"></i>
+                    </div>
+                    <h3 class="text-white font-black text-xl mb-3 tracking-tight">Friendly Explanations</h3>
+                    <p class="text-gray-300 text-sm font-medium leading-relaxed">Explain threats in simple language for non-technical users.</p>
+                </div>
+                <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-all duration-300 group animate-slide-up delay-6 hover:-translate-y-2">
+                    <div class="w-14 h-14 rounded-2xl bg-pink-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
+                        <i data-lucide="plug" class="w-7 h-7 text-pink-400"></i>
+                    </div>
+                    <h3 class="text-white font-black text-xl mb-3 tracking-tight">Gmail Integration</h3>
+                    <p class="text-gray-300 text-sm font-medium leading-relaxed">Connect your Gmail account securely with OAuth 2.0.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Section -->
+        <section class="max-w-7xl mx-auto px-6 pb-20">
+            <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[40px] p-12 md:p-20 text-center shadow-2xl relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight">Enterprise-Grade Security</h2>
+                    <p class="text-gray-300 font-bold max-w-xl mx-auto mb-12">Built on industry-standard protocols to keep your data private and secure.</p>
+                    <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+                        <div class="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest"><i data-lucide="shield" class="w-5 h-5 text-green-400"></i>OAuth 2.0</div>
+                        <div class="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest"><i data-lucide="lock" class="w-5 h-5 text-green-400"></i>E2E Encrypted</div>
+                        <div class="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest"><i data-lucide="users" class="w-5 h-5 text-green-400"></i>GDPR Ready</div>
+                        <div class="flex items-center gap-3 text-white font-black text-xs uppercase tracking-widest"><i data-lucide="database" class="w-5 h-5 text-green-400"></i>PostgreSQL</div>
+                    </div>
+                </div>
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/10 to-transparent"></div>
+            </div>
+        </section>
+
+        {% include "components/footer.html" %}
+    </div>
+{% endblock %}

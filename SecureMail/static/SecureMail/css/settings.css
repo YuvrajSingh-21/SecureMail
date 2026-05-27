@@ -1,0 +1,51 @@
+/* Settings Page Specific Theme Styles */
+
+.settings-header {
+    margin-bottom: 2rem;
+}
+
+.settings-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+.settings-card-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-card-body {
+    padding: 2rem;
+}
+
+.settings-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.account-connection-card {
+    background-color: var(--surface-alt);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: 1rem;
+}
+
+/* Custom Toggle Switch */
+.toggle-switch {
+    background-color: var(--border-alt);
+    transition: background-color 0.3s ease;
+}
+
+[data-theme="dark"] .toggle-switch {
+    background-color: #374151;
+}
+
+.peer:checked ~ .toggle-switch {
+    background-color: var(--cyber-accent);
+}

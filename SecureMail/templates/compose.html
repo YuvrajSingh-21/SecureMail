@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Compose - SecureMail{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors">
+    {% include "components/navbar.html" %}
+    
+    <div class="flex flex-1 overflow-hidden">
+        {% include "components/sidebar.html" %}
+        
+        <main class="flex-1 overflow-y-auto p-4 md:p-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden animate-slide-up">
+                    <div class="px-8 py-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between">
+                        <h1 class="font-bold text-xl text-gray-900 dark:text-white">New Message</h1>
+                        <div class="flex items-center gap-3">
+                            <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition text-gray-500" title="Minimize"><i data-lucide="minus" class="w-5 h-5"></i></button>
+                            <button onclick="history.back()" class="p-2 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 rounded-xl transition text-gray-500" title="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+                        </div>
+                    </div>
+
+                    <form id="compose-form" method="POST" action="{% url 'compose' %}" class="flex flex-col">
+                        {% csrf_token %}
+                        <div class="px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-6">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest w-16">To</label>
+                            <input type="text" name="to" required placeholder="recipient@example.com" class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-sm dark:text-white placeholder-gray-400">
+                        </div>
+                        <div class="px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-6">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest w-16">Subject</label>
+                            <input type="text" name="subject" required placeholder="Add a subject" class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-sm font-bold dark:text-white placeholder-gray-400">
+                        </div>
+
+                        <!-- Editor Toolbar -->
+                        <div class="px-6 py-3 bg-gray-50/30 dark:bg-gray-800/20 border-b border-gray-100 dark:border-gray-700 flex items-center flex-wrap gap-2">
+                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Bold"><i data-lucide="bold" class="w-4 h-4"></i></button>
+                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Italic"><i data-lucide="italic" class="w-4 h-4"></i></button>
+                            <div class="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Attach"><i data-lucide="paperclip" class="w-4 h-4"></i></button>
+                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Link"><i data-lucide="link" class="w-4 h-4"></i></button>
+                        </div>
+
+                        <textarea name="body" required class="w-full h-96 px-8 py-6 bg-transparent border-none focus:ring-0 text-sm resize-none dark:text-white placeholder-gray-400 leading-relaxed" placeholder="Start typing your message..."></textarea>
+
+                        <!-- Assistant Bar -->
+                        <div class="mx-8 mb-6 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/20 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-pulse">
+                                    <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-blue-700 dark:text-blue-400">AI Writing Assistant</p>
+                                    <p class="text-[10px] text-blue-600/70 dark:text-blue-500/70">SecureCompose™ protection is active</p>
+                                </div>
+                            </div>
+                            <button type="button" class="px-4 py-1.5 bg-white dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-bold shadow-sm hover:shadow-md transition">Draft with AI</button>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="px-8 py-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/20 dark:bg-gray-800/10">
+                            <div class="flex items-center gap-3">
+                                <button type="submit" class="px-10 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl text-sm font-bold hover:from-blue-700 hover:to-cyan-600 transition shadow-xl shadow-blue-500/30">Send Message</button>
+                                <button type="button" class="p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl text-gray-500 hover:text-blue-600 transition shadow-sm" title="Schedule"><i data-lucide="clock" class="w-5 h-5"></i></button>
+                            </div>
+                            <button type="button" class="p-3 text-gray-400 hover:text-red-500 transition" title="Discard"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

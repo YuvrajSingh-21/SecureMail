@@ -1,0 +1,35 @@
+/* Profile Page Specific Theme Styles */
+
+.profile-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    padding: 2rem;
+}
+
+.profile-stats-grid {
+    gap: 1rem;
+}
+
+.profile-stat-item {
+    background-color: var(--surface-alt);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+.activity-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+.activity-item {
+    border-bottom: 1px solid var(--border);
+    transition: background-color 0.3s ease;
+}
+
+.activity-item:hover {
+    background-color: var(--surface-alt);
+}
