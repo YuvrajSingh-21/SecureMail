@@ -207,34 +207,29 @@ class EmailPipeline:
             email.risk = 'suspicious'
         else:
             email.risk = 'safe'
+        
+        # Finalize verdict using normalized payload
+        email.risk_score = risk_data['score']
+        email.risk = 'dangerous' if risk_data['label'] == 'PHISHING' else ('suspicious' if risk_data['label'] == 'SUSPICIOUS' else 'safe')
+        
+        email.ml_score = risk_data['score']
+        email.ml_label = risk_data['label']
+        email.analysis_reasons = risk_data['reasons']
+        email.category = risk_data['label']
+        email.sender_reputation = risk_data['sender_reputation']
+        email.category_confidence = risk_data['confidence']
+        email.analysis_completed = timezone.now()
         email.save()
 
-        RiskScore.objects.update_or_create(
-            email=email,
-            defaults={
-                'score': risk_data['score'],
-                'category': risk_data['category'],
-                'content_risk': risk_data['factors']['content'],
-                'link_risk': risk_data['factors']['links'],
-                'attachment_risk': risk_data['factors']['attachments'],
-                'reputation_risk': risk_data['factors']['reputation'],
-                'explanation': risk_data['explanation'],
-                'factors_json': risk_data['factors']
-            }
-        )
-
-        reasons = ml_results.get('reasons', [])
-        summary = risk_data['explanation']
-        if reasons:
-            summary += "\n\nLocal Engine Observations:\n- " + "\n- ".join(reasons)
-
+        # Update Centralized ThreatAnalysis object
         ThreatAnalysis.objects.update_or_create(
             email=email,
             defaults={
-                'summary': summary,
+                'summary': risk_data['summary'],
                 'detailed_report': {
-                    'links': link_results,
-                    'ml_metadata': ml_results
+                    'analysis': risk_data,
+                    'ml_metadata': ml_results,
+                    'links': link_results
                 }
             }
         )

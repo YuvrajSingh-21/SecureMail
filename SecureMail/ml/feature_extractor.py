@@ -8,12 +8,14 @@ class FeatureExtractor:
     FREE_PROVIDERS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'protonmail.com']
     
     # Refined phishing keywords - requiring more specific technical patterns
-    PHISHING_URGENCY = ['action required', 'account suspended', 'unauthorized access', 'immediate action']
+    PHISHING_URGENCY = ['action required', 'account suspended', 'unauthorized access', 'immediate action', 'last chance', 'closing soon']
     PHISHING_CREDENTIALS = ['reset your password', 'security update', 'confirm identity', 'verify your account']
-    PHISHING_MONEY = ['wire transfer', 'tax refund', 'overdue payment', 'inheritance from']
+    PHISHING_MONEY = ['wire transfer', 'tax refund', 'overdue payment', 'inheritance from', 'reward', 'cash prize', 'exclusive bonus']
+    PHISHING_AUTHORITY = ['official notice', 'department of', 'system administrator', 'security team', 'verified by']
+    SCARCITY_TACTICS = ['limited time', 'while supplies last', 'only a few left', 'hurry', 'expiring']
     
     # Neutral/Marketing keywords (should demote phishing probability)
-    MARKETING_WORDS = ['internship', 'apply now', 'registration', 'opportunity', 'newsletter', 'hiring']
+    MARKETING_WORDS = ['internship', 'apply now', 'registration', 'opportunity', 'newsletter', 'hiring', 'utm_source', 'utm_medium', 'click_id']
 
     def extract_features(self, subject, body, sender_email, sender_name, attachments=None):
         """
@@ -57,6 +59,8 @@ class FeatureExtractor:
         features['body_urgency'] = sum(1 for w in self.PHISHING_URGENCY if w in body_lower)
         features['body_money'] = sum(1 for w in self.PHISHING_MONEY if w in body_lower)
         features['body_security'] = sum(1 for w in self.PHISHING_CREDENTIALS if w in body_lower)
+        features['body_authority'] = sum(1 for w in self.PHISHING_AUTHORITY if w in body_lower)
+        features['scarcity_count'] = sum(1 for w in self.SCARCITY_TACTICS if w in body_lower)
         
         # Refined login request indicators: Requires a specific credential phrase AND a link
         features['login_request_indicator'] = 1 if (features['body_security'] > 0 and features['url_count'] > 0) else 0

@@ -25,12 +25,12 @@ def sync_gmail(request):
 def dashboard(request):
     emails = EmailMessage.objects.filter(user=request.user)
     
-    # Strictly use ml_label for stats as per user requirement
+    # Updated stats to handle normalized categories
     stats = {
         'total': emails.count(),
-        'safe': emails.filter(ml_label='SAFE').count(),
-        'suspicious': emails.filter(ml_label='SUSPICIOUS').count(),
-        'dangerous': emails.filter(ml_label='PHISHING').count(),
+        'safe': emails.filter(category__in=['SAFE', 'PROMOTIONAL', 'NEWSLETTER', 'SOCIAL']).count(),
+        'suspicious': emails.filter(category='SUSPICIOUS').count(),
+        'dangerous': emails.filter(category='PHISHING').count(),
         'security_score': request.user.profile.security_score,
     }
     
@@ -148,18 +148,18 @@ def compose(request):
 def reports(request):
     emails = EmailMessage.objects.filter(user=request.user)
     
-    # Strictly use ml_label for stats as per user requirement
+    # Updated stats to handle normalized categories
     stats = {
         'total': emails.count(),
-        'safe': emails.filter(ml_label='SAFE').count(),
-        'suspicious': emails.filter(ml_label='SUSPICIOUS').count(),
-        'malicious': emails.filter(ml_label='PHISHING').count(),
-        'spam': emails.filter(ml_label='SPAM').count(),
+        'safe': emails.filter(category__in=['SAFE', 'PROMOTIONAL', 'NEWSLETTER', 'SOCIAL']).count(),
+        'suspicious': emails.filter(category='SUSPICIOUS').count(),
+        'malicious': emails.filter(category='PHISHING').count(),
+        'spam': emails.filter(category='SPAM').count(),
     }
     
     # Get actual top phishing domains
     from django.db.models import Count
-    top_domains = EmailMessage.objects.filter(user=request.user, ml_label='PHISHING') \
+    top_domains = EmailMessage.objects.filter(user=request.user, category='PHISHING') \
         .values('sender_email') \
         .annotate(count=Count('id')) \
         .order_by('-count')[:5]

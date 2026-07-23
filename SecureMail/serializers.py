@@ -20,14 +20,19 @@ class ThreatIndicatorSerializer(serializers.ModelSerializer):
 
 class EmailSerializer(serializers.ModelSerializer):
     indicators = ThreatIndicatorSerializer(many=True, read_only=True)
-    analysis_summary = serializers.CharField(source='analysis.summary', read_only=True, allow_null=True)
+    analysis = serializers.SerializerMethodField()
     
     class Meta:
         model = EmailMessage
         fields = [
             'id', 'sender_email', 'sender_name', 'recipient_email', 
             'subject', 'body', 'timestamp', 'unread', 'starred', 
-            'indicators',
-            'ml_label', 'ml_score', 'sender_reputation', 'analysis_reasons',
-            'analysis_summary'
+            'indicators', 'analysis', 'risk'
         ]
+
+    def get_analysis(self, obj):
+        try:
+            report = obj.analysis.detailed_report
+            return report.get('analysis') or report.get('ml_metadata') or {}
+        except:
+            return {}

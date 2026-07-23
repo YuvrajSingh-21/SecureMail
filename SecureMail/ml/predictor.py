@@ -53,15 +53,18 @@ class PhishingPredictor:
             combined_text = feats.pop('combined_text')
             feats.pop('sender_domain')
             
-            # 2. Linguistic Analysis (TF-IDF)
+            # 2. Filter features for ML model (avoid mismatch with new forensic features)
+            ml_feats = {k: v for k, v in feats.items() if k not in ['body_authority', 'scarcity_count']}
+            
+            # 3. Linguistic Analysis (TF-IDF)
             tfidf_vec = self.vectorizer.transform([combined_text])
             tfidf_df = pd.DataFrame(tfidf_vec.toarray(), columns=self.vectorizer.get_feature_names_out())
             
-            # 3. Combine with Metadata
-            meta_df = pd.DataFrame([feats])
+            # 4. Combine with Metadata
+            meta_df = pd.DataFrame([ml_feats])
             X = pd.concat([meta_df, tfidf_df], axis=1)
             
-            # 4. Perform Prediction
+            # 5. Perform Prediction
             probs = self.model.predict_proba(X)[0]
             pred_idx = np.argmax(probs)
             
@@ -97,7 +100,8 @@ class PhishingPredictor:
                 "score": score,
                 "label": label,
                 "confidence": confidence,
-                "reasons": reasons
+                "reasons": reasons,
+                "features": feats
             }
 
         except Exception as e:
@@ -110,28 +114,31 @@ class PhishingPredictor:
         
         # We only add reasons if there's actually a technical hit
         if feats.get('subj_urgency', 0) > 0 or feats.get('body_urgency', 0) > 0:
-            reasons.append("Contains urgent language")
+            reasons.append("Suspicious urgency language detected")
         
         if feats.get('url_count', 0) > 8:
-            reasons.append(f"Excessive number of links ({feats['url_count']})")
+            reasons.append(f"Excessive density of outbound links ({feats['url_count']})")
             
         if feats.get('shortened_url_count', 0) > 0:
-            reasons.append("Contains shortened URLs")
+            reasons.append("Contains shortened URLs (potential redirection)")
             
         if feats.get('ip_url_count', 0) > 0:
-            reasons.append("Links use raw IP addresses")
+            reasons.append("Links use obfuscated IP addresses instead of domains")
             
         if feats.get('login_request_indicator', 0) == 1:
-            reasons.append("Contains credential reset request")
+            reasons.append("Credential harvesting pattern identified (Security keyword + Link)")
             
         if feats.get('body_money', 0) > 0 or feats.get('subj_money', 0) > 0:
-            reasons.append("Contains financial request")
+            reasons.append("Anomalous financial/payment request")
             
         if feats.get('suspicious_tld_count', 0) > 0:
-            reasons.append("Contains links to high-risk domains")
+            reasons.append("Contains links to high-risk top-level domains")
             
         if feats.get('display_name_mismatch', 0) == 1:
-            reasons.append("Sender reputation anomaly detected")
+            reasons.append("Sender display name does not match source domain (Spoofing indicator)")
+
+        if feats.get('marketing_count', 0) > 2:
+            reasons.append("High marketing/tracking redirect density")
             
         return reasons
 

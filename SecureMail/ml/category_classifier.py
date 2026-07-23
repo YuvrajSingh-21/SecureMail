@@ -38,10 +38,13 @@ class CategoryClassifier:
             combined_text = feats.pop('combined_text')
             feats.pop('sender_domain')
             
+            # Filter features for ML model (avoid mismatch with new forensic features)
+            ml_feats = {k: v for k, v in feats.items() if k not in ['body_authority', 'scarcity_count']}
+            
             tfidf_vec = self.vectorizer.transform([combined_text])
             tfidf_df = pd.DataFrame(tfidf_vec.toarray(), columns=self.vectorizer.get_feature_names_out())
             
-            meta_df = pd.DataFrame([feats])
+            meta_df = pd.DataFrame([ml_feats])
             X = pd.concat([meta_df, tfidf_df], axis=1)
             
             probs = self.model.predict_proba(X)[0]

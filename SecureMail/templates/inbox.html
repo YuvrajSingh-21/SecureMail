@@ -96,8 +96,14 @@
                                     </a>
                                 </div>
                                 
-                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm {% if email.ml_label == 'PHISHING' %}bg-red-100 text-red-600{% elif email.ml_label == 'SPAM' or email.ml_label == 'SUSPICIOUS' %}bg-yellow-100 text-yellow-600{% else %}bg-green-100 text-green-600{% endif %}">
-                                    <i data-lucide="{% if email.ml_label == 'PHISHING' %}alert-triangle{% elif email.ml_label == 'SPAM' or email.ml_label == 'SUSPICIOUS' %}alert-circle{% else %}check-circle{% endif %}" class="w-5 h-5"></i>
+                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-sm 
+                                    {% if email.category == 'PHISHING' %}bg-red-100 text-red-600
+                                    {% elif email.category == 'SUSPICIOUS' %}bg-yellow-100 text-yellow-600
+                                    {% elif email.category == 'PROMOTIONAL' %}bg-blue-100 text-blue-600
+                                    {% elif email.category == 'NEWSLETTER' %}bg-cyan-100 text-cyan-600
+                                    {% elif email.category == 'SOCIAL' %}bg-indigo-100 text-indigo-600
+                                    {% else %}bg-green-100 text-green-600{% endif %}">
+                                    <i data-lucide="{% if email.category == 'PHISHING' %}alert-triangle{% elif email.category == 'SUSPICIOUS' %}alert-circle{% else %}check-circle{% endif %}" class="w-5 h-5"></i>
                                 </div>
 
                                 <div class="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
@@ -109,14 +115,16 @@
                                         <div class="flex items-center gap-2">
                                             <span class="text-sm {% if email.unread %}font-black{% else %}font-bold{% endif %} text-gray-900 dark:text-white truncate">{{ email.subject }}</span>
                                             
-                                            <!-- ML Phishing Label -->
-                                            {% if email.ml_label == 'PHISHING' %}
-                                                <span class="px-1.5 py-0.5 rounded-md bg-red-500 text-[8px] text-white font-black uppercase">ML Phishing</span>
-                                            {% elif email.ml_label == 'SPAM' %}
-                                                <span class="px-1.5 py-0.5 rounded-md bg-orange-500 text-[8px] text-white font-black uppercase">ML Spam</span>
-                                            {% elif email.ml_label == 'SUSPICIOUS' %}
-                                                <span class="px-1.5 py-0.5 rounded-md bg-yellow-500 text-[8px] text-white font-black uppercase">ML Suspicious</span>
-                                            {% endif %}
+                                            <!-- Intent Label -->
+                                            <span class="px-1.5 py-0.5 rounded-md text-[8px] text-white font-black uppercase
+                                                {% if email.category == 'PHISHING' %}bg-red-500
+                                                {% elif email.category == 'SUSPICIOUS' %}bg-yellow-500
+                                                {% elif email.category == 'PROMOTIONAL' %}bg-blue-500
+                                                {% elif email.category == 'NEWSLETTER' %}bg-cyan-500
+                                                {% elif email.category == 'SOCIAL' %}bg-indigo-500
+                                                {% else %}bg-green-500{% endif %}">
+                                                {{ email.category|default:"SAFE" }}
+                                            </span>
                                             
                                             {% if email.has_attachments %}
                                             <i data-lucide="paperclip" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i>
@@ -125,8 +133,11 @@
                                         <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ email.snippet|default:email.body|truncatechars:120 }}</p>
                                     </div>
                                     <div class="md:col-span-2 flex justify-end">
-                                        <div class="px-3 py-1 rounded-full text-[10px] font-black text-white shadow-lg shadow-black/5 {% if email.ml_label == 'PHISHING' %}risk-dangerous{% elif email.ml_label == 'SPAM' or email.ml_label == 'SUSPICIOUS' %}risk-suspicious{% else %}risk-safe{% endif %}">
-                                            {{ email.ml_score|floatformat:0 }}
+                                        <div class="px-3 py-1 rounded-full text-[10px] font-black text-white shadow-lg shadow-black/5 
+                                            {% if email.category == 'PHISHING' %}risk-dangerous
+                                            {% elif email.category == 'SUSPICIOUS' %}risk-suspicious
+                                            {% else %}risk-safe{% endif %}">
+                                            {{ email.risk_score|floatformat:0 }}
                                         </div>
                                     </div>
                                 </div>
