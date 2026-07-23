@@ -32,7 +32,9 @@ class EmailSerializer(serializers.ModelSerializer):
 
     def get_analysis(self, obj):
         try:
+            from .services.risk_engine import RiskEngine
+            engine = RiskEngine()
             report = obj.analysis.detailed_report
-            return report.get('analysis') or report.get('ml_metadata') or {}
+            return engine.normalize_payload(report)
         except:
             return {}

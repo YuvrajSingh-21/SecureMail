@@ -4,14 +4,14 @@
 {% block title %}{{ email.subject }} - SecureMail{% endblock %}
 
 {% block content %}
-<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+<div class="flex flex-col min-h-screen bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
     {% include "components/navbar.html" %}
     
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1">
         {% include "components/sidebar.html" %}
         
-        <main class="flex-1 flex flex-col bg-slate-50 dark:bg-gray-900 transition-colors overflow-hidden p-4 md:p-8">
-            <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col overflow-hidden">
+        <main class="flex-1 flex flex-col bg-slate-50 dark:bg-gray-900 transition-colors p-4 md:p-8">
+            <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col">
                 <!-- Toolbar -->
                 <div class="flex items-center justify-between mb-8 animate-slide-up">
                     <div class="flex items-center gap-4">
@@ -33,10 +33,10 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 flex-1 overflow-hidden">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 flex-1">
                     <!-- Email Content Card -->
-                    <div class="xl:col-span-2 flex flex-col overflow-hidden">
-                        <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col flex-1 overflow-hidden animate-slide-up delay-1">
+                    <div class="xl:col-span-2 flex flex-col">
+                        <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col flex-1 animate-slide-up delay-1">
                             <!-- Sender Info -->
                             <div class="p-10 border-b border-gray-50 dark:border-gray-700/50">
                                 <div class="flex items-center justify-between">
@@ -63,7 +63,7 @@
                             </div>
 
                             <!-- Email Body Rendering (Fixed) -->
-                            <div class="flex-1 overflow-y-auto bg-white dark:bg-gray-900/10 min-h-[400px] flex flex-col" id="email-body-container" data-html="{{ email.html_body|escape }}" data-plain="{{ email.plain_body|default:email.body|escape }}">
+                            <div class="flex-1 bg-white dark:bg-gray-900/10 min-h-[400px] flex flex-col" id="email-body-container" data-html="{{ email.html_body|escape }}" data-plain="{{ email.plain_body|default:email.body|escape }}">
                                 {% if email.html_body %}
                                     <iframe 
                                         id="email-frame"
@@ -102,7 +102,7 @@
                     </div>
 
                     <!-- Intelligence Side Panel -->
-                    <div class="xl:col-span-1 space-y-8 overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="xl:col-span-1 space-y-8 sticky top-8">
                         <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 transition-all duration-300">
                             <div class="flex items-center gap-4 mb-10">
                                 <div class="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl shadow-blue-500/40 animate-pulse">

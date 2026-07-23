@@ -28,7 +28,7 @@ class PhishingPredictor:
             logger.error(f"Failed to load ML model artifacts from {self.models_dir}: {str(e)}")
             self.is_loaded = False
 
-    def predict_email(self, subject, body, sender):
+    def predict_email(self, subject, body, sender, html_body=""):
         """
         Runs local inference on email components.
         Returns: {score, label, confidence, reasons}
@@ -40,7 +40,7 @@ class PhishingPredictor:
 
         try:
             # 1. Extract Features
-            feats = self.extractor.extract_features(subject, body, sender, "", [])
+            feats = self.extractor.extract_features(subject, body, sender, "", [], html_body=html_body)
             
             # LOGGING: Print all extracted features for audit
             logger.info(f"\n--- ML AUDIT: {subject[:30]}... ---")
@@ -54,7 +54,7 @@ class PhishingPredictor:
             feats.pop('sender_domain')
             
             # 2. Filter features for ML model (avoid mismatch with new forensic features)
-            ml_feats = {k: v for k, v in feats.items() if k not in ['body_authority', 'scarcity_count']}
+            ml_feats = {k: v for k, v in feats.items() if k not in ['body_authority', 'scarcity_count', 'cta_phrase_count', 'triggered_phrases', 'link_mismatch', 'homoglyph_detected']}
             
             # 3. Linguistic Analysis (TF-IDF)
             tfidf_vec = self.vectorizer.transform([combined_text])
@@ -86,6 +86,14 @@ class PhishingPredictor:
                 logger.info("FP MITIGATION: Phishing label demoted due to marketing markers.")
                 label = 'SUSPICIOUS'
                 score = min(score, 60)
+                
+            # FP Mitigation: Genuine Banking / Transactional Emails (e.g. SBI, HDFC)
+            # If the sender is from a known banking entity or alert system and not highly confident phish
+            if any(bank in sender.lower() for bank in ['sbi', 'hdfc', 'icici', 'axis', 'bank', 'alert', 'statement', 'update']):
+                if label in ['PHISHING', 'SUSPICIOUS'] and confidence < 0.85:
+                    logger.info("FP MITIGATION: Genuine bank/alert email marked as SAFE.")
+                    label = 'SAFE'
+                    score = min(score, 15)
             
             if label == 'SAFE' and confidence > 0.8:
                 score = min(score, 25)

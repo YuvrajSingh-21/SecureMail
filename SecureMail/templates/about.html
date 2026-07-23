@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}About - SecureMail{% endblock %}
+{% block content %}
+<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+    {% include "components/navbar.html" %}
+    <div class="flex flex-1 overflow-hidden">
+        {% include "components/sidebar.html" %}
+        <main class="flex-1 overflow-y-auto p-6 md:p-10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto space-y-12">
+                <!-- Hero Section -->
+                <header class="text-center max-w-4xl mx-auto animate-slide-up mt-8 mb-16">
+                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-blue-600 shadow-2xl shadow-blue-500/40 mb-6">
+                        <i data-lucide="shield-check" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <h1 class="text-5xl font-black text-gray-900 dark:text-white tracking-tight mb-4">About SecureMail</h1>
+                    <p class="text-lg font-medium text-gray-500 dark:text-gray-400 mb-8">AI-Powered Email Threat Intelligence Platform</p>
+                    <p class="text-base text-gray-600 dark:text-gray-300 mb-10 leading-relaxed max-w-2xl mx-auto">
+                        SecureMail is an intelligent cybersecurity platform that protects users from phishing attacks, malicious emails, spoofed senders, and social engineering using Explainable Artificial Intelligence.
+                    </p>
+                    <div class="flex items-center justify-center gap-4">
+                        <a href="{% url 'dashboard' %}" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-sm transition-all shadow-xl shadow-blue-500/30 hover:-translate-y-1">
+                            Explore Dashboard
+                        </a>
+                        <a href="{% url 'contact' %}" class="px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl font-black text-sm transition-all shadow-sm hover:shadow-lg hover:border-blue-500/30 hover:-translate-y-1">
+                            Contact Team
+                        </a>
+                    </div>
+                </header>
+
+                <!-- Mission -->
+                <section class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 md:p-14 animate-slide-up" style="animation-delay: 0.1s;">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <h2 class="text-3xl font-black text-gray-900 dark:text-white mb-6">Our Mission</h2>
+                        <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                            SecureMail aims to make email communication safer by combining machine learning, explainable AI, sender reputation analysis and threat intelligence into a single platform that enables users to confidently identify phishing attacks and malicious emails.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Why SecureMail -->
+                <section class="animate-slide-up" style="animation-delay: 0.2s;">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 text-center uppercase tracking-widest text-sm text-blue-600">Why SecureMail</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-2 group">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="cpu" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 dark:text-white mb-3">AI Threat Detection</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Automatically analyzes emails using AI models.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:purple-500/30 transition-all duration-300 hover:-translate-y-2 group">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="search" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 dark:text-white mb-3">Explainable Analysis</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Shows users why an email was classified as safe or malicious.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:red-500/30 transition-all duration-300 hover:-translate-y-2 group">
+                            <div class="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="shield-alert" class="w-6 h-6 text-red-600"></i>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 dark:text-white mb-3">Threat Intelligence</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Inspects URLs, sender reputation and email indicators.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:green-500/30 transition-all duration-300 hover:-translate-y-2 group">
+                            <div class="w-12 h-12 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <i data-lucide="users" class="w-6 h-6 text-green-600"></i>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 dark:text-white mb-3">User Feedback Learning</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Continuously improves detection using user verification feedback.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- How It Works -->
+                <section class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 md:p-14 animate-slide-up" style="animation-delay: 0.3s;">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-12 text-center uppercase tracking-widest text-sm text-blue-600">How It Works</h2>
+                    <div class="flex flex-col md:flex-row items-center justify-between relative max-w-5xl mx-auto">
+                        <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 dark:bg-gray-700 -translate-y-1/2 z-0"></div>
+                        
+                        <div class="relative z-10 flex flex-col items-center bg-white dark:bg-gray-800 p-2 text-center w-full md:w-32 mb-8 md:mb-0">
+                            <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500 mb-4 border-4 border-white dark:border-gray-800">
+                                <i data-lucide="mail" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Email Collection</p>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center bg-white dark:bg-gray-800 p-2 text-center w-full md:w-32 mb-8 md:mb-0">
+                            <div class="w-14 h-14 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 mb-4 border-4 border-white dark:border-gray-800">
+                                <i data-lucide="scan" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Threat Analysis</p>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center bg-white dark:bg-gray-800 p-2 text-center w-full md:w-32 mb-8 md:mb-0">
+                            <div class="w-14 h-14 rounded-full bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center text-purple-600 mb-4 border-4 border-white dark:border-gray-800">
+                                <i data-lucide="lightbulb" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">AI Explainability</p>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center bg-white dark:bg-gray-800 p-2 text-center w-full md:w-32 mb-8 md:mb-0">
+                            <div class="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 mb-4 border-4 border-white dark:border-gray-800">
+                                <i data-lucide="activity" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">Risk Scoring</p>
+                        </div>
+                        
+                        <div class="relative z-10 flex flex-col items-center bg-white dark:bg-gray-800 p-2 text-center w-full md:w-32">
+                            <div class="w-14 h-14 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center text-green-600 mb-4 border-4 border-white dark:border-gray-800">
+                                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                            </div>
+                            <p class="text-xs font-bold text-gray-900 dark:text-white">User Protection</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Technology Stack -->
+                <section class="animate-slide-up text-center" style="animation-delay: 0.4s;">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 uppercase tracking-widest text-sm text-blue-600">Technology Stack</h2>
+                    <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+                        {% for tech in "Python,Django,Machine Learning,Gemini AI,Tailwind CSS,JavaScript,HTML5,SQLite,PostgreSQL,Google Gmail API,VirusTotal API,Explainable AI,Responsive Design"|split:"," %}
+                        <span class="px-5 py-2.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-xs font-bold text-gray-600 dark:text-gray-300 shadow-sm hover:shadow hover:-translate-y-0.5 transition-all cursor-default">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <!-- Why Users Trust SecureMail -->
+                <section class="animate-slide-up" style="animation-delay: 0.5s;">
+                    <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-8 text-center uppercase tracking-widest text-sm text-blue-600">Why Users Trust SecureMail</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-gradient-to-br from-blue-600 to-cyan-500 rounded-3xl p-8 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group">
+                            <div class="relative z-10">
+                                <div class="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center mb-6 backdrop-blur-sm">
+                                    <i data-lucide="lock" class="w-6 h-6 text-white"></i>
+                                </div>
+                                <h3 class="text-lg font-black mb-2">Privacy First</h3>
+                                <p class="text-blue-50 text-sm">Email credentials are never stored.</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm group hover:-translate-y-1 transition-all">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-6">
+                                <i data-lucide="zap" class="w-6 h-6 text-blue-600"></i>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 dark:text-white mb-2">Real-Time Protection</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Every email is analyzed instantly.</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 border border-gray-100 dark:border-gray-700 shadow-sm group hover:-translate-y-1 transition-all">
+                            <div class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center mb-6">
+                                <i data-lucide="eye" class="w-6 h-6 text-purple-600"></i>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-900 dark:text-white mb-2">Transparent AI</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm">Every prediction includes explanations.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project Highlights -->
+                <section class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 md:p-14 animate-slide-up relative overflow-hidden" style="animation-delay: 0.6s;">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5"></div>
+                    <div class="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        <div class="group">
+                            <p class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 to-cyan-500 tracking-tight mb-2 group-hover:scale-105 transition-transform">{{ emails_analyzed }}</p>
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Emails Analysed</p>
+                        </div>
+                        <div class="group">
+                            <p class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-pink-500 tracking-tight mb-2 group-hover:scale-105 transition-transform">{{ threats_detected }}</p>
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Threats Blocked</p>
+                        </div>
+                        <div class="group">
+                            <p class="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-500 to-emerald-500 tracking-tight mb-2 group-hover:scale-105 transition-transform">{{ detection_accuracy }}%</p>
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">Detection Accuracy</p>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-center items-center h-[40px] md:h-[48px] mb-2 group-hover:scale-105 transition-transform">
+                                <div class="flex items-center gap-2">
+                                    <span class="relative flex h-4 w-4">
+                                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                      <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-500"></span>
+                                    </span>
+                                    <p class="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">Active</p>
+                                </div>
+                            </div>
+                            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">AI Engine Status</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bottom CTA -->
+                <section class="text-center pb-12 animate-slide-up" style="animation-delay: 0.7s;">
+                    <h2 class="text-3xl font-black text-gray-900 dark:text-white mb-4">Need help?</h2>
+                    <p class="text-gray-500 dark:text-gray-400 mb-8">Get in touch with our team.</p>
+                    <div class="flex items-center justify-center gap-4">
+                        <a href="{% url 'contact' %}" class="px-8 py-4 bg-gray-900 dark:bg-white hover:bg-gray-800 dark:hover:bg-gray-100 text-white dark:text-gray-900 rounded-2xl font-black text-sm transition-all shadow-xl hover:-translate-y-1">
+                            Contact Us
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="px-8 py-4 bg-transparent border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-2xl font-black text-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-800 hover:-translate-y-1">
+                            Back to Dashboard
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

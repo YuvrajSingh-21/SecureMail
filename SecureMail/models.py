@@ -10,6 +10,10 @@ class Profile(models.Model):
     threats_blocked = models.IntegerField(default=0)
     connected_gmail = models.EmailField(null=True, blank=True)
     is_protected = models.BooleanField(default=True)
+    alert_threats = models.BooleanField(default=True)
+    alert_digest = models.BooleanField(default=True)
+    timezone = models.CharField(max_length=50, default='UTC (Coordinated Universal Time)')
+    language = models.CharField(max_length=50, default='English (US)')
 
     class Meta:
         indexes = [
@@ -20,14 +24,18 @@ class Profile(models.Model):
         return f"{self.user.username}'s Profile"
 
 class EmailMessageManager(models.Manager):
+    def active(self, user):
+        """Single source of truth: excludes remote deleted emails."""
+        return self.filter(user=user, is_remote_deleted=False)
+
     def inbox(self, user):
-        return self.filter(user=user, in_trash=False).order_by('-timestamp')
+        return self.active(user).filter(in_trash=False).order_by('-timestamp')
     
     def starred(self, user):
-        return self.filter(user=user, starred=True, in_trash=False).order_by('-timestamp')
+        return self.active(user).filter(starred=True, in_trash=False).order_by('-timestamp')
     
     def trash(self, user):
-        return self.filter(user=user, in_trash=True).order_by('-timestamp')
+        return self.active(user).filter(in_trash=True).order_by('-timestamp')
 
 class EmailMessage(models.Model):
     RISK_LEVELS = (
@@ -55,6 +63,7 @@ class EmailMessage(models.Model):
     unread = models.BooleanField(default=True, db_index=True)
     starred = models.BooleanField(default=False, db_index=True)
     in_trash = models.BooleanField(default=False, db_index=True)
+    is_remote_deleted = models.BooleanField(default=False, db_index=True)
     
     folder = models.CharField(max_length=50, default='INBOX', db_index=True)
     
@@ -62,6 +71,11 @@ class EmailMessage(models.Model):
     risk = models.CharField(max_length=20, choices=RISK_LEVELS, default='safe', db_index=True)
     
     has_attachments = models.BooleanField(default=False)
+    
+    # Auth Headers
+    spf_pass = models.BooleanField(default=True)
+    dkim_pass = models.BooleanField(default=True)
+    dmarc_pass = models.BooleanField(default=True)
     
     # ML Analysis Results
     ml_score = models.FloatField(default=0.0, db_index=True)
@@ -93,6 +107,19 @@ class EmailMessage(models.Model):
 
     def __str__(self):
         return f"{self.subject} from {self.sender_email}"
+        
+    @property
+    def verdict(self):
+        from .services.risk_engine import RiskEngine
+        engine = RiskEngine()
+        
+        report = {}
+        # hasattr can trigger an N+1 if analysis isn't prefetched,
+        # but views using this should use .select_related('analysis')
+        if hasattr(self, 'analysis'):
+            report = self.analysis.detailed_report
+            
+        return engine.normalize_payload(report)
 
 class SenderReputationModel(models.Model):
     domain = models.CharField(max_length=255, unique=True, db_index=True)

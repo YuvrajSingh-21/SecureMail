@@ -48,6 +48,8 @@ class EmailService:
 
     def delete_email(self, user, email_id):
         email = self.repository.get_user_email(user, email_id)
+        
+        # Trash in Gmail API
         if email.gmail_message_id:
             try:
                 account = ConnectedAccount.objects.get(user=user)
@@ -55,6 +57,7 @@ class EmailService:
             except Exception as e:
                 logger.warning(f"Failed to trash Gmail message: {str(e)}")
         
+        # Mark as trashed locally (Gmail will sync it later or user sees it in trash)
         email.in_trash = True
         email.save()
         return True
@@ -65,12 +68,34 @@ class EmailService:
         """
         return self.pipeline.run(email.id)
 
+    def get_email_verdict(self, email):
+        """
+        Canonical source for email intelligence.
+        Returns normalized analysis payload from ThreatAnalysis or falls back safely.
+        """
+        from .risk_engine import RiskEngine
+        engine = RiskEngine()
+        
+        report = {}
+        if hasattr(email, 'analysis'):
+            report = email.analysis.detailed_report
+            
+        analysis = engine.normalize_payload(report)
+        
+        # Validation for inconsistencies
+        if email.risk == 'dangerous' and analysis['label'] == 'SAFE':
+            logger.critical(f"INTELLIGENCE INCONSISTENCY: Email {email.id} cached as dangerous but forensic analysis is SAFE.")
+        
+        return analysis
+
 class ProfileService:
     def __init__(self):
         self.repository = ProfileRepository()
 
-    def update_protection(self, user, is_protected):
+    def update_protection(self, user, is_protected, alert_threats=True, alert_digest=True):
         profile = self.repository.get_by_user(user)
         profile.is_protected = is_protected
+        profile.alert_threats = alert_threats
+        profile.alert_digest = alert_digest
         profile.save()
         return profile

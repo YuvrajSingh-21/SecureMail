@@ -133,13 +133,25 @@ body {
 
 /* Base UI Components */
 header {
-    background-color: var(--header-bg);
-    border-bottom: 1px solid var(--border);
+    /* Generic header background and border removed to prevent unwanted boxes */
 }
 
 aside {
     background-color: var(--sidebar-bg);
     border-right: 1px solid var(--border);
+}
+
+.dark aside, .dark header {
+    background-color: rgba(31, 41, 55, 0.7) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+aside, header {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 main {
@@ -153,14 +165,34 @@ main {
     border: 1px solid var(--glass-border);
 }
 
-/* Animations */
+/* Animations & Micro-Interactions */
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
 @keyframes pulse-glow { 0%,100%{box-shadow: 0 0 20px rgba(59, 130, 246, 0.3)} 50%{box-shadow: 0 0 40px rgba(59, 130, 246, 0.6)} }
 @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scaleIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
 
 .animate-float { animation: float 3s ease-in-out infinite; }
 .animate-glow { animation: pulse-glow 2s ease-in-out infinite; }
-.animate-slide-up { animation: slideUp 0.6s ease-out forwards; opacity: 0; }
+.animate-slide-up { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+.animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+
+/* Interactive Gestures (Spring effect) */
+a, button, .cursor-pointer {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+button:active, a.cursor-pointer:active, .sidebar-item:active, .email-row:active {
+    transform: scale(0.97) !important;
+}
+
+/* Enhanced Hover Cards */
+.hover\:shadow-xl:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dark .hover\:shadow-xl:hover {
+    box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.05);
+}
 
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }

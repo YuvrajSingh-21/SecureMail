@@ -75,6 +75,22 @@ class SyncManager:
         job.total_messages = len(summaries)
         job.save()
 
+        # Reconciliation: Full Sync Cleanup
+        if not limit:
+            gmail_ids = set(s['id'] for s in summaries)
+            local_ids = set(EmailMessage.objects.filter(user=self.user, is_remote_deleted=False).values_list('gmail_message_id', flat=True))
+            stale_ids = local_ids - gmail_ids
+            
+            if stale_ids:
+                # Mark as remote deleted, clearing bodies so we don't permanently store deleted data
+                EmailMessage.objects.filter(user=self.user, gmail_message_id__in=stale_ids).update(
+                    is_remote_deleted=True,
+                    html_body='',
+                    plain_body='',
+                    body=''
+                )
+                logger.info(f"Reconciliation: Marked {len(stale_ids)} stale emails as remotely deleted.")
+
         # 2. Process in batches of 50
         batch_size = 50
         for i in range(0, len(summaries), batch_size):
@@ -90,6 +106,17 @@ class SyncManager:
                     with transaction.atomic():
                         full_msg = self.gmail.get_message(msg_id)
                         if not full_msg: continue
+                        
+                        if isinstance(full_msg, dict) and full_msg.get('error') == 404:
+                            email = EmailMessage.objects.filter(user=self.user, gmail_message_id=msg_id).first()
+                            if email:
+                                email.is_remote_deleted = True
+                                email.html_body = ''
+                                email.plain_body = ''
+                                email.body = ''
+                                email.save(update_fields=['is_remote_deleted', 'html_body', 'plain_body', 'body'])
+                                logger.info(f"Sync: 404 on get_message, marked {msg_id} as deleted.")
+                            continue
 
                         parsed = self.gmail.parse_message_data(full_msg)
                         labels = parsed['labels']
@@ -119,8 +146,12 @@ class SyncManager:
                                 'unread': 'UNREAD' in labels,
                                 'starred': 'STARRED' in labels,
                                 'in_trash': 'TRASH' in labels,
+                                'is_remote_deleted': False,
                                 'has_attachments': parsed['has_attachments'],
-                                'folder': folder
+                                'folder': folder,
+                                'spf_pass': parsed.get('spf_pass', True),
+                                'dkim_pass': parsed.get('dkim_pass', True),
+                                'dmarc_pass': parsed.get('dmarc_pass', True)
                             }
                         )
                         
@@ -129,6 +160,12 @@ class SyncManager:
                             # Manually trigger to control context and suppress redundant signals
                             email.skip_analysis = True
                             self.pipeline.run(email.id)
+                        
+                        # Detect stale analysis (missing centralized analysis payload)
+                        elif email.analysis_completed and hasattr(email, 'analysis') and 'analysis' not in email.analysis.detailed_report and self.pipeline:
+                            logger.info(f"Re-analyzing stale intelligence during sync for {email.id}")
+                            email.skip_analysis = True
+                            self.pipeline.run(email.id, force=True)
                         
                 except IntegrityError as e:
                     logger.warning(f"Duplicate detected or integrity error for {msg_id}: {str(e)}")

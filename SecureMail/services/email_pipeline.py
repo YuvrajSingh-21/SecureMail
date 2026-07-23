@@ -36,19 +36,28 @@ class EmailPipeline:
             logger.error(f"Failed to initialize EmailPipeline: {str(e)}")
             raise
 
-    def run(self, email_id):
+    def run(self, email_id, force=False):
         """
         Runs the full analysis pipeline on a specific email.
         """
         start_time = time.time()
         try:
-            email = EmailMessage.objects.select_related('user__profile').get(id=email_id)
+            email = EmailMessage.objects.select_related('user__profile', 'analysis').get(id=email_id)
             
-            if email.analysis_completed:
+            # Detect stale analysis (missing centralized analysis payload)
+            is_stale = False
+            if hasattr(email, 'analysis'):
+                if 'analysis' not in email.analysis.detailed_report:
+                    is_stale = True
+            
+            if email.analysis_completed and not force and not is_stale:
                 logger.debug(f"Email {email.id} already analyzed. Skipping.")
                 return True
                 
-            logger.info(f"Starting security pipeline for email ID: {email.id}")
+            if is_stale:
+                logger.info(f"Re-analyzing stale intelligence for email {email.id}...")
+            else:
+                logger.info(f"Starting security pipeline for email ID: {email.id}")
             
             # We use a single transaction for the whole analysis to ensure consistency
             with transaction.atomic():
@@ -57,11 +66,18 @@ class EmailPipeline:
                 ml_results = self.ml_predictor.predict_email(
                     email.subject, 
                     email.plain_body or email.snippet or "", 
-                    email.sender_email
+                    email.sender_email,
+                    html_body=email.html_body
                 )
                 email.ml_score = ml_results['score']
                 email.ml_label = ml_results['label']
                 email.analysis_reasons = ml_results['reasons']
+                
+                # Inject Auth Headers for Risk Engine
+                if 'features' in ml_results:
+                    ml_results['features']['spf_pass'] = getattr(email, 'spf_pass', True)
+                    ml_results['features']['dkim_pass'] = getattr(email, 'dkim_pass', True)
+                    ml_results['features']['dmarc_pass'] = getattr(email, 'dmarc_pass', True)
                 
                 # 2. Local ML Category Classification
                 logger.debug(f"Running Category classification for email {email.id}...")
@@ -237,9 +253,11 @@ class EmailPipeline:
     def _update_user_profile(self, email):
         from django.db.models import Avg
         profile = email.user.profile
-        profile.emails_scanned = EmailMessage.objects.filter(user=email.user, analysis_completed__isnull=False).count()
-        profile.threats_blocked = EmailMessage.objects.filter(user=email.user, risk='dangerous').count()
+        active_emails = EmailMessage.objects.active(email.user)
         
-        avg_risk = EmailMessage.objects.filter(user=email.user, analysis_completed__isnull=False).order_by('-timestamp')[:50].aggregate(Avg('risk_score'))['risk_score__avg'] or 0
+        profile.emails_scanned = active_emails.filter(analysis_completed__isnull=False).count()
+        profile.threats_blocked = active_emails.filter(risk='dangerous').count()
+        
+        avg_risk = active_emails.filter(analysis_completed__isnull=False).order_by('-timestamp')[:50].aggregate(Avg('risk_score'))['risk_score__avg'] or 0
         profile.security_score = max(0, 100 - avg_risk)
         profile.save()

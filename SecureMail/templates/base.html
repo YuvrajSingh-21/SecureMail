@@ -5,7 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SecureMail{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'SecureMail/assets/icons/favicon.ico' %}">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="{% static 'SecureMail/css/global.css' %}">
     <link rel="stylesheet" href="{% static 'SecureMail/css/responsive.css' %}">
@@ -82,11 +88,26 @@
             if (savedTheme === 'dark') {
                 document.body.className = 'h-full overflow-auto dark-mode bg-gray-900';
             } else {
-                document.body.className = 'h-full overflow-auto light-mode bg-slate-50';
+                document.body.className = 'h-full overflow-auto bg-gray-50';
             }
             if (window.updateThemeIcon) window.updateThemeIcon(savedTheme === 'dark');
         })();
     </script>
+
+    {% if user.is_authenticated %}
+    <script>
+        // Auto-sync in the background after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                fetch("{% url 'sync_gmail' %}?auto=1", {
+                    method: 'GET',
+                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                }).catch(err => console.error("Auto-sync error:", err));
+            }, 1000); // 1s delay so it doesn't block critical page load
+        });
+    </script>
+    {% endif %}
+
     {% block extra_js %}{% endblock %}
 </body>
 </html>

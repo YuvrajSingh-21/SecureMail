@@ -12,16 +12,16 @@
         {% include "components/sidebar.html" %}
         
         <main class="flex-1 overflow-y-auto p-6 md:p-10 transition-all duration-300">
-            <div class="max-w-7xl mx-auto">
+            <div id="dashboard-content" class="max-w-7xl mx-auto">
                 <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12 animate-slide-up">
                     <div>
                         <h1 class="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Security Center</h1>
                         <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">Real-time threat monitoring and intelligence dashboard</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <button class="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-black text-gray-900 dark:text-white hover:shadow-lg transition-all flex items-center gap-2">
-                            <i data-lucide="download-cloud" class="w-5 h-5 text-blue-600"></i>
-                            Export Intelligence
+                        <button onclick="exportDashboardPDF()" class="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm font-black text-gray-900 dark:text-white hover:shadow-lg transition-all flex items-center gap-2 hover:border-blue-500/30 group">
+                            <i data-lucide="download-cloud" class="w-5 h-5 text-blue-600 group-hover:-translate-y-1 transition-transform"></i>
+                            Export Intelligence (PDF)
                         </button>
                     </div>
                 </header>
@@ -30,10 +30,10 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8 mb-12 animate-slide-up delay-1">
                     <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
                         <div class="flex items-center justify-between mb-6">
-                            <div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                            <div class="w-14 h-14 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                                 <i data-lucide="mail" class="w-7 h-7 text-blue-600 dark:text-blue-400"></i>
                             </div>
-                            <span class="px-2 py-1 rounded-lg bg-green-50 dark:bg-green-900/10 text-[10px] font-black text-green-600">+12%</span>
+                            <span class="px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/10 text-[10px] font-black text-green-600">+12%</span>
                         </div>
                         <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Total Analyzed</p>
                         <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.total|default:"0" }}</h3>
@@ -41,36 +41,36 @@
                     
                     <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
                         <div class="flex items-center justify-between mb-6">
-                            <div class="w-14 h-14 rounded-2xl bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
+                            <div class="w-14 h-14 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center">
                                 <i data-lucide="check-circle" class="w-7 h-7 text-green-600 dark:text-green-400"></i>
                             </div>
-                            <span class="px-2 py-1 rounded-lg bg-green-50 dark:bg-green-900/10 text-[10px] font-black text-green-600">SAFE</span>
+                            <span class="px-2 py-1 rounded-full bg-green-50 dark:bg-green-900/10 text-[10px] font-black text-green-600">SAFE</span>
                         </div>
                         <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Safe Emails</p>
                         <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.safe|default:"0" }}</h3>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
+                    <a href="{% url 'inbox_folder' 'suspicious' %}" class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300 block cursor-pointer">
                         <div class="flex items-center justify-between mb-6">
-                            <div class="w-14 h-14 rounded-2xl bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center">
+                            <div class="w-14 h-14 rounded-full bg-yellow-50 dark:bg-yellow-900/20 flex items-center justify-center">
                                 <i data-lucide="alert-circle" class="w-7 h-7 text-yellow-600 dark:text-yellow-400"></i>
                             </div>
-                            <span class="px-2 py-1 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 text-[10px] font-black text-yellow-600">RISK</span>
+                            <span class="px-2 py-1 rounded-full bg-yellow-50 dark:bg-yellow-900/10 text-[10px] font-black text-yellow-600">RISK</span>
                         </div>
                         <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Suspicious</p>
                         <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.suspicious|default:"0" }}</h3>
-                    </div>
+                    </a>
 
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
+                    <a href="{% url 'inbox_folder' 'malicious' %}" class="bg-white dark:bg-gray-800 p-8 rounded-[2rem] border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 duration-300 block cursor-pointer">
                         <div class="flex items-center justify-between mb-6">
-                            <div class="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+                            <div class="w-14 h-14 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
                                 <i data-lucide="alert-triangle" class="w-7 h-7 text-red-600 dark:text-red-400"></i>
                             </div>
-                            <span class="px-2 py-1 rounded-lg bg-red-50 dark:bg-red-900/10 text-[10px] font-black text-red-600">THREAT</span>
+                            <span class="px-2 py-1 rounded-full bg-red-50 dark:bg-red-900/10 text-[10px] font-black text-red-600">THREAT</span>
                         </div>
                         <p class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">Dangerous</p>
                         <h3 class="text-3xl font-black text-gray-900 dark:text-white tabular-nums">{{ stats.dangerous|default:"0" }}</h3>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Charts & Activity -->
@@ -121,4 +121,40 @@
         </main>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+    function exportDashboardPDF() {
+        const element = document.getElementById('dashboard-content');
+        const opt = {
+            margin:       0.5,
+            filename:     'SecureMail_Intelligence_Report.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#f8fafc' },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+        };
+
+        // Temporarily hide the export button during PDF generation
+        const btn = document.querySelector('button[onclick="exportDashboardPDF()"]');
+        if(btn) btn.style.display = 'none';
+
+        // Force light mode to ensure text is visible on the light PDF background
+        const htmlEl = document.documentElement;
+        const wasDark = htmlEl.classList.contains('dark');
+        if (wasDark) htmlEl.classList.remove('dark');
+        
+        // Add a temporary background to the element itself
+        const originalBg = element.style.backgroundColor;
+        element.style.backgroundColor = '#f8fafc'; // slate-50
+
+        // Small delay to ensure browser renders the light mode styles before capture
+        setTimeout(() => {
+            html2pdf().set(opt).from(element).save().then(() => {
+                if(btn) btn.style.display = 'flex';
+                element.style.backgroundColor = originalBg;
+                if (wasDark) htmlEl.classList.add('dark');
+            });
+        }, 100);
+    }
+</script>
 {% endblock %}

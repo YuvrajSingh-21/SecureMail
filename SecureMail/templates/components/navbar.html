@@ -15,9 +15,14 @@
 
     <!-- Center: Search -->
     <div class="flex-1 max-w-2xl mx-8 hidden md:block">
-        <form action="{% url 'inbox' %}" method="GET" class="relative group">
+        <form action="{% url 'inbox' %}" method="GET" class="relative group flex items-center">
             <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
-            <input type="text" name="q" placeholder="Search emails, threats, or security incidents..." class="w-full pl-12 pr-4 py-2.5 rounded-2xl bg-gray-100 dark:bg-gray-700/50 border-transparent focus:bg-white dark:focus:bg-gray-700 border focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-300">
+            <input type="text" name="q" value="{{ request.GET.q|default_if_none:'' }}" placeholder="Search emails, threats, or security incidents..." class="w-full pl-12 pr-10 py-2.5 rounded-2xl bg-gray-100 dark:bg-gray-700/50 border-transparent focus:bg-white dark:focus:bg-gray-700 border focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 outline-none text-sm transition-all duration-300">
+            {% if request.GET.q %}
+            <a href="{% url 'inbox' %}" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </a>
+            {% endif %}
         </form>
     </div>
 
@@ -29,57 +34,61 @@
         </div>
 
         <div class="flex items-center gap-1">
-            <a href="{% url 'sync_gmail' %}" class="p-2.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all" title="Synchronize Gmail">
+            <a href="{% url 'sync_gmail' %}?next={{ request.get_full_path|urlencode }}" class="p-2.5 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-all">
                 <i data-lucide="refresh-cw" class="w-5 h-5"></i>
             </a>
 
             <!-- Notifications -->
             <div class="relative group">
-                <button class="p-2.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all relative" title="Notifications">
+                <button type="button" onclick="document.getElementById('notifDropdown').classList.toggle('hidden')" class="p-2.5 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-all relative">
                     <i data-lucide="bell" class="w-5 h-5"></i>
-                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-800"></span>
+                    {% if threat_count > 0 %}
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-gray-800 animate-pulse"></span>
+                    {% endif %}
                 </button>
                 
-                <div class="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 py-3 hidden group-hover:block group-focus-within:block animate-slide-up z-50 overflow-hidden">
+                <div id="notifDropdown" class="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 py-3 hidden z-50 overflow-hidden">
                     <div class="px-5 py-2 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between mb-2">
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Notifications</p>
                         <div class="flex gap-2">
-                            <button class="text-[9px] font-black text-blue-500 hover:underline uppercase tracking-tighter">Mark Read</button>
+                            <form action="{% url 'mark_notifications_read' %}" method="POST" class="inline m-0 p-0">
+                                {% csrf_token %}
+                                <button type="submit" class="text-[9px] font-black text-blue-500 hover:underline uppercase tracking-tighter">Mark Read</button>
+                            </form>
                             <span class="text-gray-300 dark:text-gray-700">|</span>
-                            <button class="text-[9px] font-black text-gray-400 hover:text-red-500 hover:underline uppercase tracking-tighter">Clear All</button>
+                            <form action="{% url 'clear_notifications' %}" method="POST" class="inline m-0 p-0">
+                                {% csrf_token %}
+                                <button type="submit" class="text-[9px] font-black text-gray-400 hover:text-red-500 hover:underline uppercase tracking-tighter">Clear All</button>
+                            </form>
                         </div>
-                    </div>                    <div class="max-h-72 overflow-y-auto">
-                        <div class="px-5 py-4 border-b border-gray-50 dark:border-gray-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition cursor-pointer group/item">
+                    </div>
+                    <div class="max-h-72 overflow-y-auto">
+                        {% for threat in recent_threats %}
+                        <a href="{% url 'email_view' threat.id %}" class="block px-5 py-4 border-b border-gray-50 dark:border-gray-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition cursor-pointer group/item">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600 dark:text-red-400"></i>
+                                <div class="w-8 h-8 rounded-lg {% if threat.category == 'PHISHING' %}bg-red-100 dark:bg-red-900/30{% else %}bg-yellow-100 dark:bg-yellow-900/30{% endif %} flex items-center justify-center shrink-0">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 {% if threat.category == 'PHISHING' %}text-red-600 dark:text-red-400{% else %}text-yellow-600 dark:text-yellow-400{% endif %}"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-gray-900 dark:text-white mb-1">Threat Neutralized</p>
-                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">Credential phishing from 'amaz0n-verify.com' blocked.</p>
-                                    <p class="text-[9px] text-blue-500 mt-2 font-black">2 MINS AGO</p>
+                                    <p class="text-xs font-bold text-gray-900 dark:text-white mb-1">{% if threat.category == 'PHISHING' %}Threat Neutralized{% else %}Suspicious Activity{% endif %}</p>
+                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed truncate max-w-[200px]" title="{{ threat.subject }}">Blocked: '{{ threat.subject|truncatechars:20 }}'</p>
+                                    <p class="text-[9px] text-blue-500 mt-2 font-black uppercase">{{ threat.timestamp|timesince }} AGO</p>
                                 </div>
                             </div>
+                        </a>
+                        {% empty %}
+                        <div class="px-5 py-8 text-center">
+                            <i data-lucide="check-circle" class="w-8 h-8 text-green-500 mx-auto mb-2 opacity-50"></i>
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">No Recent Threats</p>
                         </div>
-                        <div class="px-5 py-4 border-b border-gray-50 dark:border-gray-700 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition cursor-pointer group/item">
-                            <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
-                                    <i data-lucide="file-text" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-gray-900 dark:text-white mb-1">Security Digest</p>
-                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed">Your weekly analysis report is ready for review.</p>
-                                    <p class="text-[9px] text-blue-500 mt-2 font-black">YESTERDAY</p>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
                     <a href="{% url 'reports' %}" class="block py-3 text-center text-xs font-bold text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all">View All Activity</a>
                 </div>
             </div>
 
             <!-- Theme Toggle -->
-            <button class="p-2.5 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-all" onclick="toggleDarkMode()" title="Toggle Visual Mode">
+            <button class="p-2.5 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-all" onclick="toggleDarkMode()">
                 <i data-lucide="moon" class="w-5 h-5" data-theme-icon></i>
             </button>
         </div>
@@ -88,7 +97,7 @@
 
         <!-- Profile -->
         <div class="relative group">
-            <button class="flex items-center gap-3 p-1 pr-3 rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all outline-none">
+            <button class="flex items-center gap-3 p-1 pr-3 rounded-2xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all outline-none">
                 {% if user.google_account.profile_picture %}
                     <img src="{{ user.google_account.profile_picture }}" class="w-9 h-9 rounded-xl shadow-lg shadow-blue-500/20 object-cover" alt="Avatar">
                 {% else %}

@@ -68,6 +68,14 @@
                 <i data-lucide="settings" class="w-4 h-4"></i>
                 <span class="text-[13px] font-bold">Settings</span>
             </a>
+            <a href="{% url 'about' %}" class="sidebar-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}" data-nav="about">
+                <i data-lucide="info" class="w-4 h-4"></i>
+                <span class="text-[13px] font-bold">About</span>
+            </a>
+            <a href="{% url 'contact' %}" class="sidebar-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" data-nav="contact">
+                <i data-lucide="message-square" class="w-4 h-4"></i>
+                <span class="text-[13px] font-bold">Contact Us</span>
+            </a>
         </nav>
     </div>
 
