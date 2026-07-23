@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SecureMail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-bg { background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 40%), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent 40%); }
+        .prose h2 { font-size: 1.5rem; font-weight: 800; color: white; margin-top: 2rem; margin-bottom: 1rem; }
+        .prose h3 { font-size: 1.125rem; font-weight: 700; color: #e2e8f0; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        .prose p { margin-bottom: 1rem; line-height: 1.7; color: #94a3b8; }
+        .prose ul { margin-bottom: 1rem; padding-left: 1.5rem; list-style-type: disc; color: #94a3b8; }
+        .prose li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body class="bg-[#0b1120] text-gray-200 font-sans antialiased selection:bg-blue-500/30 selection:text-blue-200 min-h-screen gradient-bg">
+
+    <nav class="fixed top-0 w-full z-50 glass shadow-xl transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-black text-white tracking-tight">SecureMail</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">Home</a>
+                <a href="/about/" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">About</a>
+                <a href="/security/" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">Security</a>
+                <a href="/contact/" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">Contact</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/login/" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Login</a>
+                <a href="/register/" class="text-sm font-bold bg-white text-gray-900 hover:bg-gray-100 px-6 py-2.5 rounded-full transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-40 pb-12 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                Legal & Trust
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6">
+                Privacy <span class="gradient-text">Policy</span>
+            </h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                Transparency and control over your data. Last updated: July 2026.
+            </p>
+        </div>
+    </section>
+
+    <section class="pb-20 px-6">
+        <div class="max-w-3xl mx-auto glass-card p-8 md:p-12 rounded-3xl relative overflow-hidden shadow-2xl prose">
+            <h2>1. Introduction</h2>
+            <p>At SecureMail, we take your privacy as seriously as we take your security. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform. Our core philosophy is to process the minimum amount of data necessary to protect your inbox.</p>
+            
+            <h2>2. Information We Collect</h2>
+            <h3>Account Information</h3>
+            <p>When you register for an account, we collect your email address, name, and securely hashed authentication credentials. We use this strictly for providing access to the platform.</p>
+            
+            <h3>Google Authentication (OAuth)</h3>
+            <p>SecureMail integrates directly with the Gmail API via standard OAuth2 protocols. We do not store your Google password. We only store the temporary access tokens provided by Google, which can be revoked by you at any time.</p>
+            
+            <h2>3. Email Processing & AI-Assisted Analysis</h2>
+            <p>To provide our core threat detection features, our intelligent engines temporarily process your emails:</p>
+            <ul>
+                <li><strong>Local Processing:</strong> Emails are fetched directly to our secure servers, analyzed in memory, and delivered to your dashboard.</li>
+                <li><strong>AI Threat Detection:</strong> We analyze linguistic patterns, sender headers, and structure. The AI generates explainable insights without logging the body of your emails permanently.</li>
+                <li><strong>SafeLink:</strong> URLs are temporarily extracted and scanned against threat intelligence feeds.</li>
+            </ul>
+            <p>We absolutely do not sell, rent, or share your email contents with third parties. We do not use your personal email data to train public AI models.</p>
+            
+            <h2>4. Cookies & Tracking</h2>
+            <p>We use essential cookies strictly necessary for authenticating your session and keeping you logged in. We do not use third-party advertising trackers. For more details, please see our <a href="/cookie/" class="text-blue-400 hover:underline">Cookie Policy</a>.</p>
+            
+            <h2>5. Data Security & Retention</h2>
+            <p>Your data is protected by industry-standard encryption both in transit (TLS) and at rest. We retain your account information only for as long as your account is active. If you delete your account, we immediately purge your tokens and profile data from our active databases.</p>
+            
+            <h2>6. User Rights</h2>
+            <p>Depending on your jurisdiction, you have the right to access, rectify, or erase your personal data. You may export or delete your account at any time from your settings dashboard.</p>
+            
+            <h2>7. Contact Information</h2>
+            <p>If you have questions about this Privacy Policy, please contact our Data Protection Officer at <a href="mailto:privacy@securemail.com" class="text-blue-400 hover:underline">privacy@securemail.com</a>.</p>
+        </div>
+    </section>
+
+    <footer class="border-t border-white/5 py-12 px-6 bg-[#030712]/50 mt-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <i data-lucide="shield" class="w-6 h-6 text-blue-500"></i>
+                        <span class="text-lg font-bold text-white tracking-tight">SecureMail</span>
+                    </div>
+                    <p class="text-sm text-gray-500 max-w-xs">AI-powered email security platform protecting your communication natively.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-widest">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/about/" class="text-sm text-gray-500 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="/contact/" class="text-sm text-gray-500 hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="/security/" class="text-sm text-gray-500 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-widest">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/privacy/" class="text-sm text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms/" class="text-sm text-gray-500 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="/cookie/" class="text-sm text-gray-500 hover:text-white transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-widest">Trust</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/disclosure/" class="text-sm text-gray-500 hover:text-white transition-colors">Responsible Disclosure</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600">© 2026 SecureMail. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

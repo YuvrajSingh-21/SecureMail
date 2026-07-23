@@ -27,32 +27,56 @@
                 </div>
 
                 <!-- Inbox List Card -->
+                <form id="bulk-action-form" method="post" action="">{% csrf_token %}</form>
                 <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col flex-1 overflow-hidden animate-slide-up delay-1">
                     <!-- Toolbar (Integrated into Card) -->
                     <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800 shrink-0">
-                        <div class="flex items-center gap-2">
-                            <a href="{% url 'sync_gmail' %}?next={{ request.get_full_path|urlencode }}" class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-[10px] font-black transition-all shadow-lg shadow-blue-500/20">
-                                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                                SYNC LATEST
+                        <div class="flex items-center gap-4">
+                            <!-- Selection Dropdown -->
+                            <div class="relative group inline-flex items-center">
+                                <button type="button" class="flex items-center justify-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500" onclick="selectAll(this)">
+                                    <input type="checkbox" id="master-checkbox" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all pointer-events-none">
+                                </button>
+                                <button type="button" class="flex items-center justify-center p-1.5 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 mr-2 -ml-1" onclick="toggleSelectDropdown(event)">
+                                    <i data-lucide="chevron-down" class="w-3 h-3"></i>
+                                </button>
+                                
+                                <div id="select-dropdown" class="hidden absolute top-full left-0 mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl py-1 z-50 overflow-hidden">
+                                    <button type="button" onclick="selectType('all')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">All</button>
+                                    <button type="button" onclick="selectType('none')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">None</button>
+                                    <button type="button" onclick="selectType('read')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">Read</button>
+                                    <button type="button" onclick="selectType('unread')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">Unread</button>
+                                </div>
+                            </div>
+
+                            <a href="?{% if request.GET.filter != 'unread' %}filter=unread&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}{% endif %}" class="text-[11px] font-black tracking-widest transition-colors {% if request.GET.filter == 'unread' %}text-blue-600 dark:text-blue-400{% else %}text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300{% endif %}">
+                                UNREAD
                             </a>
-                            <a href="{% url 'sync_gmail' %}?all=true&next={{ request.get_full_path|urlencode }}" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-white rounded-xl text-[10px] font-black transition-all shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <i data-lucide="database" class="w-3.5 h-3.5"></i>
-                                FULL SYNC
+                            <a href="?{% if request.GET.filter != 'read' %}filter=read&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}{% endif %}" class="text-[11px] font-black tracking-widest transition-colors {% if request.GET.filter == 'read' %}text-blue-600 dark:text-blue-400{% else %}text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300{% endif %}">
+                                READ
                             </a>
-                            <div class="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                            <button class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500">
-                                <i data-lucide="archive" class="w-4 h-4"></i>
-                            </button>
-                            <button class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition text-gray-500 hover:text-red-600">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
+                            
+                            <div id="bulk-actions" class="hidden items-center gap-2 ml-2">
+                                <button type="submit" form="bulk-action-form" name="action" value="mark_read" class="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition text-gray-500 hover:text-blue-600 shrink-0" title="Mark as Read">
+                                    <i data-lucide="mail-open" class="w-4 h-4"></i>
+                                </button>
+                                <button type="submit" form="bulk-action-form" name="action" value="mark_unread" class="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition text-gray-500 hover:text-blue-600 shrink-0" title="Mark as Unread">
+                                    <i data-lucide="mail" class="w-4 h-4"></i>
+                                </button>
+                                <button type="submit" form="bulk-action-form" name="action" value="archive" class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 shrink-0" title="Archive">
+                                    <i data-lucide="archive" class="w-4 h-4"></i>
+                                </button>
+                                <button type="submit" form="bulk-action-form" name="action" value="delete" class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition text-gray-500 hover:text-red-600 shrink-0" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </div>
                         
                         <div class="flex items-center gap-4">
                             <!-- Pagination Controls -->
                             <div class="flex items-center gap-2">
                                 {% if page_obj.has_previous %}
-                                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
+                                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
                                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                                     </a>
                                 {% else %}
@@ -66,7 +90,7 @@
                                 </span>
 
                                 {% if page_obj.has_next %}
-                                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
+                                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
                                 {% else %}
@@ -76,11 +100,19 @@
                                 {% endif %}
                             </div>
 
-                            <select class="bg-transparent border-none text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest focus:ring-0 cursor-pointer">
-                                <option>Newest First</option>
-                                <option>Oldest First</option>
-                                <option>Highest Risk</option>
-                            </select>
+                            <form method="get" id="sort-form">
+                                {% if request.GET.q %}
+                                <input type="hidden" name="q" value="{{ request.GET.q }}">
+                                {% endif %}
+                                {% if request.GET.filter %}
+                                <input type="hidden" name="filter" value="{{ request.GET.filter }}">
+                                {% endif %}
+                                <select name="sort" onchange="document.getElementById('sort-form').submit();" class="bg-transparent border-none text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest focus:ring-0 cursor-pointer">
+                                    <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest First</option>
+                                    <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                                    <option value="risk" {% if request.GET.sort == 'risk' %}selected{% endif %}>Highest Risk</option>
+                                </select>
+                            </form>
                         </div>
                     </div>
 
@@ -112,7 +144,7 @@
                                 onclick="handleEmailClick(this, '{% url 'email_view' email.id %}')">
                                 
                                 <div class="flex items-center gap-4 shrink-0">
-                                    <input type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all">
+                                    <input type="checkbox" form="bulk-action-form" name="email_ids" value="{{ email.id }}" onclick="event.stopPropagation(); updateBulkActions();" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all">
                                     <a href="{% url 'toggle_star' email.id %}" onclick="event.stopPropagation()" class="{% if email.starred %}text-yellow-400{% else %}text-gray-300 dark:text-gray-600{% endif %} hover:text-yellow-400 transition-colors duration-300">
                                         <i data-lucide="star" class="w-5 h-5 {% if email.starred %}fill-current{% endif %}"></i>
                                     </a>
@@ -215,6 +247,74 @@
         }
     }, 60000); // 60 seconds
 
+    function toggleSelectDropdown(e) {
+        e.stopPropagation();
+        const dropdown = document.getElementById('select-dropdown');
+        dropdown.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('select-dropdown');
+        if (dropdown && !dropdown.contains(e.target) && !e.target.closest('.group')) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    function selectAll(btn) {
+        const master = document.getElementById('master-checkbox');
+        const checkboxes = document.querySelectorAll('input[name="email_ids"]');
+        if(checkboxes.length === 0) return;
+        
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        const newState = !allChecked;
+        
+        checkboxes.forEach(cb => { cb.checked = newState; });
+        master.checked = newState;
+        
+        updateBulkActions();
+    }
+
+    function selectType(type) {
+        const checkboxes = document.querySelectorAll('input[name="email_ids"]');
+        const rows = document.querySelectorAll('.inbox-row');
+        
+        checkboxes.forEach((cb, index) => {
+            const isUnread = rows[index].classList.contains('unread');
+            
+            if (type === 'all') cb.checked = true;
+            else if (type === 'none') cb.checked = false;
+            else if (type === 'read') cb.checked = !isUnread;
+            else if (type === 'unread') cb.checked = isUnread;
+        });
+        
+        if(checkboxes.length > 0) {
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            document.getElementById('master-checkbox').checked = allChecked;
+        }
+        
+        document.getElementById('select-dropdown').classList.add('hidden');
+        updateBulkActions();
+    }
+
+    function updateBulkActions() {
+        const checkboxes = document.querySelectorAll('input[name="email_ids"]');
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        const actionsContainer = document.getElementById('bulk-actions');
+        
+        if (anyChecked) {
+            actionsContainer.classList.remove('hidden');
+            actionsContainer.classList.add('flex');
+        } else {
+            actionsContainer.classList.add('hidden');
+            actionsContainer.classList.remove('flex');
+        }
+        
+        // Update master checkbox checkmark status on individual click
+        if(checkboxes.length > 0) {
+            document.getElementById('master-checkbox').checked = Array.from(checkboxes).every(cb => cb.checked);
+        }
+    }
+
     /**
      * Mark an email as read via AJAX and update UI instantly
      */
@@ -242,18 +342,14 @@
                 }
             });
             
-            // Sync with backend
-            try {
-                await fetch(`/api/email/${emailId}/read/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
-                        'Content-Type': 'application/json'
-                    }
-                });
-            } catch (e) {
-                console.error("Failed to sync read status:", e);
-            }
+            // Sync with backend without blocking navigation
+            fetch(`/api/email/${emailId}/read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).catch(e => console.error("Failed to sync read status:", e));
         }
         
         // Navigate to detail view

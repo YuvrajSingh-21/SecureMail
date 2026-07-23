@@ -4,71 +4,514 @@
 {% block title %}Compose - SecureMail{% endblock %}
 
 {% block content %}
+<style>
+    /* Premium Chip Styles */
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        background-color: #eef2ff;
+        color: #4f46e5;
+        padding: 0.25rem 0.625rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        transition: all 0.2s;
+        border: 1px solid rgba(79, 70, 229, 0.1);
+    }
+    .dark .chip {
+        background-color: rgba(59, 130, 246, 0.15);
+        color: #93c5fd;
+        border-color: rgba(147, 197, 253, 0.1);
+    }
+    .chip button {
+        opacity: 0.5;
+        transition: opacity 0.2s;
+    }
+    .chip button:hover {
+        opacity: 1;
+        color: #ef4444;
+    }
+    
+    /* Toolbar button hover effect */
+    .toolbar-btn {
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+        transition: all 0.2s;
+        color: #6b7280;
+    }
+    .toolbar-btn:hover {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+    .dark .toolbar-btn {
+        color: #9ca3af;
+    }
+    .dark .toolbar-btn:hover {
+        background-color: #374151;
+        color: #f3f4f6;
+    }
+    
+    /* Smooth height transition for CC/BCC */
+    .expand-row {
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+    }
+    .expand-row.expanded {
+        max-height: 50px;
+        opacity: 1;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .dark .expand-row.expanded {
+        border-bottom-color: #374151;
+    }
+</style>
+
 <div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors">
     {% include "components/navbar.html" %}
     
-    <div class="flex flex-1 overflow-hidden">
+    <div class="flex flex-1 overflow-hidden relative">
         {% include "components/sidebar.html" %}
         
-        <main class="flex-1 overflow-y-auto p-4 md:p-8">
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-2xl overflow-hidden animate-slide-up">
-                    <div class="px-8 py-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between">
-                        <h1 class="font-bold text-xl text-gray-900 dark:text-white">New Message</h1>
-                        <div class="flex items-center gap-3">
-                            <button class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition text-gray-500" title="Minimize"><i data-lucide="minus" class="w-5 h-5"></i></button>
-                            <button onclick="history.back()" class="p-2 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 rounded-xl transition text-gray-500" title="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <main class="flex-1 p-4 md:p-8 flex items-center justify-center relative">
+            <!-- Floating Compose Card (Gmail style but SecureMail premium look) -->
+            <div id="compose-card" class="bg-white dark:bg-gray-800 rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-gray-100 dark:border-gray-700 w-full max-w-[900px] h-[80vh] flex flex-col overflow-hidden animate-slide-up transition-all duration-300 relative z-10">
+                
+                <!-- Header -->
+                <div class="px-6 py-4 bg-gray-50/50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                            <i data-lucide="edit-3" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <h2 class="text-sm font-black text-gray-900 dark:text-white tracking-wide">New Message</h2>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-white transition" title="Minimize"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                        <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-white transition" title="Expand"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="history.back()" class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl text-gray-400 hover:text-red-600 transition" title="Close"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form id="compose-form" method="POST" action="{% url 'compose' %}" class="flex flex-col flex-1 relative h-full">
+                    {% csrf_token %}
+                    
+                    <!-- Hidden input for actual submission logic -->
+                    <input type="hidden" name="to" id="to-hidden" required>
+                    
+                    <!-- Recipient Field -->
+                    <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-start gap-4 focus-within:bg-blue-50/30 dark:focus-within:bg-gray-750 transition-colors cursor-text" onclick="document.getElementById('recipient-input').focus()">
+                        <label class="text-xs font-bold text-gray-400 mt-2 w-8 shrink-0">To</label>
+                        <div class="flex-1 flex flex-wrap items-center gap-2 min-h-[32px]" id="recipients-container">
+                            <input type="text" id="recipient-input" placeholder="Recipients" class="flex-1 bg-transparent border-none p-1 focus:ring-0 text-sm dark:text-white placeholder-gray-400 min-w-[200px]">
+                        </div>
+                        <div class="flex gap-3 mt-2 shrink-0">
+                            <button type="button" onclick="event.stopPropagation(); document.getElementById('cc-row').classList.toggle('expanded')" class="text-[11px] font-black text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 uppercase tracking-widest transition">Cc</button>
+                            <button type="button" onclick="event.stopPropagation(); document.getElementById('bcc-row').classList.toggle('expanded')" class="text-[11px] font-black text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 uppercase tracking-widest transition">Bcc</button>
                         </div>
                     </div>
 
-                    <form id="compose-form" method="POST" action="{% url 'compose' %}" class="flex flex-col">
-                        {% csrf_token %}
-                        <div class="px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-6">
-                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest w-16">To</label>
-                            <input type="text" name="to" required placeholder="recipient@example.com" class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-sm dark:text-white placeholder-gray-400">
-                        </div>
-                        <div class="px-8 py-4 border-b border-gray-100 dark:border-gray-700 flex items-center gap-6">
-                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest w-16">Subject</label>
-                            <input type="text" name="subject" required placeholder="Add a subject" class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-sm font-bold dark:text-white placeholder-gray-400">
-                        </div>
+                    <!-- Cc Field -->
+                    <div id="cc-row" class="expand-row px-6 py-2 flex items-center gap-4 focus-within:bg-blue-50/30 dark:focus-within:bg-gray-750 transition-colors">
+                        <label class="text-xs font-bold text-gray-400 w-8 shrink-0">Cc</label>
+                        <input type="text" name="cc" class="flex-1 bg-transparent border-none p-1 focus:ring-0 text-sm dark:text-white placeholder-gray-400">
+                    </div>
 
-                        <!-- Editor Toolbar -->
-                        <div class="px-6 py-3 bg-gray-50/30 dark:bg-gray-800/20 border-b border-gray-100 dark:border-gray-700 flex items-center flex-wrap gap-2">
-                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Bold"><i data-lucide="bold" class="w-4 h-4"></i></button>
-                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Italic"><i data-lucide="italic" class="w-4 h-4"></i></button>
-                            <div class="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Attach"><i data-lucide="paperclip" class="w-4 h-4"></i></button>
-                            <button type="button" class="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition text-gray-600 dark:text-gray-400" title="Link"><i data-lucide="link" class="w-4 h-4"></i></button>
-                        </div>
+                    <!-- Bcc Field -->
+                    <div id="bcc-row" class="expand-row px-6 py-2 flex items-center gap-4 focus-within:bg-blue-50/30 dark:focus-within:bg-gray-750 transition-colors">
+                        <label class="text-xs font-bold text-gray-400 w-8 shrink-0">Bcc</label>
+                        <input type="text" name="bcc" class="flex-1 bg-transparent border-none p-1 focus:ring-0 text-sm dark:text-white placeholder-gray-400">
+                    </div>
 
-                        <textarea name="body" required class="w-full h-96 px-8 py-6 bg-transparent border-none focus:ring-0 text-sm resize-none dark:text-white placeholder-gray-400 leading-relaxed" placeholder="Start typing your message..."></textarea>
+                    <!-- Subject Field -->
+                    <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center focus-within:bg-blue-50/30 dark:focus-within:bg-gray-750 transition-colors">
+                        <input type="text" name="subject" placeholder="Subject" class="w-full bg-transparent border-none p-1 focus:ring-0 text-sm font-black dark:text-white placeholder-gray-400">
+                    </div>
 
-                        <!-- Assistant Bar -->
-                        <div class="mx-8 mb-6 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/20 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
+                    <!-- Editor -->
+                    <div class="flex-1 flex flex-col relative bg-white dark:bg-gray-800">
+                        <div id="rich-editor" contenteditable="true" class="flex-1 w-full p-6 bg-transparent border-none focus:ring-0 text-sm resize-none dark:text-white placeholder-gray-400 leading-relaxed outline-none overflow-y-auto" placeholder="Start typing your message..."></div>
+                        <textarea name="body" id="hidden-body" required class="hidden"></textarea>
+                        
+                        <!-- AI Assistant Collapsible Card -->
+                        <div id="ai-assistant-card" class="absolute bottom-4 right-6 w-80 bg-white dark:bg-gray-900 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] border border-gray-200 dark:border-gray-700 overflow-hidden transform scale-95 opacity-0 pointer-events-none transition-all duration-300 origin-bottom-right z-20">
+                            <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-b border-gray-100 dark:border-gray-700 flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-pulse">
                                     <i data-lucide="sparkles" class="w-4 h-4 text-white"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-bold text-blue-700 dark:text-blue-400">AI Writing Assistant</p>
-                                    <p class="text-[10px] text-blue-600/70 dark:text-blue-500/70">SecureCompose™ protection is active</p>
+                                    <span class="text-xs font-black text-blue-700 dark:text-blue-400 block">AI Writing Assistant</span>
+                                    <span class="text-[9px] font-bold text-blue-500/70 uppercase tracking-widest">SecureCompose™ Active</span>
                                 </div>
                             </div>
-                            <button type="button" class="px-4 py-1.5 bg-white dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg text-[10px] font-bold shadow-sm hover:shadow-md transition">Draft with AI</button>
+                            <div class="p-4 space-y-3">
+                                <textarea id="ai-prompt" rows="3" class="w-full p-3 bg-gray-50 dark:bg-gray-800 border-none rounded-xl text-xs focus:ring-2 focus:ring-blue-500 dark:text-white placeholder-gray-400 resize-none outline-none transition-shadow" placeholder="What should this email be about?"></textarea>
+                                <button type="button" id="ai-generate-btn" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
+                                    <i data-lucide="zap" class="w-3.5 h-3.5"></i> Generate Draft
+                                </button>
+                                
+                                <div id="ai-result-area" class="hidden space-y-3 pt-2">
+                                    <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl text-xs text-gray-700 dark:text-gray-300 max-h-40 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-700" id="ai-result-text"></div>
+                                    <div class="flex gap-2">
+                                        <button type="button" class="flex-1 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl text-[10px] font-black uppercase tracking-wider transition">Replace</button>
+                                        <button type="button" class="flex-1 py-2 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-xl text-[10px] font-black uppercase tracking-wider transition">Insert</button>
+                                    </div>
+                                    <button type="button" class="w-full flex items-center justify-center gap-2 text-[10px] font-black text-gray-400 hover:text-blue-600 transition uppercase tracking-widest mt-2">
+                                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> Regenerate
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Actions -->
-                        <div class="px-8 py-6 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/20 dark:bg-gray-800/10">
-                            <div class="flex items-center gap-3">
-                                <button type="submit" class="px-10 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl text-sm font-bold hover:from-blue-700 hover:to-cyan-600 transition shadow-xl shadow-blue-500/30">Send Message</button>
-                                <button type="button" class="p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-2xl text-gray-500 hover:text-blue-600 transition shadow-sm" title="Schedule"><i data-lucide="clock" class="w-5 h-5"></i></button>
-                            </div>
-                            <button type="button" class="p-3 text-gray-400 hover:text-red-500 transition" title="Discard"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                        <!-- Inline Link Popover -->
+                        <div id="link-popover" class="hidden absolute z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-2 flex gap-2 w-72 transition-all duration-200">
+                            <input type="url" id="link-url-input" placeholder="https://example.com" class="flex-1 text-xs px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none text-gray-800 dark:text-gray-200" onkeydown="if(event.key === 'Enter'){ event.preventDefault(); confirmLink(); }">
+                            <button type="button" onclick="confirmLink()" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition">Add</button>
                         </div>
-                    </form>
-                </div>
+
+                        <!-- Inline Emoji Popover -->
+                        <div id="emoji-popover" class="hidden absolute z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-2xl p-3 w-64 transition-all duration-200">
+                            <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Quick Emojis</div>
+                            <div class="grid grid-cols-6 gap-1" id="emoji-grid">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Bottom Toolbar -->
+                    <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50 shrink-0">
+                        <!-- Send Actions & Tooltips -->
+                        <div class="flex items-center gap-4">
+                            <div class="flex rounded-2xl overflow-hidden shadow-xl shadow-blue-500/30 group">
+                                <button type="submit" id="send-btn" class="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-500 text-white text-sm font-black hover:from-blue-700 hover:to-cyan-600 transition flex items-center gap-2">
+                                    Send Message
+                                </button>
+                                <button type="button" class="px-3 py-2.5 bg-gradient-to-r from-cyan-500 to-cyan-500 text-white hover:bg-cyan-600 border-l border-white/20 transition flex items-center justify-center" title="Schedule send">
+                                    <i data-lucide="chevron-up" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Formatting & Tools -->
+                            <div class="flex items-center gap-1 ml-2">
+                                <button type="button" id="btn-bold" onclick="formatText('bold')" class="toolbar-btn" title="Bold"><i data-lucide="bold" class="w-4 h-4"></i></button>
+                                <button type="button" id="btn-italic" onclick="formatText('italic')" class="toolbar-btn" title="Italic"><i data-lucide="italic" class="w-4 h-4"></i></button>
+                                <button type="button" id="btn-underline" onclick="formatText('underline')" class="toolbar-btn" title="Underline"><i data-lucide="underline" class="w-4 h-4"></i></button>
+                                <button type="button" id="btn-link" onclick="insertLink(this)" class="toolbar-btn" title="Insert link"><i data-lucide="link" class="w-4 h-4"></i></button>
+                                <button type="button" id="btn-emoji" onclick="toggleEmojiPicker(this)" class="toolbar-btn" title="Insert emoji"><i data-lucide="smile" class="w-4 h-4"></i></button>
+                                <!-- File input hidden, triggered by attach button -->
+                                <input type="file" id="attachment-input" class="hidden" multiple onchange="handleAttachment(this)">
+                                <button type="button" onclick="document.getElementById('attachment-input').click()" class="toolbar-btn" title="Attach file"><i data-lucide="paperclip" class="w-4 h-4"></i></button>
+                                <input type="file" id="image-input" accept="image/*" class="hidden" onchange="insertImage(this)">
+                                <button type="button" onclick="document.getElementById('image-input').click()" class="toolbar-btn" title="Insert image"><i data-lucide="image" class="w-4 h-4"></i></button>
+                                
+                                <div class="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-2"></div>
+                                
+                                <!-- AI Toggle -->
+                                <button type="button" onclick="toggleAI()" id="ai-toggle-btn" class="toolbar-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 flex items-center gap-2 px-3 relative group" title="AI Assistant">
+                                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    <span class="text-[10px] font-black uppercase tracking-widest hidden md:inline-block">AI</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Right side items -->
+                        <div class="flex items-center gap-4">
+                            <!-- Draft Status -->
+                            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest hidden transition-opacity duration-300" id="draft-status">Saved</span>
+                            
+                            <button type="button" onclick="history.back()" class="p-2 text-gray-400 hover:text-red-500 transition rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700" title="Discard draft">
+                                <i data-lucide="trash-2" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </main>
     </div>
 </div>
+
+<script>
+    // Recipient Chips Logic
+    const recipientInput = document.getElementById('recipient-input');
+    const recipientsContainer = document.getElementById('recipients-container');
+    const hiddenToInput = document.getElementById('to-hidden');
+    let recipients = [];
+
+    function updateHiddenInput() {
+        hiddenToInput.value = recipients.join(',');
+    }
+
+    function createChip(email) {
+        if (!email || recipients.includes(email)) return;
+        
+        recipients.push(email);
+        updateHiddenInput();
+
+        const chip = document.createElement('div');
+        chip.className = 'chip animate-slide-up';
+        chip.innerHTML = `
+            ${email}
+            <button type="button" onclick="removeChip(this, '${email}')" title="Remove"><i data-lucide="x" class="w-3 h-3"></i></button>
+        `;
+        
+        recipientsContainer.insertBefore(chip, recipientInput);
+        
+        // Re-render lucide icons inside the new chip
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    }
+
+    window.removeChip = function(btn, email) {
+        recipients = recipients.filter(e => e !== email);
+        updateHiddenInput();
+        btn.parentElement.remove();
+    };
+
+    recipientInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const val = this.value.trim().replace(',', '');
+            if (val) {
+                createChip(val);
+                this.value = '';
+            }
+        } else if (e.key === 'Backspace' && this.value === '' && recipients.length > 0) {
+            // Remove last chip on backspace if input is empty
+            const lastEmail = recipients[recipients.length - 1];
+            recipients = recipients.slice(0, -1);
+            updateHiddenInput();
+            const chips = recipientsContainer.querySelectorAll('.chip');
+            if(chips.length > 0) chips[chips.length - 1].remove();
+        }
+    });
+
+    recipientInput.addEventListener('blur', function() {
+        const val = this.value.trim().replace(',', '');
+        if (val) {
+            createChip(val);
+            this.value = '';
+        }
+    });
+
+    // Form Submission UI Update (prevents double submit)
+    document.getElementById('compose-form').addEventListener('submit', function(e) {
+        if (recipients.length === 0) {
+            e.preventDefault();
+            recipientInput.focus();
+            recipientInput.classList.add('ring-2', 'ring-red-500');
+            setTimeout(() => recipientInput.classList.remove('ring-2', 'ring-red-500'), 1000);
+            return;
+        }
+        
+        const sendBtn = document.getElementById('send-btn');
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Sending...';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    });
+
+    // AI Toggle Logic
+    window.toggleAI = function() {
+        const card = document.getElementById('ai-assistant-card');
+        const btn = document.getElementById('ai-toggle-btn');
+        if (card.classList.contains('scale-95')) {
+            card.classList.remove('scale-95', 'opacity-0', 'pointer-events-none');
+            card.classList.add('scale-100', 'opacity-100');
+            btn.classList.add('bg-blue-50', 'dark:bg-blue-900/30');
+            document.getElementById('ai-prompt').focus();
+        } else {
+            card.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-100', 'opacity-100');
+            btn.classList.remove('bg-blue-50', 'dark:bg-blue-900/30');
+        }
+    };
+    
+    // Formatting Tools
+    window.updateFormatButtons = function() {
+        const checkFormat = (cmd, id) => {
+            const btn = document.getElementById(id);
+            if (document.queryCommandState(cmd)) {
+                btn.classList.add('bg-blue-100/50', 'dark:bg-blue-900/50', 'text-blue-600', 'dark:text-blue-400', 'ring-2', 'ring-blue-500/40');
+                btn.classList.remove('text-gray-600', 'dark:text-gray-400');
+            } else {
+                btn.classList.remove('bg-blue-100/50', 'dark:bg-blue-900/50', 'text-blue-600', 'dark:text-blue-400', 'ring-2', 'ring-blue-500/40');
+                if (!btn.classList.contains('text-gray-600')) {
+                    btn.classList.add('text-gray-600', 'dark:text-gray-400');
+                }
+            }
+        };
+        checkFormat('bold', 'btn-bold');
+        checkFormat('italic', 'btn-italic');
+        checkFormat('underline', 'btn-underline');
+    };
+
+    document.addEventListener('selectionchange', () => {
+        if (document.activeElement === document.getElementById('rich-editor')) {
+            updateFormatButtons();
+        }
+    });
+
+    window.formatText = function(command) {
+        document.execCommand(command, false, null);
+        document.getElementById('rich-editor').focus();
+        updateFormatButtons();
+    };
+    
+    let savedRange = null;
+    
+    window.insertLink = function(btn) {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            savedRange = selection.getRangeAt(0);
+            const rect = savedRange.getBoundingClientRect();
+            const popover = document.getElementById('link-popover');
+            popover.classList.remove('hidden');
+            
+            // If the selection has a valid rect (not just a blinking cursor at start)
+            if (rect.width > 0 || rect.height > 0) {
+                // Position relative to the editor container
+                const editorRect = document.getElementById('rich-editor').getBoundingClientRect();
+                let top = rect.bottom - editorRect.top + 8;
+                let left = rect.left - editorRect.left;
+                popover.style.top = top + 'px';
+                popover.style.left = left + 'px';
+            } else {
+                // Fallback position if just a cursor (e.g. above toolbar)
+                popover.style.bottom = '10px';
+                popover.style.left = '10px';
+                popover.style.top = 'auto';
+            }
+            
+            const input = document.getElementById('link-url-input');
+            input.value = '';
+            input.focus();
+        }
+    };
+    
+    window.confirmLink = function() {
+        const url = document.getElementById('link-url-input').value;
+        if (url && savedRange) {
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(savedRange);
+            document.execCommand('createLink', false, url);
+        }
+        document.getElementById('link-popover').classList.add('hidden');
+        document.getElementById('rich-editor').focus();
+    };
+    
+    document.addEventListener('mousedown', function(e) {
+        const linkPopover = document.getElementById('link-popover');
+        if (!linkPopover.contains(e.target) && !e.target.closest('#btn-link')) {
+            linkPopover.classList.add('hidden');
+        }
+        
+        const emojiPopover = document.getElementById('emoji-popover');
+        if (!emojiPopover.contains(e.target) && !e.target.closest('#btn-emoji')) {
+            emojiPopover.classList.add('hidden');
+        }
+    });
+
+    // Emoji Picker Logic
+    const commonEmojis = ['😀','😂','😅','🤣','😊','😍','😘','😭','😡','😤','👍','👎','🙏','👏','🎉','🎊','❤️','✨','🔥','💯','💡','✅','❌','⚠️'];
+    const emojiGrid = document.getElementById('emoji-grid');
+    
+    commonEmojis.forEach(emoji => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'w-8 h-8 flex items-center justify-center text-lg hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition transform hover:scale-110';
+        btn.textContent = emoji;
+        btn.onclick = () => {
+            if (savedRange) {
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(savedRange);
+            }
+            document.execCommand('insertText', false, emoji);
+            document.getElementById('emoji-popover').classList.add('hidden');
+            document.getElementById('rich-editor').focus();
+        };
+        emojiGrid.appendChild(btn);
+    });
+
+    window.toggleEmojiPicker = function(btn) {
+        const popover = document.getElementById('emoji-popover');
+        if (!popover.classList.contains('hidden')) {
+            popover.classList.add('hidden');
+            return;
+        }
+        
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0 && document.activeElement === document.getElementById('rich-editor')) {
+            savedRange = selection.getRangeAt(0);
+        } else if (!savedRange) {
+            // Default to end of editor if no selection
+            document.getElementById('rich-editor').focus();
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0) savedRange = sel.getRangeAt(0);
+        }
+        
+        const btnRect = btn.getBoundingClientRect();
+        popover.classList.remove('hidden');
+        
+        // Position relative to the button
+        const editorRect = document.getElementById('compose-card').getBoundingClientRect();
+        popover.style.bottom = (editorRect.bottom - btnRect.top + 10) + 'px';
+        popover.style.left = (btnRect.left - editorRect.left - (128 - 16)) + 'px'; // Center roughly over button
+        popover.style.top = 'auto';
+    };
+
+    window.insertImage = function(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // insert HTML instead of just text to render the image
+                document.execCommand('insertImage', false, e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+        input.value = ''; // Reset
+    };
+
+    window.handleAttachment = function(input) {
+        if (input.files && input.files.length > 0) {
+            // Note: True backend attachment support requires modifying the backend API
+            // This just provides visual feedback per the user request.
+            let attachmentNames = [];
+            for (let i = 0; i < input.files.length; i++) {
+                attachmentNames.push(input.files[i].name);
+            }
+            alert('Files attached (Frontend only): ' + attachmentNames.join(', '));
+        }
+    };
+
+    // Simulate Draft Status & Sync Editor
+    const draftStatus = document.getElementById('draft-status');
+    const editor = document.getElementById('rich-editor');
+    const hiddenBody = document.getElementById('hidden-body');
+    let draftTimer;
+    
+    // Initial sync in case it's edited programmatically (e.g. AI insert)
+    const observer = new MutationObserver(() => {
+        hiddenBody.value = editor.innerHTML;
+    });
+    observer.observe(editor, { childList: true, characterData: true, subtree: true });
+
+    editor.addEventListener('input', () => {
+        hiddenBody.value = editor.innerHTML;
+        draftStatus.classList.remove('hidden');
+        draftStatus.textContent = 'Saving Draft...';
+        draftStatus.classList.add('text-blue-500');
+        draftStatus.classList.remove('text-gray-400');
+        clearTimeout(draftTimer);
+        draftTimer = setTimeout(() => {
+            draftStatus.textContent = 'Saved';
+            draftStatus.classList.remove('text-blue-500');
+            draftStatus.classList.add('text-gray-400');
+        }, 1500);
+    });
+</script>
 {% endblock %}

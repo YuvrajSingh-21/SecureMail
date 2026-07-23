@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from encrypted_model_fields.fields import EncryptedTextField
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', db_index=True)
@@ -239,8 +240,8 @@ class ConnectedAccount(models.Model):
     provider = models.CharField(max_length=50, default='google')
     email = models.EmailField()
     google_id = models.CharField(max_length=255, unique=True)
-    access_token = models.TextField()
-    refresh_token = models.TextField(null=True, blank=True)
+    access_token = EncryptedTextField()
+    refresh_token = EncryptedTextField(null=True, blank=True)
     token_expiry = models.DateTimeField()
     profile_picture = models.URLField(max_length=500, null=True, blank=True)
     

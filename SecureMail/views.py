@@ -68,8 +68,32 @@ def dashboard(request):
 
 @login_required(login_url='login')
 def inbox(request, folder=None):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        email_ids = request.POST.getlist('email_ids')
+        if email_ids:
+            if action == 'delete':
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(in_trash=True)
+                messages.success(request, f'Moved {len(email_ids)} emails to trash.')
+            elif action == 'archive':
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(folder='ARCHIVE')
+                messages.success(request, f'Archived {len(email_ids)} emails.')
+            elif action == 'mark_read':
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(unread=False)
+                messages.success(request, f'Marked {len(email_ids)} emails as read.')
+            elif action == 'mark_unread':
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(unread=True)
+                messages.success(request, f'Marked {len(email_ids)} emails as unread.')
+        return redirect(request.META.get('HTTP_REFERER', 'inbox'))
+
     query = request.GET.get('q')
+    msg_filter = request.GET.get('filter')
     emails = EmailMessage.objects.filter(user=request.user).select_related('analysis')
+    
+    if msg_filter == 'unread':
+        emails = emails.filter(unread=True)
+    elif msg_filter == 'read':
+        emails = emails.filter(unread=False)
     
     if folder == 'starred':
         emails = emails.filter(starred=True, in_trash=False)
@@ -96,6 +120,9 @@ def inbox(request, folder=None):
     elif folder == 'malicious':
         emails = emails.filter(ml_label='PHISHING', in_trash=False)
         title = "Threats"
+    elif folder == 'archive':
+        emails = emails.filter(folder='ARCHIVE', in_trash=False)
+        title = "Archive"
     else:
         emails = emails.filter(folder='INBOX', in_trash=False)
         title = "Inbox"
@@ -103,7 +130,14 @@ def inbox(request, folder=None):
     if query:
         emails = emails.filter(subject__icontains=query) | emails.filter(sender_email__icontains=query)
 
-    emails = emails.order_by('-timestamp')
+    sort_by = request.GET.get('sort', 'newest')
+    if sort_by == 'oldest':
+        emails = emails.order_by('timestamp')
+    elif sort_by == 'risk':
+        emails = emails.order_by('-ml_score', '-timestamp')
+    else:
+        # newest is default
+        emails = emails.order_by('-timestamp')
     
     # Pagination
     paginator = Paginator(emails, 50) # 50 per page
@@ -220,7 +254,10 @@ def email_view(request, id):
     analysis_norm = email_service.get_email_verdict(email)
     features = {}
     if hasattr(email, 'analysis'):
-        features = email.analysis.detailed_report.get('features', {})
+        report = email.analysis.detailed_report
+        features = report.get('features', {})
+        if not features and 'ml_metadata' in report:
+            features = report['ml_metadata'].get('features', {})
         
     forensic = {
         'analysis': analysis_norm,
@@ -229,7 +266,10 @@ def email_view(request, id):
     
     return render(request, 'email-view.html', {'email': email, 'forensic': forensic})
 
+from .decorators import rate_limit_view
+
 @login_required(login_url='login')
+@rate_limit_view(key='user', rate='10/m')
 def compose(request):
     if request.method == 'POST':
         to = request.POST.get('to')
@@ -302,10 +342,19 @@ def settings_view(request):
         alert_digest = request.POST.get('alert_digest') == 'on'
         timezone = request.POST.get('timezone')
         language = request.POST.get('language')
+        username = request.POST.get('username')
         
         service = ProfileService()
         profile = service.repository.get_by_user(request.user)
         
+        if username and username != request.user.username:
+            try:
+                request.user.username = username
+                request.user.save()
+                messages.success(request, "Username updated successfully.")
+            except Exception as e:
+                messages.error(request, f"Error updating username: {str(e)}")
+
         if timezone:
             profile.timezone = timezone
         if language:
@@ -348,6 +397,7 @@ def index(request):
         return redirect('dashboard')
     return render(request, 'index.html')
 
+@rate_limit_view(key='ip', rate='3/m')
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -373,6 +423,7 @@ def register_view(request):
         
     return render(request, 'register.html')
 
+@rate_limit_view(key='ip', rate='5/m')
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('inbox')
@@ -427,7 +478,6 @@ def mark_notifications_read(request):
 def clear_notifications(request):
     return JsonResponse({'status': 'success'})
 
-@login_required(login_url='login')
 def about(request):
     from .models import EmailMessage
     
@@ -443,9 +493,9 @@ def about(request):
         'threats_detected': threats_detected_str,
         'detection_accuracy': '97',
     }
-    return render(request, 'about.html', context)
+    return render(request, 'public_about.html', context)
 
-@login_required(login_url='login')
+@rate_limit_view(key='ip', rate='2/m')
 def contact(request):
     if request.method == 'POST':
         import json
@@ -460,20 +510,36 @@ def contact(request):
             
             full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
             
-            try:
-                send_mail(
-                    subject=f"Contact Form: {subject}",
-                    message=full_message,
-                    from_email=email,
-                    recipient_list=['team.asteroids.2024@gmail.com'],
-                    fail_silently=False,
-                )
-            except Exception as e:
-                print(f"Failed to send email via SMTP: {e}")
-                print(f"--- FAKE EMAIL SENT ---\nSubject: {subject}\nTo: team.asteroids.2024@gmail.com\n\n{full_message}\n-----------------------")
-                
-            return JsonResponse({'status': 'success', 'message': 'Message sent successfully.'})
+            if name and email and subject and message:
+                try:
+                    send_mail(
+                        subject=f"Contact Form: {subject}",
+                        message=full_message,
+                        from_email=email,
+                        recipient_list=['team.asteroids.2024@gmail.com'],
+                        fail_silently=False,
+                    )
+                    return JsonResponse({'status': 'success', 'message': 'Message sent successfully. We will get back to you shortly.'})
+                except Exception as e:
+                    return JsonResponse({'status': 'error', 'message': str(e)})
+            else:
+                return JsonResponse({'status': 'error', 'message': 'All fields are required.'})
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Invalid data.'})
             
-    return render(request, 'contact.html')
+    return render(request, 'public_contact.html')
+
+def privacy(request):
+    return render(request, 'public_privacy.html')
+
+def terms(request):
+    return render(request, 'public_terms.html')
+
+def security(request):
+    return render(request, 'public_security.html')
+
+def disclosure(request):
+    return render(request, 'public_disclosure.html')
+
+def cookie(request):
+    return render(request, 'public_cookie.html')

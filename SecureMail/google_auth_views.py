@@ -17,6 +17,9 @@ def get_redirect_uri(request):
     protocol = 'https' if request.is_secure() else 'http'
     return f"{protocol}://{host}/auth/google/callback/"
 
+from .decorators import rate_limit_view
+
+@rate_limit_view(key='ip', rate='10/m')
 def google_login(request):
     redirect_uri = get_redirect_uri(request)
     service = GoogleAuthService(redirect_uri=redirect_uri)
@@ -34,6 +37,7 @@ def google_login(request):
     
     return redirect(auth_url)
 
+@rate_limit_view(key='ip', rate='10/m')
 def google_callback(request):
     # Log incoming parameters
     url_state = request.GET.get('state')
@@ -120,9 +124,44 @@ def google_callback(request):
 def google_disconnect(request):
     try:
         account = ConnectedAccount.objects.get(user=request.user)
+        token_to_revoke = account.refresh_token or account.access_token
+        
+        if token_to_revoke:
+            import requests
+            try:
+                response = requests.post(
+                    'https://oauth2.googleapis.com/revoke',
+                    data={'token': token_to_revoke},
+                    headers={'content-type': 'application/x-www-form-urlencoded'},
+                    timeout=10
+                )
+                
+                if response.status_code == 200:
+                    logger.info(f"Successfully revoked Google token for user {request.user.id}")
+                else:
+                    error_msg = None
+                    try:
+                        resp_json = response.json()
+                        error_msg = resp_json.get('error')
+                    except ValueError:
+                        pass
+                        
+                    if response.status_code == 400 and error_msg == 'invalid_token':
+                        logger.info(f"Google token for user {request.user.id} already invalid or expired")
+                    else:
+                        logger.error(f"Failed to revoke Google token for user {request.user.id}: {response.status_code}")
+                        messages.error(request, "A temporary network error occurred while disconnecting your account. Please try again.")
+                        return redirect('settings')
+            except requests.RequestException as e:
+                logger.error(f"Network error while revoking Google token for user {request.user.id}: {str(e)}")
+                messages.error(request, "A temporary network error occurred while disconnecting your account. Please try again.")
+                return redirect('settings')
+                
         account.delete()
-        request.user.profile.connected_gmail = None
-        request.user.profile.save()
+        if hasattr(request.user, 'profile'):
+            request.user.profile.connected_gmail = None
+            request.user.profile.save()
+            
         messages.info(request, "Gmail account disconnected.")
     except ConnectedAccount.DoesNotExist:
         pass

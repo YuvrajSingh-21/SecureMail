@@ -107,6 +107,13 @@
                                             </div>
                                         </div>
                                         <div class="space-y-3">
+                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Username</label>
+                                            <div class="relative">
+                                                <i data-lucide="user" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                                <input type="text" name="username" value="{{ user.username }}" class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold text-gray-900 dark:text-white appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                            </div>
+                                        </div>
+                                        <div class="space-y-3">
                                             <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Primary Email</label>
                                             <div class="relative">
                                                 <i data-lucide="mail" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -118,15 +125,31 @@
                                             <div class="relative">
                                                 <i data-lucide="globe" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                                                 <select name="timezone" class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold text-gray-900 dark:text-white appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
-                                                    <option value="UTC (Coordinated Universal Time)" {% if user.profile.timezone == "UTC (Coordinated Universal Time)" %}selected{% endif %}>UTC (Coordinated Universal Time)</option>
-                                                    <option value="UTC-08:00 (Pacific Time)" {% if user.profile.timezone == "UTC-08:00 (Pacific Time)" %}selected{% endif %}>UTC-08:00 (Pacific Time)</option>
-                                                    <option value="UTC-05:00 (Eastern Time)" {% if user.profile.timezone == "UTC-05:00 (Eastern Time)" %}selected{% endif %}>UTC-05:00 (Eastern Time)</option>
-                                                    <option value="UTC+00:00 (Greenwich Mean Time)" {% if user.profile.timezone == "UTC+00:00 (Greenwich Mean Time)" %}selected{% endif %}>UTC+00:00 (Greenwich Mean Time)</option>
-                                                    <option value="UTC+01:00 (Central European Time)" {% if user.profile.timezone == "UTC+01:00 (Central European Time)" %}selected{% endif %}>UTC+01:00 (Central European Time)</option>
-                                                    <option value="UTC+05:30 (India Standard Time)" {% if user.profile.timezone == "UTC+05:30 (India Standard Time)" %}selected{% endif %}>UTC+05:30 (India Standard Time)</option>
-                                                    <option value="UTC+08:00 (China Standard Time)" {% if user.profile.timezone == "UTC+08:00 (China Standard Time)" %}selected{% endif %}>UTC+08:00 (China Standard Time)</option>
-                                                    <option value="UTC+09:00 (Japan Standard Time)" {% if user.profile.timezone == "UTC+09:00 (Japan Standard Time)" %}selected{% endif %}>UTC+09:00 (Japan Standard Time)</option>
-                                                    <option value="UTC+10:00 (Australian Eastern Time)" {% if user.profile.timezone == "UTC+10:00 (Australian Eastern Time)" %}selected{% endif %}>UTC+10:00 (Australian Eastern Time)</option>
+                                                    <option value="UTC-12:00" {% if user.profile.timezone == "UTC-12:00" %}selected{% endif %}>UTC-12:00</option>
+                                                    <option value="UTC-11:00" {% if user.profile.timezone == "UTC-11:00" %}selected{% endif %}>UTC-11:00</option>
+                                                    <option value="UTC-10:00" {% if user.profile.timezone == "UTC-10:00" %}selected{% endif %}>UTC-10:00</option>
+                                                    <option value="UTC-09:00" {% if user.profile.timezone == "UTC-09:00" %}selected{% endif %}>UTC-09:00</option>
+                                                    <option value="UTC-08:00" {% if user.profile.timezone == "UTC-08:00" %}selected{% endif %}>UTC-08:00</option>
+                                                    <option value="UTC-07:00" {% if user.profile.timezone == "UTC-07:00" %}selected{% endif %}>UTC-07:00</option>
+                                                    <option value="UTC-06:00" {% if user.profile.timezone == "UTC-06:00" %}selected{% endif %}>UTC-06:00</option>
+                                                    <option value="UTC-05:00" {% if user.profile.timezone == "UTC-05:00" %}selected{% endif %}>UTC-05:00</option>
+                                                    <option value="UTC-04:00" {% if user.profile.timezone == "UTC-04:00" %}selected{% endif %}>UTC-04:00</option>
+                                                    <option value="UTC-03:00" {% if user.profile.timezone == "UTC-03:00" %}selected{% endif %}>UTC-03:00</option>
+                                                    <option value="UTC-02:00" {% if user.profile.timezone == "UTC-02:00" %}selected{% endif %}>UTC-02:00</option>
+                                                    <option value="UTC-01:00" {% if user.profile.timezone == "UTC-01:00" %}selected{% endif %}>UTC-01:00</option>
+                                                    <option value="UTC+00:00" {% if user.profile.timezone == "UTC+00:00" %}selected{% endif %}>UTC+00:00</option>
+                                                    <option value="UTC+01:00" {% if user.profile.timezone == "UTC+01:00" %}selected{% endif %}>UTC+01:00</option>
+                                                    <option value="UTC+02:00" {% if user.profile.timezone == "UTC+02:00" %}selected{% endif %}>UTC+02:00</option>
+                                                    <option value="UTC+03:00" {% if user.profile.timezone == "UTC+03:00" %}selected{% endif %}>UTC+03:00</option>
+                                                    <option value="UTC+04:00" {% if user.profile.timezone == "UTC+04:00" %}selected{% endif %}>UTC+04:00</option>
+                                                    <option value="UTC+05:00" {% if user.profile.timezone == "UTC+05:00" %}selected{% endif %}>UTC+05:00</option>
+                                                    <option value="UTC+06:00" {% if user.profile.timezone == "UTC+06:00" %}selected{% endif %}>UTC+06:00</option>
+                                                    <option value="UTC+07:00" {% if user.profile.timezone == "UTC+07:00" %}selected{% endif %}>UTC+07:00</option>
+                                                    <option value="UTC+08:00" {% if user.profile.timezone == "UTC+08:00" %}selected{% endif %}>UTC+08:00</option>
+                                                    <option value="UTC+09:00" {% if user.profile.timezone == "UTC+09:00" %}selected{% endif %}>UTC+09:00</option>
+                                                    <option value="UTC+10:00" {% if user.profile.timezone == "UTC+10:00" %}selected{% endif %}>UTC+10:00</option>
+                                                    <option value="UTC+11:00" {% if user.profile.timezone == "UTC+11:00" %}selected{% endif %}>UTC+11:00</option>
+                                                    <option value="UTC+12:00" {% if user.profile.timezone == "UTC+12:00" %}selected{% endif %}>UTC+12:00</option>
                                                 </select>
                                                 <i data-lucide="chevron-down" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                                             </div>

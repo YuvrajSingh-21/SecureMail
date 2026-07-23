@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..services.sync_manager import SyncManager
 from ..models import SyncJob
+from django.utils.decorators import method_decorator
+from ..decorators import rate_limit_view
 
+@method_decorator(rate_limit_view(key='user', rate='3/m'), name='dispatch')
 class SyncStartAPI(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -20,6 +23,7 @@ class SyncStartAPI(APIView):
             })
         return Response({'error': 'Failed to start synchronization. Gmail not connected.'}, status=400)
 
+@method_decorator(rate_limit_view(key='user', rate='60/m'), name='dispatch')
 class SyncStatusAPI(APIView):
     permission_classes = [IsAuthenticated]
     

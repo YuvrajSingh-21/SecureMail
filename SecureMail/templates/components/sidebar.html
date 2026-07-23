@@ -1,85 +1,86 @@
 {% load static %}
-<aside class="w-64 shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 flex flex-col h-full transition-all duration-300">
-    <a href="{% url 'compose' %}" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl font-black mb-8 hover:scale-[1.02] transition shadow-xl shadow-blue-500/30">
-        <i data-lucide="plus" class="w-5 h-5"></i> Compose
+<aside id="main-sidebar" class="w-[260px] shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 flex flex-col h-full transition-[width] duration-300 ease-in-out z-20">
+    <a href="{% url 'compose' %}" title="Compose" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl font-black mb-8 hover:scale-[1.02] transition shadow-xl shadow-blue-500/30">
+        <i data-lucide="plus" class="w-5 h-5"></i> <span class="sidebar-text transition-opacity duration-300 whitespace-nowrap">Compose</span>
     </a>
     
     <nav class="space-y-1.5 flex-1 overflow-y-auto">
-        <a href="{% url 'inbox' %}" class="sidebar-item {% if current_folder == 'inbox' %}active{% endif %}" data-nav="inbox">
+        <a href="{% url 'inbox' %}" class="sidebar-item {% if current_folder == 'inbox' %}active{% endif %}" data-nav="inbox" title="Inbox">
             <i data-lucide="inbox" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Inbox</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Inbox</span>
             {% if unread_count > 0 %}
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white font-black">{{ unread_count }}</span>
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white font-black">{{ unread_count }}</span></div>
             {% endif %}
         </a>
-        <a href="{% url 'inbox_folder' 'starred' %}" class="sidebar-item {% if current_folder == 'starred' %}active{% endif %}" data-nav="starred">
+        <a href="{% url 'inbox_folder' 'starred' %}" class="sidebar-item {% if current_folder == 'starred' %}active{% endif %}" data-nav="starred" title="Starred">
             <i data-lucide="star" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Starred</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Starred</span>
             {% if starred_count > 0 %}
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ starred_count }}</span>
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ starred_count }}</span></div>
             {% endif %}
         </a>
-        <a href="{% url 'inbox_folder' 'important' %}" class="sidebar-item {% if current_folder == 'important' %}active{% endif %}" data-nav="important">
+        <a href="{% url 'inbox_folder' 'important' %}" class="sidebar-item {% if current_folder == 'important' %}active{% endif %}" data-nav="important" title="Important">
             <i data-lucide="alert-circle" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Important</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Important</span>
         </a>
-        <a href="{% url 'inbox_folder' 'sent' %}" class="sidebar-item {% if current_folder == 'sent' %}active{% endif %}" data-nav="sent">
+        <a href="{% url 'inbox_folder' 'sent' %}" class="sidebar-item {% if current_folder == 'sent' %}active{% endif %}" data-nav="sent" title="Sent">
             <i data-lucide="send" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Sent</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Sent</span>
             {% if sent_count > 0 %}
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ sent_count }}</span>
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ sent_count }}</span></div>
             {% endif %}
         </a>
-        <a href="{% url 'inbox_folder' 'drafts' %}" class="sidebar-item {% if current_folder == 'drafts' %}active{% endif %}" data-nav="drafts">
+        <a href="{% url 'inbox_folder' 'drafts' %}" class="sidebar-item {% if current_folder == 'drafts' %}active{% endif %}" data-nav="drafts" title="Drafts">
             <i data-lucide="file" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Drafts</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Drafts</span>
             {% if drafts_count > 0 %}
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ drafts_count }}</span>
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ drafts_count }}</span></div>
             {% endif %}
         </a>
-        <a href="{% url 'inbox_folder' 'spam' %}" class="sidebar-item {% if current_folder == 'spam' %}active{% endif %}" data-nav="spam">
+        <a href="{% url 'inbox_folder' 'archive' %}" class="sidebar-item {% if current_folder == 'archive' %}active{% endif %}" data-nav="archive" title="Archive">
+            <i data-lucide="archive" class="w-4 h-4"></i>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Archive</span>
+            {% if archive_count > 0 %}
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ archive_count }}</span></div>
+            {% endif %}
+        </a>
+        <a href="{% url 'inbox_folder' 'spam' %}" class="sidebar-item {% if current_folder == 'spam' %}active{% endif %}" data-nav="spam" title="Spam">
             <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Spam</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Spam</span>
             {% if spam_count > 0 %}
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-black">{{ spam_count }}</span>
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-black">{{ spam_count }}</span></div>
             {% endif %}
         </a>
-        <a href="{% url 'inbox_folder' 'trash' %}" class="sidebar-item {% if current_folder == 'trash' %}active{% endif %}" data-nav="trash">
+        <a href="{% url 'inbox_folder' 'trash' %}" class="sidebar-item {% if current_folder == 'trash' %}active{% endif %}" data-nav="trash" title="Trash">
             <i data-lucide="trash-2" class="w-4 h-4"></i>
-            <span class="text-[13px] font-bold flex-1">Trash</span>
+            <span class="sidebar-text text-[13px] font-bold flex-1 whitespace-nowrap transition-opacity duration-300">Trash</span>
             {% if trash_count > 0 %}
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ trash_count }}</span>
+            <div class="sidebar-text"><span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold">{{ trash_count }}</span></div>
             {% endif %}
         </a>
     </nav>
 
     <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700">
-        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4 px-3">Cyber Intelligence</p>
+        <p class="sidebar-text text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4 px-3 whitespace-nowrap transition-opacity duration-300">Cyber Intelligence</p>
         <nav class="space-y-1.5">
-            <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" data-nav="dashboard">
+            <a href="{% url 'dashboard' %}" class="sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" data-nav="dashboard" title="Overview">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                <span class="text-[13px] font-bold">Overview</span>
+                <span class="sidebar-text text-[13px] font-bold whitespace-nowrap transition-opacity duration-300">Overview</span>
             </a>
-            <a href="{% url 'reports' %}" class="sidebar-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" data-nav="reports">
+            <a href="{% url 'reports' %}" class="sidebar-item {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" data-nav="reports" title="Analytics">
                 <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
-                <span class="text-[13px] font-bold">Analytics</span>
+                <span class="sidebar-text text-[13px] font-bold whitespace-nowrap transition-opacity duration-300">Analytics</span>
             </a>
-            <a href="{% url 'settings' %}" class="sidebar-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" data-nav="settings">
+            <a href="{% url 'settings' %}" class="sidebar-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}" data-nav="settings" title="Settings">
                 <i data-lucide="settings" class="w-4 h-4"></i>
-                <span class="text-[13px] font-bold">Settings</span>
+                <span class="sidebar-text text-[13px] font-bold whitespace-nowrap transition-opacity duration-300">Settings</span>
             </a>
-            <a href="{% url 'about' %}" class="sidebar-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}" data-nav="about">
-                <i data-lucide="info" class="w-4 h-4"></i>
-                <span class="text-[13px] font-bold">About</span>
-            </a>
-            <a href="{% url 'contact' %}" class="sidebar-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" data-nav="contact">
-                <i data-lucide="message-square" class="w-4 h-4"></i>
-                <span class="text-[13px] font-bold">Contact Us</span>
-            </a>
+
         </nav>
     </div>
 
     <!-- Security Health Widget -->
+    <div class="sidebar-text transition-opacity duration-300">
     <div class="mt-8 p-5 rounded-3xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20">
         <div class="flex items-center gap-2 mb-3">
             <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
@@ -90,4 +91,51 @@
             <div class="h-full bg-blue-600" style="width: {{ user.profile.security_score }}%"></div>
         </div>
     </div>
+    </div>
 </aside>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('main-sidebar');
+    const isCollapsed = sidebar.classList.contains('w-[72px]');
+    
+    if (window.innerWidth <= 1024) {
+        // Mobile behavior: toggle off-canvas drawer
+        sidebar.classList.toggle('open');
+        return;
+    }
+
+    if (isCollapsed) {
+        // Expand
+        sidebar.classList.remove('w-[72px]');
+        sidebar.classList.add('w-[260px]');
+        document.querySelectorAll('.sidebar-text').forEach(el => {
+            el.style.display = '';
+            setTimeout(() => el.style.opacity = '1', 50);
+        });
+        localStorage.setItem('sidebarCollapsed', 'false');
+    } else {
+        // Collapse
+        sidebar.classList.remove('w-[260px]');
+        sidebar.classList.add('w-[72px]');
+        document.querySelectorAll('.sidebar-text').forEach(el => {
+            el.style.opacity = '0';
+            setTimeout(() => el.style.display = 'none', 300);
+        });
+        localStorage.setItem('sidebarCollapsed', 'true');
+    }
+}
+
+// Apply state immediately
+(function() {
+    if (window.innerWidth > 1024 && localStorage.getItem('sidebarCollapsed') === 'true') {
+        const sidebar = document.getElementById('main-sidebar');
+        sidebar.classList.remove('w-[260px]');
+        sidebar.classList.add('w-[72px]');
+        document.querySelectorAll('.sidebar-text').forEach(el => {
+            el.style.display = 'none';
+            el.style.opacity = '0';
+        });
+    }
+})();
+</script>

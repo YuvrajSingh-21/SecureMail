@@ -6,11 +6,14 @@
             </div>
             <span class="font-bold">SecureMail</span>
         </div>
-        <p class="text-gray-500 text-sm">© 2024 SecureMail. All rights reserved.</p>
-        <div class="flex gap-4">
-            <a href="javascript:void(0)" class="text-gray-500 hover:text-blue-500 transition text-xs">Privacy Policy</a>
-            <a href="javascript:void(0)" class="text-gray-500 hover:text-blue-500 transition text-xs">Terms of Service</a>
-            <a href="javascript:void(0)" class="text-gray-500 hover:text-blue-500 transition text-xs">Support</a>
+        <p class="text-gray-500 text-sm">© 2026 SecureMail. All rights reserved.</p>
+        <div class="flex flex-wrap gap-4 justify-center">
+            <a href="{% url 'privacy' %}" class="text-gray-500 hover:text-blue-500 transition text-xs">Privacy Policy</a>
+            <a href="{% url 'terms' %}" class="text-gray-500 hover:text-blue-500 transition text-xs">Terms of Service</a>
+            <a href="{% url 'security' %}" class="text-gray-500 hover:text-blue-500 transition text-xs">Security</a>
+            <a href="{% url 'disclosure' %}" class="text-gray-500 hover:text-blue-500 transition text-xs">Responsible Disclosure</a>
+            <a href="{% url 'cookie' %}" class="text-gray-500 hover:text-blue-500 transition text-xs">Cookie Policy</a>
+            <a href="{% url 'contact' %}" class="text-gray-500 hover:text-blue-500 transition text-xs">Support</a>
         </div>
     </div>
 </footer>

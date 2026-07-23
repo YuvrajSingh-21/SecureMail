@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - SecureMail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gradient-text { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-bg { background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 40%), radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent 40%); }
+    </style>
+</head>
+<body class="bg-[#0b1120] text-gray-200 font-sans antialiased selection:bg-blue-500/30 selection:text-blue-200 min-h-screen gradient-bg">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass transition-all duration-300 shadow-xl">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i data-lucide="shield" class="w-5 h-5 text-white"></i>
+                </div>
+                <span class="text-xl font-black text-white tracking-tight">SecureMail</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">Home</a>
+                <a href="#" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">Features</a>
+                <a href="/about/" class="text-sm font-semibold text-gray-400 hover:text-white transition-colors">About</a>
+                <a href="/contact/" class="text-sm font-semibold text-white transition-colors">Contact</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/login/" class="text-sm font-semibold text-gray-300 hover:text-white transition-colors">Login</a>
+                <a href="/register/" class="text-sm font-bold bg-white text-gray-900 hover:bg-gray-100 px-6 py-2.5 rounded-full transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-40 pb-20 px-6 max-w-7xl mx-auto">
+        <div class="grid lg:grid-cols-2 gap-16 items-start">
+            
+            <!-- Info Section -->
+            <div>
+                <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6">
+                    Let's Build a <br><span class="gradient-text">Secure Future.</span>
+                </h1>
+                <p class="text-lg text-gray-400 mb-12 max-w-md">
+                    Whether you have questions about our technology, need assistance with your account, or want to discuss enterprise solutions, our team is here to help.
+                </p>
+                
+                <div class="space-y-8">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
+                            <i data-lucide="life-buoy" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-1">General Support</h3>
+                            <p class="text-sm text-gray-400 mb-2">Technical issues or platform questions.</p>
+                            <a href="mailto:support@securemail.com" class="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">support@securemail.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+                            <i data-lucide="briefcase" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-1">Business Enquiries</h3>
+                            <p class="text-sm text-gray-400 mb-2">Custom deployments and enterprise plans.</p>
+                            <a href="mailto:enterprise@securemail.com" class="text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors">enterprise@securemail.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                            <i data-lucide="clock" class="w-6 h-6 text-emerald-400"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-1">Response Time</h3>
+                            <p class="text-sm text-gray-400">We aim to respond to all inquiries within 24 hours during standard business days.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="glass-card p-8 md:p-10 rounded-3xl relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                
+                <h3 class="text-2xl font-bold text-white mb-8 relative z-10">Send us a message</h3>
+                
+                <form id="contact-form" class="space-y-6 relative z-10" onsubmit="submitForm(event)">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Name</label>
+                            <input type="text" id="name" required class="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner" placeholder="John Doe">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Email</label>
+                            <input type="email" id="email" required class="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner" placeholder="john@example.com">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Subject</label>
+                        <select id="subject" required class="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all appearance-none cursor-pointer shadow-inner">
+                            <option value="General Inquiry" class="bg-gray-800">General Inquiry</option>
+                            <option value="Technical Support" class="bg-gray-800">Technical Support</option>
+                            <option value="Enterprise Solution" class="bg-gray-800">Enterprise Solution</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-bold text-gray-400 uppercase tracking-widest">Message</label>
+                        <textarea id="message" required rows="5" class="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none shadow-inner" placeholder="How can we help you?"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] flex items-center justify-center gap-2 group mt-2">
+                        <span>Send Message</span>
+                        <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    
+                    <div id="status-message" class="hidden text-sm font-bold text-center mt-4 p-3 rounded-xl border"></div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+
+    <footer class="border-t border-white/5 py-12 px-6 bg-[#030712]/50 mt-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <i data-lucide="shield" class="w-6 h-6 text-blue-500"></i>
+                        <span class="text-lg font-bold text-white tracking-tight">SecureMail</span>
+                    </div>
+                    <p class="text-sm text-gray-500 max-w-xs">AI-powered email security platform protecting your communication natively.</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-widest">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/about/" class="text-sm text-gray-500 hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="/contact/" class="text-sm text-gray-500 hover:text-white transition-colors">Contact</a></li>
+                        <li><a href="/security/" class="text-sm text-gray-500 hover:text-white transition-colors">Security</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-widest">Legal</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/privacy/" class="text-sm text-gray-500 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms/" class="text-sm text-gray-500 hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><a href="/cookie/" class="text-sm text-gray-500 hover:text-white transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-white mb-4 uppercase tracking-widest">Trust</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/disclosure/" class="text-sm text-gray-500 hover:text-white transition-colors">Responsible Disclosure</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray-600">© 2026 SecureMail. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        
+        async function submitForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const status = document.getElementById('status-message');
+            
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+            btn.disabled = true;
+            lucide.createIcons();
+            
+            try {
+                const response = await fetch('/contact/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify({
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        subject: document.getElementById('subject').value,
+                        message: document.getElementById('message').value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                status.classList.remove('hidden', 'bg-red-500/10', 'text-red-400', 'border-red-500/20', 'bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                if (data.status === 'success') {
+                    status.textContent = data.message;
+                    status.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/20');
+                    e.target.reset();
+                } else {
+                    status.textContent = data.message;
+                    status.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                }
+            } catch (err) {
+                status.classList.remove('hidden');
+                status.textContent = 'An error occurred. Please try again.';
+                status.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+            }
+            
+            btn.innerHTML = '<span>Send Message</span><i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>';
+            btn.disabled = false;
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
