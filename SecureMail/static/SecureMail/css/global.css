@@ -274,3 +274,101 @@ input::placeholder {
     border: 1px solid var(--border);
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+
+/* --- Sidebar Collapse Animation --- */
+#main-sidebar {
+    width: 260px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+#main-sidebar.collapsed {
+    width: 72px;
+}
+
+/* Ensure SVG icons NEVER shrink and are consistently 18px for optical balance */
+#main-sidebar [data-lucide] {
+    width: 18px !important;
+    height: 18px !important;
+    flex-shrink: 0;
+}
+
+/* The magic morphing text */
+#main-sidebar .sidebar-text {
+    display: inline-block;
+    max-width: 200px;
+    opacity: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+#main-sidebar.collapsed .sidebar-text {
+    max-width: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Base transitions for containers */
+#main-sidebar .compose-btn,
+#main-sidebar .sidebar-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 12px; /* Tailwind gap-3 */
+}
+
+/* Fix the scrollbar causing horizontal left-shifting */
+#main-sidebar.collapsed nav {
+    scrollbar-width: none;
+}
+#main-sidebar.collapsed nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* Expected Collapsed Layout (perfect optical centering) */
+#main-sidebar.collapsed .compose-btn,
+#main-sidebar.collapsed .sidebar-item {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    gap: 0 !important;
+}
+
+/* Center the divider line without squishing the nav container */
+#main-sidebar.collapsed .border-t {
+    border-top-color: transparent !important;
+    position: relative;
+}
+#main-sidebar.collapsed .border-t::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8px; /* Centers a 24px line inside a 40px container */
+    right: 8px;
+    height: 1px;
+    border-top: 1px solid #f3f4f6; /* border-gray-100 */
+}
+:is(.dark) #main-sidebar.collapsed .border-t::before {
+    border-top-color: #374151; /* border-gray-700 */
+}
+
+/* Prevent security widget from squishing and wrapping text */
+#main-sidebar .security-widget {
+    min-width: 228px;
+    transition: opacity 0.2s ease;
+    opacity: 1;
+}
+
+/* Cleanly remove bottom widget without leaving visual artifacts or empty space */
+#main-sidebar.collapsed .security-widget {
+    opacity: 0;
+    pointer-events: none;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
+}

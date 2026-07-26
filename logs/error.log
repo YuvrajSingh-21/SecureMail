@@ -1,0 +1,167 @@
+ERROR 2026-07-26 08:15:39,323 log 111014 137262046463680 Internal Server Error: /email/14004/
+Traceback (most recent call last):
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/lonewolf/Email_Phisher/Email_Phisher/SecureMail/views.py", line 267, in email_view
+    return render(request, 'email-view.html', {'email': email, 'forensic': forensic})
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 585, in parse
+    raise self.error(token, e)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 585, in parse
+    raise self.error(token, e)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 590, in parse
+    self.unclosed_block_tag(parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 657, in unclosed_block_tag
+    raise self.error(token, msg)
+django.template.exceptions.TemplateSyntaxError: Template: /home/lonewolf/Email_Phisher/Email_Phisher/SecureMail/templates/email-view.html, Unclosed tag on line 400: 'block'. Looking for one of: endblock.
+ERROR 2026-07-26 08:15:39,326 log 111014 137262046463680 "GET /email/14004/ HTTP/1.1" 500 235096
+ERROR 2026-07-26 08:15:59,765 log 111014 137262046463680 Internal Server Error: /email/14004/
+Traceback (most recent call last):
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/core/handlers/base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/lonewolf/Email_Phisher/Email_Phisher/SecureMail/views.py", line 267, in email_view
+    return render(request, 'email-view.html', {'email': email, 'forensic': forensic})
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/engine.py", line 186, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 157, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 199, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 585, in parse
+    raise self.error(token, e)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader_tags.py", line 307, in do_extends
+    nodelist = parser.parse()
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 585, in parse
+    raise self.error(token, e)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 583, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/loader_tags.py", line 235, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 590, in parse
+    self.unclosed_block_tag(parse_until)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/lonewolf/Email_Phisher/email/lib/python3.14/site-packages/django/template/base.py", line 657, in unclosed_block_tag
+    raise self.error(token, msg)
+django.template.exceptions.TemplateSyntaxError: Template: /home/lonewolf/Email_Phisher/Email_Phisher/SecureMail/templates/email-view.html, Unclosed tag on line 400: 'block'. Looking for one of: endblock.
+ERROR 2026-07-26 08:15:59,767 log 111014 137262046463680 "GET /email/14004/ HTTP/1.1" 500 234831
+ERROR 2026-07-26 08:16:32,443 gmail_service 111014 137260259317440 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:31:32.254Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:31:32.254Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:19:26,144 gmail_service 111014 137260007667392 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:34:25.827Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:34:25.827Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:20:33,830 gmail_service 111014 137260032845504 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:35:33.481Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:35:33.481Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:21:35,373 gmail_service 111014 137260032845504 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:36:35.061Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:36:35.061Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:22:35,687 gmail_service 111014 137260032845504 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:37:35.468Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:37:35.468Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:23:37,025 gmail_service 111014 137260032845504 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:38:36.833Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:38:36.833Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:24:38,150 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:39:37.985Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:39:37.985Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:25:38,885 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:40:38.669Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:40:38.669Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:26:39,809 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:41:39.564Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:41:39.564Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:27:41,262 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:42:41.092Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:42:41.092Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:28:41,726 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:43:41.518Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:43:41.518Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:29:42,902 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:44:42.718Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:44:42.718Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:30:44,547 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:45:44.248Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:45:44.248Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:31:44,920 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:46:44.737Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:46:44.737Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:33:04,433 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:48:04.055Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:48:04.055Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:34:05,251 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:49:05.048Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:49:05.048Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:35:06,578 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:50:06.300Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:50:06.300Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:36:07,946 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:51:07.694Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:51:07.694Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:37:08,571 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:52:08.331Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:52:08.331Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:38:09,886 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:53:09.516Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:53:09.516Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:43:16,781 gmail_service 111014 137260120905408 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:58:16.185Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:58:16.185Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:44:29,666 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T08:59:29.508Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T08:59:29.508Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:45:30,412 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:00:30.182Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:00:30.182Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:46:31,546 gmail_service 111014 137260175455936 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:01:31.187Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:01:31.187Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:47:33,103 gmail_service 111014 137260016060096 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:02:32.497Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:02:32.497Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:48:19,475 gmail_service 111014 137260137690816 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:03:19.109Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:03:19.109Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:49:19,789 gmail_service 111014 137260137690816 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:04:19.439Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:04:19.439Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:50:19,411 gmail_service 111014 137260137690816 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:05:19.252Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:05:19.252Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:51:20,826 gmail_service 111014 137260137690816 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:06:20.567Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:06:20.567Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:52:21,448 gmail_service 111014 137260137690816 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:07:21.160Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:07:21.160Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:53:23,093 gmail_service 111014 137260016060096 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:08:22.902Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:08:22.902Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:54:24,430 gmail_service 111014 137260016060096 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:09:24.106Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:09:24.106Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:55:24,950 gmail_service 111014 137260016060096 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:10:24.553Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:10:24.553Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:56:26,390 gmail_service 111014 137260016060096 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:11:26.209Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:11:26.209Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:57:08,579 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:12:08.293Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:12:08.293Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:58:36,336 gmail_service 111014 137259999274688 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:13:36.133Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:13:36.133Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 08:59:35,626 gmail_service 111014 137260024452800 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:14:35.221Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:14:35.221Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:00:37,066 gmail_service 111014 137260024452800 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:15:36.768Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:15:36.768Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:01:37,380 gmail_service 111014 137260024452800 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:16:37.176Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:16:37.176Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:02:38,717 gmail_service 111014 137259865056960 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:17:38.459Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:17:38.459Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:03:39,739 gmail_service 111014 137259865056960 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:18:39.586Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:18:39.586Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:04:40,882 gmail_service 111014 137259865056960 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:19:40.684Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:19:40.684Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:05:41,720 gmail_service 111014 137260024452800 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:20:41.561Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:20:41.561Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:06:43,045 gmail_service 111014 137260024452800 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:21:42.869Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:21:42.869Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:07:44,525 gmail_service 111014 137259898627776 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:22:44.319Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:22:44.319Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:08:44,902 gmail_service 111014 137259898627776 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:23:44.552Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:23:44.552Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:09:46,551 gmail_service 111014 137260041238208 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:24:46.341Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:24:46.341Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:11:48,976 gmail_service 131683 127420396955328 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:26:48.812Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:26:48.812Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:12:49,924 gmail_service 131683 127420396955328 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:27:49.772Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:27:49.772Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:13:50,465 gmail_service 131683 127420237592256 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:28:50.161Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:28:50.161Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:14:51,700 gmail_service 131683 127420405348032 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:29:51.392Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:29:51.392Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 09:15:30,715 gmail_service 131683 127420396955328 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T09:30:30.530Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T09:30:30.530Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">
+ERROR 2026-07-26 11:34:44,946 gmail_service 131683 127420405348032 Failed to fetch Gmail message list: <HttpError 429 when requesting https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=500&alt=json returned "User-rate limit exceeded.  Retry after 2026-07-26T11:49:44.750Z". Details: "[{'message': 'User-rate limit exceeded.  Retry after 2026-07-26T11:49:44.750Z', 'domain': 'global', 'reason': 'rateLimitExceeded'}]">

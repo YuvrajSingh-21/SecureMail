@@ -1,7 +1,7 @@
 {% load static %}
 <aside id="main-sidebar" class="w-[260px] shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-4 flex flex-col h-full transition-[width] duration-300 ease-in-out z-20">
-    <a href="{% url 'compose' %}" title="Compose" class="w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl font-black mb-8 hover:scale-[1.02] transition shadow-xl shadow-blue-500/30">
-        <i data-lucide="plus" class="w-5 h-5"></i> <span class="sidebar-text transition-opacity duration-300 whitespace-nowrap">Compose</span>
+    <a href="{% url 'compose' %}" title="Compose" class="compose-btn w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl font-black mb-8 hover:scale-[1.02] shadow-xl shadow-blue-500/30">
+        <i data-lucide="pen-square" class="w-5 h-5 shrink-0"></i> <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Compose</span>
     </a>
     
     <nav class="space-y-1.5 flex-1 overflow-y-auto">
@@ -80,24 +80,24 @@
     </div>
 
     <!-- Security Health Widget -->
-    <div class="sidebar-text transition-opacity duration-300">
-    <div class="mt-8 p-5 rounded-3xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20">
-        <div class="flex items-center gap-2 mb-3">
-            <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
-            <span class="text-[10px] font-black text-blue-800 dark:text-blue-400 uppercase tracking-wider">Security State</span>
+    <div class="security-widget">
+        <div class="mt-8 p-5 rounded-3xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20">
+            <div class="flex items-center gap-2 mb-3">
+                <i data-lucide="shield-check" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
+                <span class="text-[10px] font-black text-blue-800 dark:text-blue-400 uppercase tracking-wider">Security State</span>
+            </div>
+            <p class="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">{{ user.profile.security_score|floatformat:0 }}% Protected</p>
+            <div class="w-full h-1.5 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
+                <div class="h-full bg-blue-600" style="width: {{ user.profile.security_score }}%"></div>
+            </div>
         </div>
-        <p class="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2">{{ user.profile.security_score|floatformat:0 }}% Protected</p>
-        <div class="w-full h-1.5 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
-            <div class="h-full bg-blue-600" style="width: {{ user.profile.security_score }}%"></div>
-        </div>
-    </div>
     </div>
 </aside>
 
 <script>
 function toggleSidebar() {
     const sidebar = document.getElementById('main-sidebar');
-    const isCollapsed = sidebar.classList.contains('w-[72px]');
+    const isCollapsed = sidebar.classList.contains('collapsed');
     
     if (window.innerWidth <= 1024) {
         // Mobile behavior: toggle off-canvas drawer
@@ -106,22 +106,10 @@ function toggleSidebar() {
     }
 
     if (isCollapsed) {
-        // Expand
-        sidebar.classList.remove('w-[72px]');
-        sidebar.classList.add('w-[260px]');
-        document.querySelectorAll('.sidebar-text').forEach(el => {
-            el.style.display = '';
-            setTimeout(() => el.style.opacity = '1', 50);
-        });
+        sidebar.classList.remove('collapsed');
         localStorage.setItem('sidebarCollapsed', 'false');
     } else {
-        // Collapse
-        sidebar.classList.remove('w-[260px]');
-        sidebar.classList.add('w-[72px]');
-        document.querySelectorAll('.sidebar-text').forEach(el => {
-            el.style.opacity = '0';
-            setTimeout(() => el.style.display = 'none', 300);
-        });
+        sidebar.classList.add('collapsed');
         localStorage.setItem('sidebarCollapsed', 'true');
     }
 }
@@ -130,12 +118,19 @@ function toggleSidebar() {
 (function() {
     if (window.innerWidth > 1024 && localStorage.getItem('sidebarCollapsed') === 'true') {
         const sidebar = document.getElementById('main-sidebar');
-        sidebar.classList.remove('w-[260px]');
-        sidebar.classList.add('w-[72px]');
-        document.querySelectorAll('.sidebar-text').forEach(el => {
-            el.style.display = 'none';
-            el.style.opacity = '0';
-        });
+        
+        // Disable transitions to prevent flash
+        sidebar.style.transition = 'none';
+        const texts = sidebar.querySelectorAll('.sidebar-text');
+        texts.forEach(t => t.style.transition = 'none');
+        
+        sidebar.classList.add('collapsed');
+        
+        // Restore transitions after paint
+        setTimeout(() => {
+            sidebar.style.transition = '';
+            texts.forEach(t => t.style.transition = '');
+        }, 50);
     }
 })();
 </script>

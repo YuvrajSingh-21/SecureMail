@@ -189,9 +189,14 @@ class GmailService:
         return data
 
     def _is_structured_data(self, text):
-        """Detects if text is a JSON-LD or schema.org blob."""
+        """Detects if text is a standalone JSON-LD or schema.org blob."""
         trimmed = text.strip()
-        if trimmed.startswith('{') and '"@context"' in trimmed:
+        
+        # A standalone structured data payload must be a JSON object or array
+        if not (trimmed.startswith('{') or trimmed.startswith('[')):
+            return False
+            
+        if '"@context"' in trimmed:
             return True
         if 'schema.org' in trimmed and ('"@type"' in trimmed or '"@graph"' in trimmed):
             return True

@@ -71,7 +71,7 @@
                                 {% if email.html_body %}
                                     <iframe 
                                         id="email-frame"
-                                        sandbox="allow-same-origin"
+                                        sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                                         class="w-full border-none"
                                         onload="resizeIframe(this)"
                                     ></iframe>
@@ -443,7 +443,7 @@
             }
             
             // Wrap in Standard Mode boilerplate
-            const final_render = html ? `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0;padding:0;">${html}</body></html>` : (container.dataset.plain || '');
+            const final_render = html ? `<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"></head><body style="margin:0;padding:0;">${html}</body></html>` : (container.dataset.plain || '');
             
             // SINGLE RENDER SOURCE
             frame.srcdoc = final_render;
@@ -615,34 +615,41 @@
                     </div>
                 `;
 
-                const wrapper = document.createElement('div');
-                wrapper.style.position = 'absolute';
-                wrapper.style.left = '-9999px';
-                wrapper.style.top = '0';
-                wrapper.appendChild(reportContainer);
-                document.body.appendChild(wrapper);
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'fixed';
+                iframe.style.right = '0';
+                iframe.style.bottom = '0';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = '0';
+                document.body.appendChild(iframe);
 
-                const opt = {
-                    margin:       0.4,
-                    filename:     'SecureMail_Report_' + Date.now() + '.pdf',
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-                };
+                const doc = iframe.contentWindow.document;
+                doc.open();
+                doc.write('<!DOCTYPE html><html><head><title>SecureMail Forensic Report</title>');
+                doc.write('<style>');
+                doc.write('@page { size: A4 portrait; margin: 15mm; }');
+                doc.write('body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #1f2937; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; background: #ffffff; }');
+                doc.write('</style>');
+                doc.write('</head><body>');
+                doc.write(reportContainer.outerHTML);
+                doc.write('</body></html>');
+                doc.close();
 
-                html2pdf().set(opt).from(reportContainer).save().then(() => {
-                    document.body.removeChild(wrapper);
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                }).catch(err => {
-                    console.error("PDF generation error:", err);
-                    document.body.removeChild(wrapper);
-                    btn.innerText = "ERROR";
-                    setTimeout(() => {
+                iframe.contentWindow.focus();
+                
+                // Allow a brief moment for styles/fonts to render in the iframe before printing
+                setTimeout(() => {
+                    try {
+                        iframe.contentWindow.print();
+                    } catch (err) {
+                        console.error("PDF generation error:", err);
+                    } finally {
+                        document.body.removeChild(iframe);
                         btn.innerText = originalText;
                         btn.disabled = false;
-                    }, 2000);
-                });
+                    }
+                }, 250);
             });
         }
     });

@@ -116,3 +116,44 @@ class EmailPipelineTest(TestCase):
         self.assertTrue(result)
         self.assertTrue(RiskScore.objects.filter(email=self.email).exists())
         self.assertTrue(ThreatAnalysis.objects.filter(email=self.email).exists())
+
+class StructuredDataDetectionTest(TestCase):
+    def setUp(self):
+        from SecureMail.services.gmail_service import GmailService
+        from unittest.mock import MagicMock
+        mock_account = MagicMock()
+        self.service = GmailService(connected_account=mock_account)
+
+    def test_linkedin_invitation_html(self):
+        # 1. LinkedIn invitation email with embedded JSON-LD.
+        html = """<html><body><script type="application/ld+json">
+        { "@context": "http://schema.org", "@type": "EmailMessage" }
+        </script></body></html>"""
+        self.assertFalse(self.service._is_structured_data(html))
+
+    def test_gmail_action_markup_html(self):
+        # 2. Gmail Action Markup email.
+        html = """<!DOCTYPE html><html><script type="application/ld+json">
+        {"@context":"http://schema.org","@type":"ViewAction"}
+        </script></html>"""
+        self.assertFalse(self.service._is_structured_data(html))
+
+    def test_pinterest_schema_html(self):
+        # 3. Pinterest HTML email with embedded schema.org metadata.
+        html = """<div itemscope itemtype="http://schema.org/EmailMessage">Pinterest content</div>"""
+        self.assertFalse(self.service._is_structured_data(html))
+
+    def test_standalone_json_ld(self):
+        # 4. Pure standalone JSON-LD payload.
+        json_ld = '{ "@context": "http://schema.org", "@type": "EmailMessage" }'
+        self.assertTrue(self.service._is_structured_data(json_ld))
+
+    def test_standard_html(self):
+        # 5. Standard HTML email.
+        html = "<html><body>Hello world</body></html>"
+        self.assertFalse(self.service._is_structured_data(html))
+
+    def test_plain_text(self):
+        # 6. Plain text email.
+        text = "Hello world"
+        self.assertFalse(self.service._is_structured_data(text))
