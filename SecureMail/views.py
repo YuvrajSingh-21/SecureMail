@@ -535,11 +535,11 @@ def privacy(request):
 def terms(request):
     return render(request, 'public_terms.html')
 
-def security(request):
-    return render(request, 'public_security.html')
-
 def disclosure(request):
     return render(request, 'public_disclosure.html')
 
 def cookie(request):
     return render(request, 'public_cookie.html')
+
+def support(request):
+    return render(request, 'public_support.html')

@@ -32,9 +32,9 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('privacy/', views.privacy, name='privacy'),
     path('terms/', views.terms, name='terms'),
-    path('security/', views.security, name='security'),
     path('disclosure/', views.disclosure, name='disclosure'),
     path('cookie/', views.cookie, name='cookie'),
+    path('support/', views.support, name='support'),
     
     # API Endpoints
     path('api/', include('SecureMail.api.urls')),
