@@ -4,7 +4,7 @@
 {% block title %}Settings - SecureMail{% endblock %}
 
 {% block content %}
-<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+<div class="flex flex-col h-full overflow-hidden bg-slate-50  transition-colors duration-300">
     {% include "components/navbar.html" %}
     
     <div class="flex flex-1 overflow-hidden">
@@ -13,54 +13,54 @@
         <main class="flex-1 overflow-y-auto p-6 md:p-10">
             <div class="max-w-5xl mx-auto">
                 <header class="mb-10 animate-slide-up">
-                    <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">System Settings</h1>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">Configure your security engine and account preferences</p>
+                    <h1 class="text-3xl font-black text-[var(--sys-text)]  tracking-tight">System Settings</h1>
+                    <p class="text-sm font-medium text-[var(--sys-text-secondary)]  mt-1">Configure your security engine and account preferences</p>
                 </header>
 
                 <div class="flex flex-col lg:flex-row gap-10">
                     <!-- Sidebar Tabs -->
                     <div class="w-full lg:w-72 shrink-0">
                         <nav class="space-y-2 relative" id="settings-tabs">
-                            <div class="absolute left-0 top-0 bottom-0 w-[2px] bg-gray-100 dark:bg-gray-800 rounded-full -z-10"></div>
+                            <div class="absolute left-0 top-0 bottom-0 w-[2px] bg-gray-100  rounded-full -z-10"></div>
                             
-                            <button onclick="switchTab('general')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group bg-white dark:bg-gray-800 shadow-xl shadow-blue-500/5 border border-blue-100 dark:border-blue-900/30 active-tab-btn" data-tab="general">
+                            <button onclick="switchTab('general')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group sys-card shadow-blue-500/5 border border-blue-100  active-tab-btn" data-tab="general">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-50  flex items-center justify-center text-blue-600">
                                         <i data-lucide="user" class="w-4 h-4"></i>
                                     </div>
-                                    <span class="font-black text-sm text-gray-900 dark:text-white">Profile & General</span>
+                                    <span class="font-black text-sm text-[var(--sys-text)] ">Profile & General</span>
                                 </div>
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform"></i>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--sys-text-secondary)] group-hover:translate-x-1 transition-transform"></i>
                             </button>
                             
-                            <button onclick="switchTab('security')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg border border-transparent hover:border-gray-100 dark:hover:border-gray-700" data-tab="security">
+                            <button onclick="switchTab('security')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group hover:bg-white  hover:shadow-lg border border-transparent hover:border-gray-100 " data-tab="security">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-8 h-8 rounded-xl bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center text-gray-400 group-hover:text-red-500 group-hover:bg-red-50 dark:group-hover:bg-red-900/20 transition-colors">
+                                    <div class="w-8 h-8 rounded-xl sys-card/50 flex items-center justify-center text-[var(--sys-text-secondary)] group-hover:text-red-500 group-hover:bg-red-50  transition-colors">
                                         <i data-lucide="shield" class="w-4 h-4"></i>
                                     </div>
-                                    <span class="font-black text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Security Engine</span>
+                                    <span class="font-black text-sm text-[var(--sys-text-secondary)]  group-hover:text-[var(--sys-text)]  transition-colors">Security Engine</span>
                                 </div>
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--sys-text-secondary)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
                             </button>
                             
-                            <button onclick="switchTab('notifications')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg border border-transparent hover:border-gray-100 dark:hover:border-gray-700" data-tab="notifications">
+                            <button onclick="switchTab('notifications')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group hover:bg-white  hover:shadow-lg border border-transparent hover:border-gray-100 " data-tab="notifications">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-8 h-8 rounded-xl bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center text-gray-400 group-hover:text-purple-500 group-hover:bg-purple-50 dark:group-hover:bg-purple-900/20 transition-colors">
+                                    <div class="w-8 h-8 rounded-xl sys-card/50 flex items-center justify-center text-[var(--sys-text-secondary)] group-hover:text-purple-500 group-hover:bg-purple-50  transition-colors">
                                         <i data-lucide="bell" class="w-4 h-4"></i>
                                     </div>
-                                    <span class="font-black text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Alerts & Digests</span>
+                                    <span class="font-black text-sm text-[var(--sys-text-secondary)]  group-hover:text-[var(--sys-text)]  transition-colors">Alerts & Digests</span>
                                 </div>
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--sys-text-secondary)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
                             </button>
 
-                            <button onclick="switchTab('accounts')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group hover:bg-white dark:hover:bg-gray-800 hover:shadow-lg border border-transparent hover:border-gray-100 dark:hover:border-gray-700" data-tab="accounts">
+                            <button onclick="switchTab('accounts')" class="w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group hover:bg-white  hover:shadow-lg border border-transparent hover:border-gray-100 " data-tab="accounts">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-8 h-8 rounded-xl bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center text-gray-400 group-hover:text-green-500 group-hover:bg-green-50 dark:group-hover:bg-green-900/20 transition-colors">
+                                    <div class="w-8 h-8 rounded-xl sys-card/50 flex items-center justify-center text-[var(--sys-text-secondary)] group-hover:text-green-500 group-hover:bg-green-50  transition-colors">
                                         <i data-lucide="link" class="w-4 h-4"></i>
                                     </div>
-                                    <span class="font-black text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Integrations</span>
+                                    <span class="font-black text-sm text-[var(--sys-text-secondary)]  group-hover:text-[var(--sys-text)]  transition-colors">Integrations</span>
                                 </div>
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-[var(--sys-text-secondary)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
                             </button>
                         </nav>
                     </div>
@@ -72,59 +72,59 @@
                             
                             <!-- General Tab -->
                             <div id="tab-general" class="space-y-6 tab-content animate-slide-up">
-                                <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 relative overflow-hidden group">
+                                <div class="sys-card rounded-[2.5rem] border border-gray-100  shadow-sm p-10 relative overflow-hidden group">
                                     <div class="absolute -right-20 -top-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl transition-colors"></div>
-                                    <h3 class="font-black text-gray-900 dark:text-white mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
-                                        <i data-lucide="user-circle" class="w-4 h-4 text-blue-500"></i> Profile Identity
+                                    <h3 class="font-black text-[var(--sys-text)]  mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
+                                        <i data-lucide="user-circle" class="w-4 h-4 text-[var(--sys-primary)]"></i> Profile Identity
                                     </h3>
                                     
                                     <div class="flex items-center gap-8 mb-10 relative z-10">
                                         <div class="relative group/avatar cursor-pointer">
                                             <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 p-1 transition-transform group-hover/avatar:scale-105">
-                                                <div class="w-full h-full bg-white dark:bg-gray-900 rounded-full flex items-center justify-center relative overflow-hidden">
+                                                <div class="w-full h-full bg-white  rounded-full flex items-center justify-center relative overflow-hidden">
                                                     <span class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-400">{{ user.username|make_list|first|upper }}</span>
                                                     <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity">
-                                                        <i data-lucide="camera" class="w-6 h-6 text-white"></i>
+                                                        <i data-lucide="camera" class="w-6 h-6 text-[var(--sys-text)]"></i>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="absolute bottom-0 right-0 w-8 h-8 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center border-2 border-slate-50 dark:border-gray-900 shadow-sm">
-                                                <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+                                            <div class="absolute bottom-0 right-0 w-8 h-8 sys-card rounded-full flex items-center justify-center border-2 border-slate-50  shadow-sm">
+                                                <div class="w-6 h-6 bg-green-500 rounded-full border-2 border-white "></div>
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 class="text-xl font-black text-gray-900 dark:text-white">{{ user.username }}</h4>
-                                            <p class="text-xs font-bold text-gray-400 mt-1 uppercase tracking-wider">{{ user.email }}</p>
+                                            <h4 class="text-xl font-black text-[var(--sys-text)] ">{{ user.username }}</h4>
+                                            <p class="text-xs font-bold text-[var(--sys-text-secondary)] mt-1 uppercase tracking-wider">{{ user.email }}</p>
                                         </div>
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                                         <div class="space-y-3">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Display Username</label>
+                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Display Username</label>
                                             <div class="relative">
-                                                <i data-lucide="at-sign" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                                <input type="text" name="username" value="{{ user.username }}" required class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-gray-900 dark:text-white outline-none hover:bg-white dark:hover:bg-gray-800">
+                                                <i data-lucide="at-sign" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)]"></i>
+                                                <input type="text" name="username" value="{{ user.username }}" required class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--sys-text)]  outline-none hover:bg-white ">
                                             </div>
                                         </div>
                                         <div class="space-y-3">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Username</label>
+                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Username</label>
                                             <div class="relative">
-                                                <i data-lucide="user" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                                <input type="text" name="username" value="{{ user.username }}" class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold text-gray-900 dark:text-white appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                                <i data-lucide="user" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)]"></i>
+                                                <input type="text" name="username" value="{{ user.username }}" class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold text-[var(--sys-text)]  appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
                                             </div>
                                         </div>
                                         <div class="space-y-3">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Primary Email</label>
+                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Primary Email</label>
                                             <div class="relative">
-                                                <i data-lucide="mail" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                                <input type="email" value="{{ user.email }}" disabled class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold opacity-60 focus:ring-0 cursor-not-allowed">
+                                                <i data-lucide="mail" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)]"></i>
+                                                <input type="email" value="{{ user.email }}" disabled class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold opacity-60 focus:ring-0 cursor-not-allowed">
                                             </div>
                                         </div>
                                         <div class="space-y-3">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Timezone</label>
+                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Timezone</label>
                                             <div class="relative">
-                                                <i data-lucide="globe" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                                <select name="timezone" class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold text-gray-900 dark:text-white appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                                <i data-lucide="globe" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)]"></i>
+                                                <select name="timezone" class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold text-[var(--sys-text)]  appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
                                                     <option value="UTC-12:00" {% if user.profile.timezone == "UTC-12:00" %}selected{% endif %}>UTC-12:00</option>
                                                     <option value="UTC-11:00" {% if user.profile.timezone == "UTC-11:00" %}selected{% endif %}>UTC-11:00</option>
                                                     <option value="UTC-10:00" {% if user.profile.timezone == "UTC-10:00" %}selected{% endif %}>UTC-10:00</option>
@@ -151,14 +151,14 @@
                                                     <option value="UTC+11:00" {% if user.profile.timezone == "UTC+11:00" %}selected{% endif %}>UTC+11:00</option>
                                                     <option value="UTC+12:00" {% if user.profile.timezone == "UTC+12:00" %}selected{% endif %}>UTC+12:00</option>
                                                 </select>
-                                                <i data-lucide="chevron-down" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                                <i data-lucide="chevron-down" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)] pointer-events-none"></i>
                                             </div>
                                         </div>
                                         <div class="space-y-3">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Language</label>
+                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Language</label>
                                             <div class="relative">
-                                                <i data-lucide="languages" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                                <select name="language" class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 text-sm font-bold text-gray-900 dark:text-white appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
+                                                <i data-lucide="languages" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)]"></i>
+                                                <select name="language" class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold text-[var(--sys-text)]  appearance-none outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all">
                                                     <option value="English (US)" {% if user.profile.language == "English (US)" %}selected{% endif %}>English (US)</option>
                                                     <option value="English (UK)" {% if user.profile.language == "English (UK)" %}selected{% endif %}>English (UK)</option>
                                                     <option value="Spanish (ES)" {% if user.profile.language == "Spanish (ES)" %}selected{% endif %}>Spanish (ES)</option>
@@ -166,7 +166,7 @@
                                                     <option value="German (DE)" {% if user.profile.language == "German (DE)" %}selected{% endif %}>German (DE)</option>
                                                     <option value="Hindi (HI)" {% if user.profile.language == "Hindi (HI)" %}selected{% endif %}>Hindi (HI)</option>
                                                 </select>
-                                                <i data-lucide="chevron-down" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                                                <i data-lucide="chevron-down" class="w-4 h-4 absolute right-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)] pointer-events-none"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -175,42 +175,42 @@
 
                             <!-- Security Tab -->
                             <div id="tab-security" class="hidden space-y-6 tab-content animate-slide-up">
-                                <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 relative overflow-hidden">
+                                <div class="sys-card rounded-[2.5rem] border border-gray-100  shadow-sm p-10 relative overflow-hidden">
                                     <div class="absolute -left-20 -top-20 w-64 h-64 bg-red-500/5 rounded-full blur-3xl transition-colors"></div>
-                                    <h3 class="font-black text-gray-900 dark:text-white mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
+                                    <h3 class="font-black text-[var(--sys-text)]  mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
                                         <i data-lucide="shield" class="w-4 h-4 text-red-500"></i> Engine Preferences
                                     </h3>
                                     
                                     <div class="space-y-4 relative z-10">
-                                        <div class="flex items-center justify-between p-6 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-100 dark:border-red-900/30">
+                                        <div class="flex items-center justify-between p-6 rounded-2xl bg-gradient-to-r from-red-50 to-orange-50   border border-red-100 ">
                                             <div class="flex gap-4">
                                                 <div class="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center shadow-lg shadow-red-500/20 shrink-0">
-                                                    <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+                                                    <i data-lucide="zap" class="w-6 h-6 text-[var(--sys-text)]"></i>
                                                 </div>
                                                 <div>
-                                                    <p class="text-sm font-black text-gray-900 dark:text-white">Active Defense Engine</p>
-                                                    <p class="text-xs text-gray-600 dark:text-gray-400 mt-1 max-w-sm leading-relaxed">Actively intercept and quarantine credential phishing attempts using ML heuristics.</p>
+                                                    <p class="text-sm font-black text-[var(--sys-text)] ">Active Defense Engine</p>
+                                                    <p class="text-xs text-[var(--sys-text-secondary)]  mt-1 max-w-sm leading-relaxed">Actively intercept and quarantine credential phishing attempts using ML heuristics.</p>
                                                 </div>
                                             </div>
                                             <label class="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" name="is_protected" class="sr-only peer" {% if user.profile.is_protected %}checked{% endif %}>
-                                                <div class="w-11 h-6 bg-red-200/50 peer-focus:outline-none rounded-full peer dark:bg-gray-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600"></div>
+                                                <div class="w-11 h-6 bg-red-200/50 peer-focus:outline-none rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-red-600"></div>
                                             </label>
                                         </div>
 
-                                        <div class="flex items-center justify-between p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-colors">
+                                        <div class="flex items-center justify-between p-6 rounded-2xl sys-card/50 border border-gray-100  hover:border-gray-200  transition-colors">
                                             <div class="flex gap-4">
-                                                <div class="w-12 h-12 rounded-xl bg-gray-200 dark:bg-gray-800 flex items-center justify-center shrink-0">
-                                                    <i data-lucide="eye-off" class="w-6 h-6 text-gray-500"></i>
+                                                <div class="w-12 h-12 rounded-xl bg-gray-200  flex items-center justify-center shrink-0">
+                                                    <i data-lucide="eye-off" class="w-6 h-6 text-[var(--sys-text-secondary)]"></i>
                                                 </div>
                                                 <div>
-                                                    <p class="text-sm font-black text-gray-900 dark:text-white">Block Tracking Pixels</p>
-                                                    <p class="text-xs text-gray-500 mt-1 max-w-sm leading-relaxed">Automatically strip invisible tracking images used to monitor email opens.</p>
+                                                    <p class="text-sm font-black text-[var(--sys-text)] ">Block Tracking Pixels</p>
+                                                    <p class="text-xs text-[var(--sys-text-secondary)] mt-1 max-w-sm leading-relaxed">Automatically strip invisible tracking images used to monitor email opens.</p>
                                                 </div>
                                             </div>
                                             <label class="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" checked class="sr-only peer">
-                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-gray-800 dark:peer-checked:bg-blue-600"></div>
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-gray-800 "></div>
                                             </label>
                                         </div>
                                     </div>
@@ -219,42 +219,42 @@
 
                             <!-- Notifications Tab -->
                             <div id="tab-notifications" class="hidden space-y-6 tab-content animate-slide-up">
-                                <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 relative overflow-hidden">
+                                <div class="sys-card rounded-[2.5rem] border border-gray-100  shadow-sm p-10 relative overflow-hidden">
                                     <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl transition-colors"></div>
-                                    <h3 class="font-black text-gray-900 dark:text-white mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
+                                    <h3 class="font-black text-[var(--sys-text)]  mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
                                         <i data-lucide="bell-ring" class="w-4 h-4 text-purple-500"></i> Alert Preferences
                                     </h3>
                                     
                                     <div class="space-y-4 relative z-10">
-                                        <div class="flex items-center justify-between p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 hover:border-purple-500/30 transition-colors">
+                                        <div class="flex items-center justify-between p-6 rounded-2xl sys-card/50 border border-gray-100  hover:border-purple-500/30 transition-colors">
                                             <div class="flex gap-4">
-                                                <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0">
-                                                    <i data-lucide="alert-triangle" class="w-6 h-6 text-purple-600 dark:text-purple-400"></i>
+                                                <div class="w-12 h-12 rounded-xl bg-purple-100  flex items-center justify-center shrink-0">
+                                                    <i data-lucide="alert-triangle" class="w-6 h-6 text-purple-600 "></i>
                                                 </div>
                                                 <div>
-                                                    <p class="text-sm font-black text-gray-900 dark:text-white">Critical Threat Alerts</p>
-                                                    <p class="text-xs text-gray-500 mt-1 max-w-sm leading-relaxed">Get instant push notifications when high-confidence credential phishing or malware is intercepted.</p>
+                                                    <p class="text-sm font-black text-[var(--sys-text)] ">Critical Threat Alerts</p>
+                                                    <p class="text-xs text-[var(--sys-text-secondary)] mt-1 max-w-sm leading-relaxed">Get instant push notifications when high-confidence credential phishing or malware is intercepted.</p>
                                                 </div>
                                             </div>
                                             <label class="relative inline-flex items-center cursor-pointer shrink-0 ml-4">
                                                 <input type="checkbox" name="alert_threats" {% if user.profile.alert_threats %}checked{% endif %} class="sr-only peer">
-                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-purple-600"></div>
                                             </label>
                                         </div>
 
-                                        <div class="flex items-center justify-between p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-800 hover:border-blue-500/30 transition-colors">
+                                        <div class="flex items-center justify-between p-6 rounded-2xl sys-card/50 border border-gray-100  hover:border-blue-500/30 transition-colors">
                                             <div class="flex gap-4">
-                                                <div class="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
-                                                    <i data-lucide="mail" class="w-6 h-6 text-blue-600 dark:text-blue-400"></i>
+                                                <div class="w-12 h-12 rounded-xl bg-blue-100  flex items-center justify-center shrink-0">
+                                                    <i data-lucide="mail" class="w-6 h-6 text-blue-600 "></i>
                                                 </div>
                                                 <div>
-                                                    <p class="text-sm font-black text-gray-900 dark:text-white">Daily Security Digest</p>
-                                                    <p class="text-xs text-gray-500 mt-1 max-w-sm leading-relaxed">Receive a morning summary report of all blocked threats, intelligence updates, and suspicious activity.</p>
+                                                    <p class="text-sm font-black text-[var(--sys-text)] ">Daily Security Digest</p>
+                                                    <p class="text-xs text-[var(--sys-text-secondary)] mt-1 max-w-sm leading-relaxed">Receive a morning summary report of all blocked threats, intelligence updates, and suspicious activity.</p>
                                                 </div>
                                             </div>
                                             <label class="relative inline-flex items-center cursor-pointer shrink-0 ml-4">
                                                 <input type="checkbox" name="alert_digest" {% if user.profile.alert_digest %}checked{% endif %} class="sr-only peer">
-                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-blue-600"></div>
                                             </label>
                                         </div>
                                     </div>
@@ -263,37 +263,37 @@
 
                             <!-- Accounts Tab -->
                             <div id="tab-accounts" class="hidden space-y-6 tab-content animate-slide-up">
-                                <div class="bg-white dark:bg-gray-800 rounded-[2.5rem] border border-gray-100 dark:border-gray-700 shadow-sm p-10 relative overflow-hidden">
+                                <div class="sys-card rounded-[2.5rem] border border-gray-100  shadow-sm p-10 relative overflow-hidden">
                                     <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-green-500/5 rounded-full blur-3xl transition-colors"></div>
-                                    <h3 class="font-black text-gray-900 dark:text-white mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
-                                        <i data-lucide="blocks" class="w-4 h-4 text-green-500"></i> Connected Integrations
+                                    <h3 class="font-black text-[var(--sys-text)]  mb-10 uppercase tracking-widest text-xs relative z-10 flex items-center gap-2">
+                                        <i data-lucide="boxes" class="w-4 h-4 text-green-500"></i> Connected Integrations
                                     </h3>
                                     
                                     <div class="space-y-4 relative z-10">
                                         <!-- Google -->
-                                        <div class="flex items-center justify-between p-6 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800">
+                                        <div class="flex items-center justify-between p-6 sys-card/50 rounded-2xl border border-gray-100 ">
                                             <div class="flex items-center gap-5">
-                                                <div class="w-14 h-14 rounded-2xl bg-white dark:bg-gray-800 flex items-center justify-center shadow-md">
+                                                <div class="w-14 h-14 rounded-2xl sys-card flex items-center justify-center shadow-md">
                                                     <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-md" alt="SecureMail">
                                                 </div>
                                                 <div>
-                                                    <p class="text-base font-black text-gray-900 dark:text-white">Google Workspace</p>
+                                                    <p class="text-base font-black text-[var(--sys-text)] ">Google Workspace</p>
                                                     {% if user.google_account %}
                                                         <div class="flex items-center gap-2 mt-1">
                                                             <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                                            <p class="text-xs text-gray-500 font-bold">{{ user.google_account.email }}</p>
+                                                            <p class="text-xs text-[var(--sys-text-secondary)] font-bold">{{ user.google_account.email }}</p>
                                                         </div>
                                                     {% else %}
-                                                        <p class="text-xs text-gray-400 font-bold mt-1">Status: Disconnected</p>
+                                                        <p class="text-xs text-[var(--sys-text-secondary)] font-bold mt-1">Status: Disconnected</p>
                                                     {% endif %}
                                                 </div>
                                             </div>
                                             {% if user.google_account %}
-                                                <a href="{% url 'google_disconnect' %}" class="px-6 py-2.5 bg-white dark:bg-gray-800 text-red-600 border border-gray-200 dark:border-gray-700 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-200 dark:hover:border-red-800 rounded-xl text-xs font-black transition-all">
+                                                <a href="{% url 'google_disconnect' %}" class="px-6 py-2.5 sys-card text-red-600 border border-gray-200  hover:bg-red-50  hover:border-red-200  rounded-xl text-xs font-black transition-all">
                                                     Revoke Access
                                                 </a>
                                             {% else %}
-                                                <a href="{% url 'google_login' %}" class="px-6 py-2.5 bg-blue-600 text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 rounded-xl text-xs font-black transition-all">
+                                                <a href="{% url 'google_login' %}" class="px-6 py-2.5 bg-blue-600 text-[var(--sys-text)] shadow-lg shadow-blue-500/20 hover:bg-blue-700 rounded-xl text-xs font-black transition-all">
                                                     Connect Auth
                                                 </a>
                                             {% endif %}
@@ -304,7 +304,7 @@
                             </div>
 
                             <div class="flex justify-end mt-10">
-                                <button type="submit" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl text-sm font-black shadow-xl shadow-blue-500/30 hover:scale-105 transition-all duration-300 flex items-center gap-2">
+                                <button type="submit" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-[var(--sys-text)] rounded-2xl text-sm font-black shadow-xl shadow-blue-500/30 hover:scale-105 transition-all duration-300 flex items-center gap-2">
                                     <i data-lucide="save" class="w-4 h-4"></i> Save Configuration
                                 </button>
                             </div>
@@ -327,36 +327,44 @@
         
         // Reset all buttons to inactive state
         document.querySelectorAll('#settings-tabs button').forEach(btn => {
-            btn.classList.remove('bg-white', 'dark:bg-gray-800', 'shadow-xl', 'shadow-blue-500/5', 'border-blue-100', 'dark:border-blue-900/30');
-            btn.classList.add('hover:bg-white', 'dark:hover:bg-gray-800', 'border-transparent', 'hover:border-gray-100', 'dark:hover:border-gray-700', 'hover:shadow-lg');
+            btn.classList.remove('bg-white', 'shadow-xl', 'shadow-blue-500/5', 'border-blue-100');
+            btn.classList.add('border-transparent');
             
             // Reset text colors inside
             const iconContainer = btn.querySelector('.rounded-xl');
-            iconContainer.className = iconContainer.className.replace(/text-blue-600|bg-blue-50|dark:bg-blue-900\/20/g, 'text-gray-400 bg-gray-50 dark:bg-gray-900/50');
+            iconContainer.classList.remove('text-blue-600', 'bg-blue-50');
+            iconContainer.classList.add('text-[var(--sys-text-secondary)]', 'sys-card');
+            
             const textSpan = btn.querySelector('span');
-            textSpan.className = textSpan.className.replace(/text-gray-900|dark:text-white/g, 'text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white');
+            textSpan.classList.remove('text-[var(--sys-text)]');
+            textSpan.classList.add('text-[var(--sys-text-secondary)]');
             
             // Reset chevron
             const chevron = btn.querySelectorAll('i')[1];
-            chevron.classList.remove('text-gray-400');
-            chevron.classList.add('text-gray-300', 'opacity-0');
+            if (chevron) {
+                chevron.classList.add('opacity-0');
+            }
         });
         
         // Set active button state
         const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
-        activeBtn.classList.remove('hover:bg-white', 'dark:hover:bg-gray-800', 'border-transparent', 'hover:border-gray-100', 'dark:hover:border-gray-700', 'hover:shadow-lg');
-        activeBtn.classList.add('bg-white', 'dark:bg-gray-800', 'shadow-xl', 'shadow-blue-500/5', 'border-blue-100', 'dark:border-blue-900/30');
+        activeBtn.classList.remove('border-transparent');
+        activeBtn.classList.add('bg-white', 'shadow-xl', 'shadow-blue-500/5', 'border-blue-100');
         
         // Active Text & Icon Color
         const iconContainer = activeBtn.querySelector('.rounded-xl');
-        iconContainer.className = iconContainer.className.replace(/text-gray-400 bg-gray-50 dark:bg-gray-900\/50/g, 'text-blue-600 bg-blue-50 dark:bg-blue-900/20');
+        iconContainer.classList.remove('text-[var(--sys-text-secondary)]', 'sys-card');
+        iconContainer.classList.add('text-blue-600', 'bg-blue-50');
+        
         const textSpan = activeBtn.querySelector('span');
-        textSpan.className = textSpan.className.replace(/text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white/g, 'text-gray-900 dark:text-white');
+        textSpan.classList.remove('text-[var(--sys-text-secondary)]');
+        textSpan.classList.add('text-[var(--sys-text)]');
         
         // Active Chevron
         const chevron = activeBtn.querySelectorAll('i')[1];
-        chevron.classList.remove('text-gray-300', 'opacity-0');
-        chevron.classList.add('text-gray-400');
+        if (chevron) {
+            chevron.classList.remove('opacity-0');
+        }
     }
 </script>
 {% endblock %}

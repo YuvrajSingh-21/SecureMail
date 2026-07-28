@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from .services.business_logic import EmailService, ProfileService
 from .services.sync_manager import SyncManager
-from .models import EmailMessage, ConnectedAccount
+from .models import EmailMessage, EmailReport, ConnectedAccount
 
 @login_required(login_url='login')
 def sync_gmail(request):
@@ -448,7 +448,7 @@ def clear_notifications(request):
     return JsonResponse({'status': 'success'})
 
 def about(request):
-    from .models import EmailMessage
+    from .models import EmailMessage, EmailReport
     
     total_emails = EmailMessage.objects.count()
     threats_detected = EmailMessage.objects.filter(risk__in=['suspicious', 'dangerous']).count()
@@ -503,9 +503,6 @@ def privacy(request):
 
 def terms(request):
     return render(request, 'public_terms.html')
-
-def disclosure(request):
-    return render(request, 'public_disclosure.html')
 
 def cookie(request):
     return render(request, 'public_cookie.html')

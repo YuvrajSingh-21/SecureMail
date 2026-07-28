@@ -258,3 +258,18 @@ class ConnectedAccount(models.Model):
 
     def __str__(self):
         return f"{self.email} ({self.user.username})"
+
+class EmailReport(models.Model):
+    REPORT_TYPES = (
+        ('false_positive', 'False Positive'),
+        ('true_positive', 'True Positive'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='email_reports', db_index=True)
+    email = models.ForeignKey(EmailMessage, on_delete=models.CASCADE, related_name='reports', db_index=True)
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPES, db_index=True)
+    prediction = models.CharField(max_length=50)
+    comment = models.TextField(null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
+
+    def __str__(self):
+        return f"{self.get_report_type_display()} - {self.email.subject}"

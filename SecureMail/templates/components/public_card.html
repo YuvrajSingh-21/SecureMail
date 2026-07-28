@@ -2,6 +2,6 @@
  <div class="w-{{ icon_size|default:"14" }} h-{{ icon_size|default:"14" }} rounded-2xl bg-{{ color|default:'blue' }}-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg {% if center_icon %}mx-auto{% endif %}">
  <i data-lucide="{{ icon }}" class="w-{{ icon_inner|default:"7" }} h-{{ icon_inner|default:"7" }} text-{{ color|default:'blue' }}-400"></i>
  </div>
- <h3 class="text-white font-black text-xl mb-3 tracking-tight">{{ title }}</h3>
+ <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">{{ title }}</h3>
  <p class="text-muted-foreground text-sm font-medium leading-relaxed">{{ text }}</p>
 </div>

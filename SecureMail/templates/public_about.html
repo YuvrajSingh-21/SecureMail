@@ -5,86 +5,86 @@
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="text-center mb-16">
-        <h1 class="text-5xl md:text-6xl font-black text-white mb-6">About SecureMail</h1>
-        <p class="text-xl text-gray-400">Protecting your digital life through intelligent, explainable email security.</p>
+        <h1 class="text-5xl md:text-6xl font-black text-[var(--sys-text)] mb-6">About SecureMail</h1>
+        <p class="text-xl text-[var(--sys-text-secondary)]">Protecting your digital life through intelligent, explainable email security.</p>
     </div>
 
     <div class="space-y-16">
         <!-- Mission & Vision -->
         <section class="grid md:grid-cols-2 gap-8">
-            <div class="glass-card p-8 rounded-3xl border-blue-500/30">
-                <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center mb-6"><i data-lucide="target"></i></div>
-                <h2 class="text-2xl font-bold text-white mb-4">Our Mission</h2>
-                <p class="text-gray-400 leading-relaxed">To create a transparent, intelligent communication environment where users never have to second-guess the safety of an email.</p>
+            <div class="sys-card p-8 rounded-3xl border-blue-500/30">
+                <div class="w-12 h-12 bg-blue-500/20 text-[var(--sys-primary)] rounded-xl flex items-center justify-center mb-6"><i data-lucide="target"></i></div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">Our Mission</h2>
+                <p class="text-[var(--sys-text-secondary)] leading-relaxed">To create a transparent, intelligent communication environment where users never have to second-guess the safety of an email.</p>
             </div>
-            <div class="glass-card p-8 rounded-3xl border-purple-500/30">
+            <div class="sys-card p-8 rounded-3xl border-purple-500/30">
                 <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mb-6"><i data-lucide="eye"></i></div>
-                <h2 class="text-2xl font-bold text-white mb-4">Our Vision</h2>
-                <p class="text-gray-400 leading-relaxed">A future where phishing and deceptive tactics are obsolete, blocked seamlessly by on-device ML that respects user privacy.</p>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">Our Vision</h2>
+                <p class="text-[var(--sys-text-secondary)] leading-relaxed">A future where phishing and deceptive tactics are obsolete, blocked seamlessly by on-device ML that respects user privacy.</p>
             </div>
         </section>
 
         <!-- Why & How -->
-        <section class="glass-card p-8 md:p-12 rounded-3xl">
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Why & How We Do It</h2>
+        <section class="sys-card p-8 md:p-12 rounded-3xl">
+            <h2 class="text-3xl font-bold text-[var(--sys-text)] mb-8 text-center">Why & How We Do It</h2>
             <div class="grid md:grid-cols-2 gap-12">
                 <div>
-                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="help-circle" class="text-blue-400"></i> The "Why"</h3>
-                    <p class="text-gray-400 leading-relaxed">Email remains the primary attack vector for cyber threats. Legacy filters are black boxes that fail to adapt. We built SecureMail to empower users with human-readable threat analysis.</p>
+                    <h3 class="text-xl font-bold text-[var(--sys-text)] mb-4 flex items-center gap-2"><i data-lucide="help-circle" class="text-[var(--sys-primary)]"></i> The "Why"</h3>
+                    <p class="text-[var(--sys-text-secondary)] leading-relaxed">Email remains the primary attack vector for cyber threats. Legacy filters are black boxes that fail to adapt. We built SecureMail to empower users with human-readable threat analysis.</p>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="settings" class="text-emerald-400"></i> The "How"</h3>
-                    <p class="text-gray-400 leading-relaxed">By combining Local Machine Learning, global Threat Intelligence (like VirusTotal and Google Safe Browsing), and deep Gmail integration, we analyze emails in real-time without compromising privacy.</p>
+                    <h3 class="text-xl font-bold text-[var(--sys-text)] mb-4 flex items-center gap-2"><i data-lucide="settings" class="text-emerald-400"></i> The "How"</h3>
+                    <p class="text-[var(--sys-text-secondary)] leading-relaxed">By combining Local Machine Learning, global Threat Intelligence (like VirusTotal and Google Safe Browsing), and deep Gmail integration, we analyze emails in real-time without compromising privacy.</p>
                 </div>
             </div>
         </section>
 
         <!-- Core Pillars -->
         <section>
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Core Pillars</h2>
+            <h2 class="text-3xl font-bold text-[var(--sys-text)] mb-8 text-center">Core Pillars</h2>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass-card p-6 rounded-2xl">
-                    <i data-lucide="shield" class="text-blue-400 mb-4 w-8 h-8"></i>
-                    <h4 class="text-lg font-bold text-white mb-2">Privacy First</h4>
-                    <p class="text-sm text-gray-400">Your data never leaves your control. No reading, no selling.</p>
+                <div class="sys-card p-6 rounded-2xl">
+                    <i data-lucide="shield" class="text-[var(--sys-primary)] mb-4 w-8 h-8"></i>
+                    <h4 class="text-lg font-bold text-[var(--sys-text)] mb-2">Privacy First</h4>
+                    <p class="text-sm text-[var(--sys-text-secondary)]">Your data never leaves your control. No reading, no selling.</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl">
+                <div class="sys-card p-6 rounded-2xl">
                     <i data-lucide="cpu" class="text-purple-400 mb-4 w-8 h-8"></i>
-                    <h4 class="text-lg font-bold text-white mb-2">Local ML</h4>
-                    <p class="text-sm text-gray-400">Advanced language models run locally to catch deceptive intents.</p>
+                    <h4 class="text-lg font-bold text-[var(--sys-text)] mb-2">Local ML</h4>
+                    <p class="text-sm text-[var(--sys-text-secondary)]">Advanced language models run locally to catch deceptive intents.</p>
                 </div>
-                <div class="glass-card p-6 rounded-2xl">
+                <div class="sys-card p-6 rounded-2xl">
                     <i data-lucide="mail" class="text-rose-400 mb-4 w-8 h-8"></i>
-                    <h4 class="text-lg font-bold text-white mb-2">Google Integration</h4>
-                    <p class="text-sm text-gray-400">Seamless OAuth connection with Gmail for effortless synchronization.</p>
+                    <h4 class="text-lg font-bold text-[var(--sys-text)] mb-2">Google Integration</h4>
+                    <p class="text-sm text-[var(--sys-text-secondary)]">Seamless OAuth connection with Gmail for effortless synchronization.</p>
                 </div>
             </div>
         </section>
 
         <!-- Roadmap -->
-        <section class="glass-card p-8 rounded-3xl relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px]"></div>
-            <h2 class="text-3xl font-bold text-white mb-8">Product Roadmap</h2>
+        <section class="sys-card p-8 rounded-3xl relative overflow-hidden">
+            
+            <h2 class="text-3xl font-bold text-[var(--sys-text)] mb-8">Product Roadmap</h2>
             <div class="space-y-6 relative z-10">
                 <div class="flex gap-4 items-start">
                     <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center shrink-0 mt-1"><i data-lucide="check" class="w-4 h-4"></i></div>
                     <div>
-                        <h4 class="text-lg font-bold text-white">Phase 1: Foundation</h4>
-                        <p class="text-gray-400">Gmail OAuth, Basic Threat Index, Explainable Verdicts.</p>
+                        <h4 class="text-lg font-bold text-[var(--sys-text)]">Phase 1: Foundation</h4>
+                        <p class="text-[var(--sys-text-secondary)]">Gmail OAuth, Basic Threat Index, Explainable Verdicts.</p>
                     </div>
                 </div>
                 <div class="flex gap-4 items-start">
-                    <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0 mt-1"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i></div>
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 text-[var(--sys-primary)] flex items-center justify-center shrink-0 mt-1"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i></div>
                     <div>
-                        <h4 class="text-lg font-bold text-white">Phase 2: Intelligence</h4>
-                        <p class="text-gray-400">Local ML integration, URL detonation, attachment scanning.</p>
+                        <h4 class="text-lg font-bold text-[var(--sys-text)]">Phase 2: Intelligence</h4>
+                        <p class="text-[var(--sys-text-secondary)]">Local ML integration, URL detonation, attachment scanning.</p>
                     </div>
                 </div>
                 <div class="flex gap-4 items-start">
-                    <div class="w-8 h-8 rounded-full border border-gray-700 text-gray-500 flex items-center justify-center shrink-0 mt-1"><i data-lucide="circle" class="w-4 h-4"></i></div>
+                    <div class="w-8 h-8 rounded-full border border-gray-300 text-[var(--sys-text-secondary)] flex items-center justify-center shrink-0 mt-1"><i data-lucide="circle" class="w-4 h-4"></i></div>
                     <div>
-                        <h4 class="text-lg font-bold text-white">Phase 3: Ecosystem</h4>
-                        <p class="text-gray-400">Browser extensions, custom enterprise rules, cross-provider support.</p>
+                        <h4 class="text-lg font-bold text-[var(--sys-text)]">Phase 3: Ecosystem</h4>
+                        <p class="text-[var(--sys-text-secondary)]">Browser extensions, custom enterprise rules, cross-provider support.</p>
                     </div>
                 </div>
             </div>

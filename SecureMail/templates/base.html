@@ -7,32 +7,15 @@
     <title>{% block title %}SecureMail{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'SecureMail/images/logo.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class'
-        }
-    </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="{% static 'SecureMail/css/global.css' %}">
     <link rel="stylesheet" href="{% static 'SecureMail/css/responsive.css' %}">
     {% block extra_css %}{% endblock %}
-    <script>
-        // Critical Theme Helper - Execute ASAP to prevent flash
-        (function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-        })();
-    </script>
+    
 </head>
-<body class="h-full transition-colors duration-300">
-    <script>
-        // Synchronize body classes with theme for legacy components
-        (function() {
-            const theme = document.documentElement.getAttribute('data-theme');
-            document.body.className = `h-full transition-colors duration-300 ${theme === 'dark' ? 'dark-mode bg-gray-900' : 'light-mode bg-slate-50'}`;
-        })();
-    </script>
+<body class="h-full bg-[#F8FAFC] text-[#111827] font-sans antialiased">
+    
     
     {% block content %}{% endblock %}
 
@@ -47,32 +30,7 @@
     </div>
     {% endif %}
 
-    <script>
-        // Global Theme Toggle Function - Non-module version for direct onclick access
-        window.toggleDarkMode = function() {
-            const html = document.documentElement;
-            const body = document.body;
-            const currentTheme = html.getAttribute('data-theme') || 'light';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            
-            if (newTheme === 'dark') {
-                body.classList.add('dark-mode');
-                body.classList.remove('light-mode');
-                html.classList.add('dark');
-            } else {
-                body.classList.remove('dark-mode');
-                body.classList.add('light-mode');
-                html.classList.remove('dark');
-            }
-            
-            // Trigger icon update
-            if (window.updateThemeIcon) window.updateThemeIcon(newTheme === 'dark');
-            console.log('Theme switched to:', newTheme);
-        };
-    </script>
+    
     <script type="module" src="{% static 'SecureMail/js/app.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -81,18 +39,7 @@
             }
         });
     </script>
-    <script>
-        // Final theme sanity check
-        (function() {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            if (savedTheme === 'dark') {
-                document.body.className = 'h-full overflow-auto dark-mode bg-gray-900';
-            } else {
-                document.body.className = 'h-full overflow-auto bg-gray-50';
-            }
-            if (window.updateThemeIcon) window.updateThemeIcon(savedTheme === 'dark');
-        })();
-    </script>
+    
 
     {% if user.is_authenticated %}
     <script>

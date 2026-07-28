@@ -42,6 +42,7 @@
     --risk-suspicious: linear-gradient(135deg, #d97706, #f59e0b);
     --risk-dangerous: linear-gradient(135deg, #dc2626, #ef4444);
 
+    
     /* --- PREMIUM SAAS LIGHT THEME TOKENS --- */
     --sys-bg: #F8FAFC;
     --sys-card: #FFFFFF;
@@ -53,36 +54,7 @@
     --sys-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] {
-    /* --- DARK THEME --- */
-    --bg: #0a0e1a;
-    --surface: #1f2937;
-    --surface-alt: #111827;
-    --text: #f9fafb;
-    --text-secondary: #94a3b8;
-    --border: #374151;
-    --border-alt: #1e293b;
-    
-    /* Nav & Sidebar */
-    --header-bg: #1f2937;
-    --sidebar-bg: #1f2937;
-    --sidebar-item-hover: rgba(255, 255, 255, 0.05);
-    --sidebar-item-active: rgba(59, 130, 246, 0.15);
-    
-    /* Email List */
-    --email-row-hover: #2d2d2d;
-    --email-row-unread: #111827;
-    --email-row-border: #374151;
-    
-    /* Inputs & Forms */
-    --input-bg: #111827;
-    --input-border: #374151;
-    --input-text: #f9fafb;
-    
-    /* Glassmorphism */
-    --glass-bg: rgba(15, 23, 42, 0.8);
-    --glass-border: rgba(255, 255, 255, 0.1);
-}
+
 
 /* Global Reset & Transitions */
 * {
@@ -106,9 +78,6 @@ body {
 .bg-slate-50 { background-color: var(--bg) !important; }
 .bg-gray-50 { background-color: var(--surface-alt) !important; }
 .bg-gray-100 { background-color: var(--surface-alt) !important; }
-.dark .bg-gray-800 { background-color: var(--surface) !important; }
-.dark .bg-gray-900 { background-color: var(--bg) !important; }
-.dark .bg-gray-700 { background-color: var(--surface-alt) !important; }
 
 /* Status Backgrounds (Tinted) */
 .bg-blue-50 { background-color: rgba(59, 130, 246, 0.08) !important; }
@@ -116,14 +85,9 @@ body {
 .bg-yellow-50 { background-color: rgba(245, 158, 11, 0.08) !important; }
 .bg-red-50 { background-color: rgba(239, 68, 68, 0.08) !important; }
 
-.dark .bg-blue-900\/20 { background-color: rgba(59, 130, 246, 0.15) !important; }
-.dark .bg-green-900\/20 { background-color: rgba(16, 185, 129, 0.15) !important; }
-.dark .bg-yellow-900\/20 { background-color: rgba(245, 158, 11, 0.15) !important; }
-.dark .bg-red-900\/20 { background-color: rgba(239, 68, 68, 0.15) !important; }
 
 /* Chart Overrides */
 .bg-blue-100 { background-color: var(--surface-alt) !important; }
-.dark .bg-blue-900\/20 { background-color: rgba(59, 130, 246, 0.1) !important; }
 .bg-red-100 { background-color: rgba(239, 68, 68, 0.1) !important; }
 .bg-green-100 { background-color: rgba(16, 185, 129, 0.1) !important; }
 .bg-yellow-100 { background-color: rgba(245, 158, 11, 0.1) !important; }
@@ -134,12 +98,8 @@ body {
 .text-gray-600 { color: var(--text-secondary) !important; }
 .text-gray-500 { color: var(--text-secondary) !important; }
 .text-gray-400 { color: var(--text-secondary) !important; }
-.dark .text-white { color: var(--text) !important; }
-.dark .text-gray-300 { color: var(--text-secondary) !important; }
-.dark .text-gray-400 { color: var(--text-secondary) !important; }
 
 .border-gray-100, .border-gray-200, .border-gray-700 { border-color: var(--border) !important; }
-.dark .border-gray-700, .dark .border-gray-600 { border-color: var(--border) !important; }
 
 /* Base UI Components */
 header {
@@ -151,12 +111,6 @@ aside {
     border-right: 1px solid var(--border);
 }
 
-.dark aside, .dark header {
-    background-color: rgba(31, 41, 55, 0.7) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-color: rgba(255, 255, 255, 0.05);
-}
 
 aside, header {
     background-color: rgba(255, 255, 255, 0.85);
@@ -200,9 +154,6 @@ button:active, a.cursor-pointer:active, .sidebar-item:active, .email-row:active 
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.dark .hover\:shadow-xl:hover {
-    box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15), 0 0 20px rgba(59, 130, 246, 0.05);
-}
 
 .delay-1 { animation-delay: 0.1s; }
 .delay-2 { animation-delay: 0.2s; }
@@ -260,7 +211,6 @@ button:active, a.cursor-pointer:active, .sidebar-item:active, .email-row:active 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #475569; }
 
 /* Dark/Light Utility Classes */
 .dark-mode { background-color: var(--bg); color: var(--text); }
@@ -359,9 +309,6 @@ input::placeholder {
     right: 8px;
     height: 1px;
     border-top: 1px solid #f3f4f6; /* border-gray-100 */
-}
-:is(.dark) #main-sidebar.collapsed .border-t::before {
-    border-top-color: #374151; /* border-gray-700 */
 }
 
 /* Prevent security widget from squishing and wrapping text */

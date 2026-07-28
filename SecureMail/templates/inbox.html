@@ -4,69 +4,69 @@
 {% block title %}{{ folder_title|default:"Inbox" }} - SecureMail{% endblock %}
 
 {% block content %}
-<div class="flex flex-col h-full overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors duration-300">
+<div class="flex flex-col h-full overflow-hidden bg-slate-50  transition-colors duration-300">
     {% include "components/navbar.html" %}
     
     <div class="flex flex-1 overflow-hidden">
         {% include "components/sidebar.html" %}
         
-        <main class="flex-1 flex flex-col bg-slate-50 dark:bg-gray-900 transition-colors overflow-hidden p-4 md:p-8">
+        <main class="flex-1 flex flex-col bg-slate-50  transition-colors overflow-hidden p-4 md:p-8">
             <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col overflow-hidden">
                 <!-- Inbox Header -->
                 <div class="flex items-center justify-between mb-6 animate-slide-up">
                     <div class="flex items-center gap-4">
-                        <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight">{{ folder_title|default:"Inbox" }}</h1>
-                        <div class="flex items-center gap-2 text-[11px] font-black text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-xl uppercase tracking-widest">
+                        <h1 class="text-3xl font-black text-[var(--sys-text)]  tracking-tight">{{ folder_title|default:"Inbox" }}</h1>
+                        <div class="flex items-center gap-2 text-[11px] font-black text-blue-600  bg-blue-50  px-3 py-1.5 rounded-xl uppercase tracking-widest">
                             <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
                             {{ unread_count|default:"0" }} UNREAD
                         </div>
                     </div>
-                    <div class="flex items-center gap-4 text-xs font-bold text-gray-400">
+                    <div class="flex items-center gap-4 text-xs font-bold text-[var(--sys-text-secondary)]">
                         <span class="tabular-nums">{{ page_obj.paginator.count }} messages</span>
                     </div>
                 </div>
 
                 <!-- Inbox List Card -->
                 <form id="bulk-action-form" method="post" action="">{% csrf_token %}</form>
-                <div class="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col flex-1 overflow-hidden animate-slide-up delay-1">
+                <div class="sys-card rounded-3xl flex flex-col flex-1 overflow-hidden animate-slide-up delay-1">
                     <!-- Toolbar (Integrated into Card) -->
-                    <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-white dark:bg-gray-800 shrink-0">
+                    <div class="px-6 py-3 border-b border-gray-100  flex items-center justify-between sys-card shrink-0">
                         <div class="flex items-center gap-4">
                             <!-- Selection Dropdown -->
                             <div class="relative group inline-flex items-center">
-                                <button type="button" class="flex items-center justify-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500" onclick="selectAll(this)">
-                                    <input type="checkbox" id="master-checkbox" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all pointer-events-none">
+                                <button type="button" class="flex items-center justify-center p-2 hover:bg-gray-50  rounded-xl transition text-[var(--sys-text-secondary)]" onclick="selectAll(this)">
+                                    <input type="checkbox" id="master-checkbox" class="w-4 h-4 rounded border-gray-300  bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all pointer-events-none">
                                 </button>
-                                <button type="button" class="flex items-center justify-center p-1.5 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 mr-2 -ml-1" onclick="toggleSelectDropdown(event)">
+                                <button type="button" class="flex items-center justify-center p-1.5 hover:bg-gray-50  rounded-xl transition text-[var(--sys-text-secondary)] mr-2 -ml-1" onclick="toggleSelectDropdown(event)">
                                     <i data-lucide="chevron-down" class="w-3 h-3"></i>
                                 </button>
                                 
-                                <div id="select-dropdown" class="hidden absolute top-full left-0 mt-1 w-32 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl py-1 z-50 overflow-hidden">
-                                    <button type="button" onclick="selectType('all')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">All</button>
-                                    <button type="button" onclick="selectType('none')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">None</button>
-                                    <button type="button" onclick="selectType('read')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">Read</button>
-                                    <button type="button" onclick="selectType('unread')" class="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">Unread</button>
+                                <div id="select-dropdown" class="hidden absolute top-full left-0 mt-1 w-32 sys-card rounded-xl py-1 z-50 overflow-hidden">
+                                    <button type="button" onclick="selectType('all')" class="w-full text-left px-4 py-2 text-xs font-semibold text-[var(--sys-text)]  hover:bg-gray-50 ">All</button>
+                                    <button type="button" onclick="selectType('none')" class="w-full text-left px-4 py-2 text-xs font-semibold text-[var(--sys-text)]  hover:bg-gray-50 ">None</button>
+                                    <button type="button" onclick="selectType('read')" class="w-full text-left px-4 py-2 text-xs font-semibold text-[var(--sys-text)]  hover:bg-gray-50 ">Read</button>
+                                    <button type="button" onclick="selectType('unread')" class="w-full text-left px-4 py-2 text-xs font-semibold text-[var(--sys-text)]  hover:bg-gray-50 ">Unread</button>
                                 </div>
                             </div>
 
-                            <a href="?{% if request.GET.filter != 'unread' %}filter=unread&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}{% endif %}" class="text-[11px] font-black tracking-widest transition-colors {% if request.GET.filter == 'unread' %}text-blue-600 dark:text-blue-400{% else %}text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300{% endif %}">
+                            <a href="?{% if request.GET.filter != 'unread' %}filter=unread&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}{% endif %}" class="text-[11px] font-black tracking-widest transition-colors {% if request.GET.filter == 'unread' %}text-blue-600{% else %}text-[var(--sys-text-secondary)] hover:text-[var(--sys-text)]{% endif %}">
                                 UNREAD
                             </a>
-                            <a href="?{% if request.GET.filter != 'read' %}filter=read&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}{% endif %}" class="text-[11px] font-black tracking-widest transition-colors {% if request.GET.filter == 'read' %}text-blue-600 dark:text-blue-400{% else %}text-gray-400 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-300{% endif %}">
+                            <a href="?{% if request.GET.filter != 'read' %}filter=read&{% endif %}{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}{% endif %}" class="text-[11px] font-black tracking-widest transition-colors {% if request.GET.filter == 'read' %}text-blue-600{% else %}text-[var(--sys-text-secondary)] hover:text-[var(--sys-text)]{% endif %}">
                                 READ
                             </a>
                             
                             <div id="bulk-actions" class="hidden items-center gap-2 ml-2">
-                                <button type="submit" form="bulk-action-form" name="action" value="mark_read" class="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition text-gray-500 hover:text-blue-600 shrink-0" title="Mark as Read">
+                                <button type="submit" form="bulk-action-form" name="action" value="mark_read" class="p-2 hover:bg-blue-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Mark as Read">
                                     <i data-lucide="mail-open" class="w-4 h-4"></i>
                                 </button>
-                                <button type="submit" form="bulk-action-form" name="action" value="mark_unread" class="p-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition text-gray-500 hover:text-blue-600 shrink-0" title="Mark as Unread">
+                                <button type="submit" form="bulk-action-form" name="action" value="mark_unread" class="p-2 hover:bg-blue-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Mark as Unread">
                                     <i data-lucide="mail" class="w-4 h-4"></i>
                                 </button>
-                                <button type="submit" form="bulk-action-form" name="action" value="archive" class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition text-gray-500 shrink-0" title="Archive">
+                                <button type="submit" form="bulk-action-form" name="action" value="archive" class="p-2 hover:bg-gray-50  rounded-xl transition text-[var(--sys-text-secondary)] shrink-0" title="Archive">
                                     <i data-lucide="archive" class="w-4 h-4"></i>
                                 </button>
-                                <button type="submit" form="bulk-action-form" name="action" value="delete" class="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition text-gray-500 hover:text-red-600 shrink-0" title="Delete">
+                                <button type="submit" form="bulk-action-form" name="action" value="delete" class="p-2 hover:bg-red-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-red-600 shrink-0" title="Delete">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                             </div>
@@ -76,25 +76,25 @@
                             <!-- Pagination Controls -->
                             <div class="flex items-center gap-2">
                                 {% if page_obj.has_previous %}
-                                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
+                                    <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100  text-[var(--sys-text-secondary)] transition-colors">
                                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                                     </a>
                                 {% else %}
-                                    <span class="p-1.5 text-gray-300 dark:text-gray-600 cursor-not-allowed">
+                                    <span class="p-1.5 text-[var(--sys-text-secondary)]  cursor-not-allowed">
                                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                                     </span>
                                 {% endif %}
 
-                                <span class="text-[10px] font-black text-gray-400 uppercase tracking-tighter">
+                                <span class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-tighter">
                                     Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                                 </span>
 
                                 {% if page_obj.has_next %}
-                                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 transition-colors">
+                                    <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.filter %}&filter={{ request.GET.filter }}{% endif %}" class="p-1.5 rounded-lg hover:bg-gray-100  text-[var(--sys-text-secondary)] transition-colors">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
                                 {% else %}
-                                    <span class="p-1.5 text-gray-300 dark:text-gray-600 cursor-not-allowed">
+                                    <span class="p-1.5 text-[var(--sys-text-secondary)]  cursor-not-allowed">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </span>
                                 {% endif %}
@@ -107,7 +107,7 @@
                                 {% if request.GET.filter %}
                                 <input type="hidden" name="filter" value="{{ request.GET.filter }}">
                                 {% endif %}
-                                <select name="sort" onchange="document.getElementById('sort-form').submit();" class="bg-transparent border-none text-[11px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest focus:ring-0 cursor-pointer">
+                                <select name="sort" onchange="document.getElementById('sort-form').submit();" class="bg-transparent border-none text-[11px] font-black text-[var(--sys-text-secondary)]  uppercase tracking-widest focus:ring-0 cursor-pointer">
                                     <option value="newest" {% if request.GET.sort == 'newest' %}selected{% endif %}>Newest First</option>
                                     <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
                                     <option value="risk" {% if request.GET.sort == 'risk' %}selected{% endif %}>Highest Risk</option>
@@ -139,13 +139,20 @@
                     <div id="email-list" class="flex-1 overflow-y-auto">
                         {% if emails %}
                             {% for email in emails %}
-                            <div class="inbox-row group flex items-center gap-6 px-6 py-4 border-b border-gray-100 dark:border-gray-700 last:border-0 cursor-pointer relative overflow-hidden {% if email.unread %}unread bg-white{% else %}bg-transparent{% endif %}" 
+                            <div class="inbox-row group flex items-center gap-6 px-6 py-4 border-b border-gray-100  last:border-0 cursor-pointer relative overflow-hidden {% if email.unread %}unread bg-white{% else %}bg-transparent{% endif %}" 
                                 data-email-id="{{ email.id }}"
                                 onclick="handleEmailClick(this, '{% url 'email_view' email.id %}')">
                                 
                                 <div class="flex items-center gap-4 shrink-0">
-                                    <input type="checkbox" form="bulk-action-form" name="email_ids" value="{{ email.id }}" onclick="event.stopPropagation(); updateBulkActions();" class="w-4 h-4 rounded border-gray-300 dark:border-gray-600 bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all">
-                                    <a href="{% url 'toggle_star' email.id %}" onclick="event.stopPropagation()" class="{% if email.starred %}text-yellow-400{% else %}text-gray-300 dark:text-gray-600{% endif %} hover:text-yellow-400 transition-colors duration-300">
+                                    <input type="checkbox" form="bulk-action-form" name="email_ids" value="{{ email.id }}" onclick="event.stopPropagation(); updateBulkActions();" class="w-4 h-4 rounded border-gray-300  bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all">
+                                    
+                                    {% if email.verdict.label != 'SAFE' %}
+                                    <button onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('false-positive-modal').classList.remove('hidden'); document.getElementById('false-positive-form').action='/email/' + {{ email.id }} + '/false-positive/';" class="text-[var(--sys-text-secondary)] hover:text-green-500 transition-colors duration-300" title="Report False Positive">
+                                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                    </button>
+                                    {% endif %}
+
+                                    <a href="{% url 'toggle_star' email.id %}" onclick="event.stopPropagation()" class="{% if email.starred %}text-yellow-400{% else %}text-[var(--sys-text-secondary)]{% endif %} hover:text-yellow-400 transition-colors duration-300">
                                         <i data-lucide="star" class="w-5 h-5 {% if email.starred %}fill-current{% endif %}"></i>
                                     </a>
                                 </div>
@@ -161,21 +168,21 @@
                                         <i data-lucide="{% if email.verdict.label == 'PHISHING' %}alert-triangle{% elif email.verdict.label == 'SUSPICIOUS' %}alert-circle{% else %}check-circle{% endif %}" class="w-5 h-5"></i>
                                     </div>
                                     {% if email.unread %}
-                                    <div class="unread-dot absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-600 rounded-full border-2 border-white dark:border-gray-800 shadow-sm"></div>
+                                    <div class="unread-dot absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-600 rounded-full border-2 border-white  shadow-sm"></div>
                                     {% endif %}
                                 </div>
 
                                 <div class="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                                     <div class="md:col-span-3">
-                                        <p class="text-sm {% if email.unread %}font-bold text-gray-900 dark:text-white{% else %}font-normal text-gray-700 dark:text-gray-300{% endif %} truncate uppercase tracking-tight">{{ email.sender_name|default:email.sender_email }}</p>
-                                        <p class="text-[10px] text-gray-400 font-medium truncate">{{ email.sender_email }}</p>
+                                        <p class="text-sm {% if email.unread %}font-bold text-[var(--sys-text)]{% else %}font-normal text-[var(--sys-text)]{% endif %} truncate uppercase tracking-tight">{{ email.sender_name|default:email.sender_email }}</p>
+                                        <p class="text-[10px] text-[var(--sys-text-secondary)] font-medium truncate">{{ email.sender_email }}</p>
                                     </div>
                                     <div class="md:col-span-7">
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm {% if email.unread %}font-semibold text-gray-900 dark:text-white{% else %}font-normal text-gray-700 dark:text-gray-300{% endif %} truncate">{{ email.subject }}</span>
+                                            <span class="text-sm {% if email.unread %}font-semibold text-[var(--sys-text)]{% else %}font-normal text-[var(--sys-text)]{% endif %} truncate">{{ email.subject }}</span>
                                             
                                             <!-- Unified Intent Label -->
-                                            <span class="inline-flex items-center justify-center h-[22px] px-2.5 rounded-full text-[10px] font-bold text-white uppercase shadow-sm shrink-0 whitespace-nowrap
+                                            <span class="inline-flex items-center justify-center h-[22px] px-2.5 rounded-full text-[10px] font-bold text-[var(--sys-text)] uppercase shadow-sm shrink-0 whitespace-nowrap
                                                 {% if email.verdict.label == 'PHISHING' %}bg-red-500
                                                 {% elif email.verdict.label == 'SUSPICIOUS' %}bg-yellow-500
                                                 {% elif email.verdict.label == 'PROMOTIONAL' %}bg-blue-500
@@ -196,13 +203,13 @@
                                             </span>
                                             
                                             {% if email.has_attachments %}
-                                            <i data-lucide="paperclip" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i>
+                                            <i data-lucide="paperclip" class="w-3.5 h-3.5 text-[var(--sys-text-secondary)] shrink-0"></i>
                                             {% endif %}
                                         </div>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5 font-medium">{{ email.snippet|default:email.body|truncatechars:120 }}</p>
+                                        <p class="text-xs text-[var(--sys-text-secondary)]  truncate mt-0.5 font-medium">{{ email.snippet|default:email.body|truncatechars:120 }}</p>
                                     </div>
                                     <div class="md:col-span-2 flex justify-end">
-                                        <div class="px-3 py-1 rounded-full text-[10px] font-black text-white shadow-lg shadow-black/5 
+                                        <div class="px-3 py-1 rounded-full text-[10px] font-black text-[var(--sys-text)] shadow-lg shadow-black/5 
                                             {% if email.verdict.label == 'PHISHING' %}risk-dangerous
                                             {% elif email.verdict.label == 'SUSPICIOUS' %}risk-suspicious
                                             {% else %}risk-safe{% endif %}">
@@ -212,24 +219,42 @@
                                 </div>
 
                                 <div class="w-20 shrink-0 text-right">
-                                    <p class="text-[11px] {% if email.unread %}font-bold text-blue-600{% else %}font-medium text-gray-400{% endif %}">{{ email.timestamp|date:"h:i A" }}</p>
-                                    <p class="text-[9px] font-bold text-gray-300 dark:text-gray-600 uppercase mt-0.5">{{ email.timestamp|date:"M d" }}</p>
+                                    <p class="text-[11px] {% if email.unread %}font-bold text-blue-600{% else %}font-medium text-[var(--sys-text-secondary)]{% endif %}">{{ email.timestamp|date:"h:i A" }}</p>
+                                    <p class="text-[9px] font-bold text-[var(--sys-text-secondary)]  uppercase mt-0.5">{{ email.timestamp|date:"M d" }}</p>
                                 </div>
                             </div>
                             {% endfor %}
                         {% else %}
                             <div class="flex flex-col items-center justify-center h-full opacity-30 animate-pulse py-20">
-                                <div class="w-20 h-20 rounded-3xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6">
-                                    <i data-lucide="inbox" class="w-10 h-10 text-gray-400"></i>
+                                <div class="w-20 h-20 rounded-3xl bg-gray-100  flex items-center justify-center mb-6">
+                                    <i data-lucide="inbox" class="w-10 h-10 text-[var(--sys-text-secondary)]"></i>
                                 </div>
-                                <p class="text-lg font-black text-gray-500 uppercase tracking-widest">{{ folder_title }} Empty</p>
-                                <p class="text-sm text-gray-400 mt-2">No messages found in this folder.</p>
+                                <p class="text-lg font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">{{ folder_title }} Empty</p>
+                                <p class="text-sm text-[var(--sys-text-secondary)] mt-2">No messages found in this folder.</p>
                             </div>
                         {% endif %}
                     </div>
                 </div>
             </div>
         </main>
+    </div>
+</div>
+
+<!-- False Positive Modal -->
+<div id="false-positive-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="document.getElementById('false-positive-modal').classList.add('hidden')"></div>
+    <div class="relative sys-card rounded-3xl p-8 max-w-md w-full shadow-2xl">
+        <h3 class="text-xl font-bold text-[var(--sys-text)] mb-2 flex items-center gap-2"><i data-lucide="shield-check" class="w-6 h-6 text-green-500"></i> Report False Positive</h3>
+        <p class="text-sm text-[var(--sys-text-secondary)] mb-6">Are you sure this email is safe? Reporting this will override our ML models and flag it as safe.</p>
+        
+        <form id="false-positive-form" action="" method="post">
+            {% csrf_token %}
+            <textarea name="comment" rows="3" placeholder="Optional: Why is this safe?" class="w-full sys-input rounded-xl p-4 text-sm mb-6 focus:ring-2 focus:ring-green-500/50 outline-none"></textarea>
+            <div class="flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('false-positive-modal').classList.add('hidden')" class="px-5 py-2.5 rounded-xl font-bold text-[var(--sys-text-secondary)] hover:bg-gray-100 transition-all">Cancel</button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl font-bold bg-green-500 text-white hover:bg-green-600 transition-all">Mark as Safe</button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}
