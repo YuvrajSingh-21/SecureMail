@@ -41,6 +41,16 @@
     --risk-safe: linear-gradient(135deg, #059669, #10b981);
     --risk-suspicious: linear-gradient(135deg, #d97706, #f59e0b);
     --risk-dangerous: linear-gradient(135deg, #dc2626, #ef4444);
+
+    /* --- PREMIUM SAAS LIGHT THEME TOKENS --- */
+    --sys-bg: #F8FAFC;
+    --sys-card: #FFFFFF;
+    --sys-border: #E5E7EB;
+    --sys-primary: #2563EB;
+    --sys-text: #111827;
+    --sys-text-secondary: #6B7280;
+    --sys-radius: 8px;
+    --sys-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] {
@@ -400,4 +410,47 @@ input::placeholder {
     height: 120px;
     width: auto;
     object-fit: contain;
+}
+
+/* --- SYS COMPONENTS --- */
+.sys-navbar {
+    background-color: var(--sys-card);
+    border-bottom: 1px solid var(--sys-border);
+    height: 72px;
+}
+.sys-btn-primary {
+    background-color: var(--sys-primary);
+    color: #FFFFFF;
+    border-radius: var(--sys-radius);
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    border: none;
+    box-shadow: var(--sys-shadow);
+}
+.sys-btn-primary:hover {
+    background-color: var(--sys-primary-hover);
+}
+.sys-input {
+    background-color: var(--sys-bg);
+    border: 1px solid var(--sys-border);
+    color: var(--sys-text);
+    border-radius: var(--sys-radius);
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.2s;
+    outline: none;
+}
+.sys-input:focus {
+    border-color: var(--sys-primary);
+}
+
+.sys-card {
+    background-color: var(--sys-card);
+    border: 1px solid var(--sys-border);
+    border-radius: var(--sys-radius);
+    box-shadow: var(--sys-shadow);
+}
+.sys-sidebar {
+    background-color: var(--sys-bg);
+    border-right: 1px solid var(--sys-border);
 }

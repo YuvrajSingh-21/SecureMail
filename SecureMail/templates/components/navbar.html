@@ -1,8 +1,8 @@
 {% load static %}
-<header class="w-full px-6 py-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between shrink-0 z-40 transition-colors duration-300">
+<header class="w-full px-6 sys-navbar flex items-center justify-between shrink-0 z-40 transition-colors duration-300">
     <!-- Left: Logo & Mobile Toggle -->
-    <div class="flex items-center gap-4">
-        <button onclick="if(window.toggleSidebar) toggleSidebar();" class="flex items-center gap-3 group focus:outline-none">
+    <div class="flex items-center gap-4 h-full">
+        <button onclick="if(window.toggleSidebar) toggleSidebar();" class="flex items-center gap-3 group focus:outline-none h-full">
             <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-sm" alt="SecureMail">
             <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white hidden sm:block">SecureMail</span>
         </button>
