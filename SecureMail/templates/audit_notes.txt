@@ -1,9 +1,0 @@
-Inbox: 39 colors hardcoded. Overrides global.css with <style>
-Dashboard: 40 colors hardcoded
-Reports: 41 colors hardcoded
-Settings: 45 colors hardcoded
-Email View: 70 colors hardcoded. Overrides global.css with <style>
-Compose: 38 colors hardcoded. Overrides global.css with <style>
-Base: 9 colors hardcoded
-Sidebar: 19 colors hardcoded
-Navbar: 36 colors hardcoded
