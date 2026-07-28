@@ -56,16 +56,33 @@ class SyncManager:
     def _run_sync_thread(self, job, full_sync):
         """Wrapper for thread execution to handle errors and database connections."""
         from django.db import connection
+        from django.core.cache import cache
+        lock_id = f"sync_lock_{self.user.id}"
+        
+        # Concurrency protection
+        if not cache.add(lock_id, "true", timeout=600):
+            logger.warning(f"Sync already running for {self.user.username}. Aborting duplicate request.")
+            job.status = 'FAILED'
+            job.error_message = 'Sync already in progress'
+            job.save()
+            connection.close()
+            return
+            
         try:
-            # We don't limit if full_sync is True
-            limit = None if full_sync else 50
-            self._execute_sync(job, limit=limit)
+            if not full_sync and self.account.history_id:
+                logger.info(f"History sync started for {self.user.username}")
+                self._incremental_sync(job)
+            else:
+                # Legacy full sync or initial limited sync
+                limit = None if full_sync else 50
+                self._execute_sync(job, limit=limit)
         except Exception as e:
             job.status = 'FAILED'
             job.error_message = str(e)
             job.save()
             logger.error(f"Background sync failed: {str(e)}")
         finally:
+            cache.delete(lock_id)
             connection.close()
 
     def _execute_sync(self, job, limit=None):
@@ -102,12 +119,12 @@ class SyncManager:
                 msg_id = summary['id']
                 
                 try:
-                    # Individual atomic block for each message to isolate failures
-                    with transaction.atomic():
-                        full_msg = self.gmail.get_message(msg_id)
-                        if not full_msg: continue
-                        
-                        if isinstance(full_msg, dict) and full_msg.get('error') == 404:
+                    # NETWORK CALL: Outside transaction
+                    full_msg = self.gmail.get_message(msg_id)
+                    if not full_msg: continue
+                    
+                    if isinstance(full_msg, dict) and full_msg.get('error') == 404:
+                        with transaction.atomic():
                             email = EmailMessage.objects.filter(user=self.user, gmail_message_id=msg_id).first()
                             if email:
                                 email.is_remote_deleted = True
@@ -116,19 +133,22 @@ class SyncManager:
                                 email.body = ''
                                 email.save(update_fields=['is_remote_deleted', 'html_body', 'plain_body', 'body'])
                                 logger.info(f"Sync: 404 on get_message, marked {msg_id} as deleted.")
-                            continue
+                        continue
 
-                        parsed = self.gmail.parse_message_data(full_msg)
-                        labels = parsed['labels']
-                        
-                        # Map folder
-                        folder = 'INBOX'
-                        if 'SENT' in labels: folder = 'SENT'
-                        elif 'DRAFT' in labels: folder = 'DRAFTS'
-                        elif 'SPAM' in labels: folder = 'SPAM'
-                        elif 'TRASH' in labels: folder = 'TRASH'
+                    parsed = self.gmail.parse_message_data(full_msg)
+                    labels = parsed['labels']
+                    
+                    folder = 'INBOX'
+                    if 'SENT' in labels: folder = 'SENT'
+                    elif 'DRAFT' in labels: folder = 'DRAFTS'
+                    elif 'SPAM' in labels: folder = 'SPAM'
+                    elif 'TRASH' in labels: folder = 'TRASH'
 
-                        # Use update_or_create to prevent duplicate key violations and transaction poisoning
+                    needs_analysis = False
+                    email_id = None
+                    
+                    # DATABASE WRITE: Inside transaction
+                    with transaction.atomic():
                         email, created = EmailMessage.objects.update_or_create(
                             user=self.user,
                             gmail_message_id=parsed['gmail_id'],
@@ -138,7 +158,7 @@ class SyncManager:
                                 'sender_name': self.gmail._extract_name(parsed['from']),
                                 'recipient_email': self.gmail._extract_email(parsed['to']),
                                 'subject': parsed['subject'],
-                                'body': parsed['plain_body'] or parsed['snippet'], # Legacy fallback
+                                'body': parsed['plain_body'] or parsed['snippet'],
                                 'plain_body': parsed['plain_body'],
                                 'html_body': parsed['html_body'],
                                 'snippet': parsed['snippet'],
@@ -154,19 +174,21 @@ class SyncManager:
                                 'dmarc_pass': parsed.get('dmarc_pass', True)
                             }
                         )
-                        
-                        # Run intelligence analysis if needed
+                        email_id = email.id
                         if (created or not email.analysis_completed) and self.pipeline:
-                            # Manually trigger to control context and suppress redundant signals
-                            email.skip_analysis = True
-                            self.pipeline.run(email.id)
-                        
-                        # Detect stale analysis (missing centralized analysis payload)
+                            needs_analysis = True
                         elif email.analysis_completed and hasattr(email, 'analysis') and 'analysis' not in email.analysis.detailed_report and self.pipeline:
-                            logger.info(f"Re-analyzing stale intelligence during sync for {email.id}")
-                            email.skip_analysis = True
-                            self.pipeline.run(email.id, force=True)
-                        
+                            needs_analysis = True
+                            
+                    # NETWORK CALL (EmailPipeline): Outside transaction
+                    if needs_analysis and self.pipeline:
+                        try:
+                            email_obj = EmailMessage.objects.get(id=email_id)
+                            email_obj.skip_analysis = True
+                            self.pipeline.run(email_id)
+                        except Exception as pe:
+                            logger.error(f"Pipeline failed for {email_id}: {str(pe)}")
+                            
                 except IntegrityError as e:
                     logger.warning(f"Duplicate detected or integrity error for {msg_id}: {str(e)}")
                 except Exception as e:
@@ -205,3 +227,157 @@ class SyncManager:
                 logger.info(f"History ID skipped for {self.user.username} (already initialized)")
         except Exception as e:
             logger.error(f"Failed to extract historyId for {self.user.username}: {str(e)}")
+
+    def _incremental_sync(self, job):
+        """Phase 3B: Incremental Synchronization via History API."""
+        from .gmail_service import HistoryExpiredError, HistoryInvalidError
+        try:
+            # Process history page by page to avoid OOM on massive responses
+            for page in self.gmail.fetch_history(self.account.history_id):
+                records = page.get('history', [])
+                latest_history_id = page.get('historyId')
+                
+                if not records and latest_history_id:
+                    # No changes in this page, just bump the ID
+                    if str(latest_history_id) != str(self.account.history_id):
+                        self.account.history_id = str(latest_history_id)
+                        self.account.save(update_fields=['history_id'])
+                    continue
+
+                delta = self.gmail.parse_history_response(records)
+                added_ids = list(set(m['id'] for m in delta['messagesAdded']))
+                deleted_ids = list(set(m['id'] for m in delta['messagesDeleted']))
+                
+                # NETWORK CALL: Fetch full messages outside transaction
+                full_messages = []
+                if added_ids:
+                    logger.info(f"Messages added: {len(added_ids)} for {self.user.username}")
+                    for full_msg in self.gmail.batch_fetch_messages(added_ids):
+                        if isinstance(full_msg, dict) and full_msg.get('error') == 404:
+                            continue
+                        full_messages.append(full_msg)
+                
+                # DATABASE WRITE: Atomic update for this single page
+                new_email_ids = []
+                with transaction.atomic():
+                    # 1. Process Messages Added
+                    for full_msg in full_messages:
+                        parsed = self.gmail.parse_message_data(full_msg)
+                        labels = parsed['labels']
+                        
+                        folder = 'INBOX'
+                        if 'SENT' in labels: folder = 'SENT'
+                        elif 'DRAFT' in labels: folder = 'DRAFTS'
+                        elif 'SPAM' in labels: folder = 'SPAM'
+                        elif 'TRASH' in labels: folder = 'TRASH'
+
+                        email, created = EmailMessage.objects.update_or_create(
+                            user=self.user,
+                            gmail_message_id=parsed['gmail_id'],
+                            defaults={
+                                'thread_id': parsed['thread_id'],
+                                'sender_email': self.gmail._extract_email(parsed['from']),
+                                'sender_name': self.gmail._extract_name(parsed['from']),
+                                'recipient_email': self.gmail._extract_email(parsed['to']),
+                                'subject': parsed['subject'],
+                                'body': parsed['plain_body'] or parsed['snippet'],
+                                'plain_body': parsed['plain_body'],
+                                'html_body': parsed['html_body'],
+                                'snippet': parsed['snippet'],
+                                'timestamp': parsed['date'],
+                                'unread': 'UNREAD' in labels,
+                                'starred': 'STARRED' in labels,
+                                'in_trash': 'TRASH' in labels,
+                                'is_remote_deleted': False,
+                                'has_attachments': parsed['has_attachments'],
+                                'folder': folder,
+                                'spf_pass': parsed.get('spf_pass', True),
+                                'dkim_pass': parsed.get('dkim_pass', True),
+                                'dmarc_pass': parsed.get('dmarc_pass', True)
+                            }
+                        )
+                        if created or not email.analysis_completed:
+                            new_email_ids.append(email.id)
+                            
+                    # 2. Process Messages Deleted
+                    if deleted_ids:
+                        logger.info(f"Messages deleted: {len(deleted_ids)} for {self.user.username}")
+                        EmailMessage.objects.filter(user=self.user, gmail_message_id__in=deleted_ids).update(
+                            is_remote_deleted=True, html_body='', plain_body='', body=''
+                        )
+                    
+                    # 3. Process Labels Added
+                    if delta['labelsAdded']:
+                        for record in delta['labelsAdded']:
+                            msg_id = record['message']['id']
+                            labels = record.get('labelIds', [])
+                            updates = {}
+                            if 'UNREAD' in labels: updates['unread'] = True
+                            if 'STARRED' in labels: updates['starred'] = True
+                            if 'TRASH' in labels: 
+                                updates['in_trash'] = True
+                                updates['folder'] = 'TRASH'
+                            if 'SPAM' in labels: updates['folder'] = 'SPAM'
+                            if 'SENT' in labels: updates['folder'] = 'SENT'
+                            if 'INBOX' in labels: updates['folder'] = 'INBOX'
+                            if updates:
+                                EmailMessage.objects.filter(user=self.user, gmail_message_id=msg_id).update(**updates)
+
+                    # 4. Process Labels Removed
+                    if delta['labelsRemoved']:
+                        for record in delta['labelsRemoved']:
+                            msg_id = record['message']['id']
+                            labels = record.get('labelIds', [])
+                            updates = {}
+                            if 'UNREAD' in labels: updates['unread'] = False
+                            if 'STARRED' in labels: updates['starred'] = False
+                            if 'TRASH' in labels: 
+                                updates['in_trash'] = False
+                            if updates:
+                                EmailMessage.objects.filter(user=self.user, gmail_message_id=msg_id).update(**updates)
+
+                    # 5. Commit History ID Update for this page
+                    if latest_history_id and str(latest_history_id) != str(self.account.history_id):
+                        self.account.history_id = str(latest_history_id)
+                        self.account.save(update_fields=['history_id'])
+                        
+                # NETWORK CALL: Run EmailPipeline OUTSIDE transaction
+                if self.pipeline and new_email_ids:
+                    for email_id in new_email_ids:
+                        try:
+                            email_obj = EmailMessage.objects.get(id=email_id)
+                            email_obj.skip_analysis = True
+                            self.pipeline.run(email_id)
+                        except Exception as e:
+                            logger.error(f"Pipeline failed for {email_id}: {str(e)}")
+
+                job.synced_messages += len(added_ids)
+                job.save()
+
+            # Job finished
+            job.status = 'COMPLETED'
+            job.save()
+            logger.info(f"History sync completed for {self.user.username}")
+            
+            # Global stats update
+            from .email_pipeline import EmailPipeline
+            try:
+                last_email = EmailMessage.objects.filter(user=self.user).latest('timestamp')
+                EmailPipeline()._update_user_profile(last_email)
+            except:
+                pass
+
+        except HistoryExpiredError:
+            logger.warning(f"History ID expired for {self.user.username}. Triggering legacy full sync recovery.")
+            self.account.history_id = None
+            self.account.save(update_fields=['history_id'])
+            # Full sync creates a new baseline
+            self._execute_sync(job, limit=None)
+            
+        except Exception as e:
+            logger.error(f"History sync failed for {self.user.username}: {str(e)}")
+            logger.info(f"Legacy fallback triggered for {self.user.username}")
+            # Fallback must ALWAYS result in complete recovery per requirements
+            self.account.history_id = None
+            self.account.save(update_fields=['history_id'])
+            self._execute_sync(job, limit=None)

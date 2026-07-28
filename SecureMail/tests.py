@@ -340,3 +340,96 @@ class SyncManagerBootstrapTest(TestCase):
         self.account.refresh_from_db()
         self.assertIsNone(self.account.history_id)
         self.assertEqual(job.status, 'COMPLETED') # Sync still completes!
+
+class SyncManagerIncrementalTest(TestCase):
+    def setUp(self):
+        from SecureMail.models import ConnectedAccount
+        from django.utils import timezone
+        self.user = User.objects.create_user(username='incremental_test', password='password123')
+        self.account = ConnectedAccount.objects.create(
+            user=self.user,
+            provider='google',
+            email='test@example.com',
+            google_id='123456789',
+            access_token='fake',
+            token_expiry=timezone.now(),
+            history_id='1000'
+        )
+
+    @patch('SecureMail.services.sync_manager.GmailService')
+    def test_incremental_sync_success(self, mock_gmail_class):
+        from SecureMail.services.sync_manager import SyncManager
+        from SecureMail.models import SyncJob, EmailMessage
+        
+        mock_gmail = mock_gmail_class.return_value
+        # Mock History API responses
+        mock_gmail.fetch_history.return_value = [
+            {'history': [{'id': '1'}], 'historyId': '1050'}
+        ]
+        
+        mock_gmail.parse_history_response.return_value = {
+            'messagesAdded': [{'id': 'msg_1'}],
+            'messagesDeleted': [],
+            'labelsAdded': [],
+            'labelsRemoved': []
+        }
+        
+        # Mock batch fetching
+        mock_gmail.batch_fetch_messages.return_value = [
+            {'id': 'msg_1'}
+        ]
+        
+        mock_gmail.parse_message_data.return_value = {
+            'gmail_id': 'msg_1',
+            'thread_id': 'thread_1',
+            'from': 'sender@test.com',
+            'to': 'me@test.com',
+            'subject': 'Hello',
+            'plain_body': 'Hi',
+            'html_body': '',
+            'snippet': 'Hi',
+            'date': '2025-01-01T00:00:00Z',
+            'labels': ['INBOX', 'UNREAD'],
+            'has_attachments': False,
+            'spf_pass': True,
+            'dkim_pass': True,
+            'dmarc_pass': True
+        }
+        
+        mock_gmail._extract_email.side_effect = lambda x: x
+        mock_gmail._extract_name.side_effect = lambda x: x
+        
+        manager = SyncManager(self.user)
+        manager.gmail = mock_gmail
+        manager.pipeline = None # Skip pipeline for unit test speed
+        
+        job = SyncJob.objects.create(user=self.user, status='RUNNING')
+        manager._incremental_sync(job)
+        
+        self.account.refresh_from_db()
+        self.assertEqual(self.account.history_id, '1050')
+        self.assertEqual(job.status, 'COMPLETED')
+        self.assertEqual(job.synced_messages, 1)
+        self.assertTrue(EmailMessage.objects.filter(gmail_message_id='msg_1').exists())
+
+    @patch('SecureMail.services.sync_manager.SyncManager._execute_sync')
+    @patch('SecureMail.services.sync_manager.GmailService')
+    def test_incremental_sync_expired_fallback(self, mock_gmail_class, mock_execute_sync):
+        from SecureMail.services.sync_manager import SyncManager
+        from SecureMail.models import SyncJob
+        from SecureMail.services.gmail_service import HistoryExpiredError
+        
+        mock_gmail = mock_gmail_class.return_value
+        mock_gmail.fetch_history.side_effect = HistoryExpiredError("Expired")
+        
+        manager = SyncManager(self.user)
+        manager.gmail = mock_gmail
+        
+        job = SyncJob.objects.create(user=self.user, status='RUNNING')
+        manager._incremental_sync(job)
+        
+        self.account.refresh_from_db()
+        # History ID must be reset so legacy sync runs clean
+        self.assertIsNone(self.account.history_id)
+        # Legacy fallback MUST be triggered with limit=None for full baseline recovery
+        mock_execute_sync.assert_called_once_with(job, limit=None)
