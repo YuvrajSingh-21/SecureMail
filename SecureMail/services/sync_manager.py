@@ -189,3 +189,19 @@ class SyncManager:
             EmailPipeline()._update_user_profile(last_email)
         except:
             pass
+
+        # Phase 3A: History API Bootstrap
+        # Only initialize history_id if the entire synchronization succeeded (job is COMPLETED)
+        try:
+            if not self.account.history_id:
+                profile = self.gmail.get_profile()
+                if profile and 'historyId' in profile:
+                    self.account.history_id = str(profile['historyId'])
+                    self.account.save(update_fields=['history_id'])
+                    logger.info(f"History ID persisted and initialized to {self.account.history_id} for {self.user.username}")
+                else:
+                    logger.warning(f"History ID unavailable in Gmail profile for {self.user.username}")
+            else:
+                logger.info(f"History ID skipped for {self.user.username} (already initialized)")
+        except Exception as e:
+            logger.error(f"Failed to extract historyId for {self.user.username}: {str(e)}")

@@ -15,6 +15,15 @@ import datetime
 
 logger = logging.getLogger(__name__)
 
+class HistoryExpiredError(Exception):
+    """Raised when the provided historyId is expired or invalid (HTTP 404)."""
+    pass
+
+class HistoryInvalidError(Exception):
+    """Raised when the Gmail API returns an unexpected error for a history request."""
+    pass
+
+
 class GmailService:
     def __init__(self, connected_account):
         self.connected_account = connected_account
@@ -361,3 +370,126 @@ class GmailService:
         message['subject'] = subject
         raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
         return self._call_api(self.service.users().messages().send, userId='me', body={'raw': raw})
+
+    # =========================================================================
+    # Phase 2: Gmail History API Migration (Preparation)
+    # =========================================================================
+
+    def fetch_history(self, start_history_id):
+        """
+        Fetch incremental history from Gmail since the provided historyId.
+        Yields pages of history records.
+
+        Args:
+            start_history_id (str): The last known historyId.
+
+        Yields:
+            dict: A page of the history response.
+
+        Raises:
+            HistoryExpiredError: If the historyId is no longer valid or expired.
+            HistoryInvalidError: For other HTTP errors during the fetch.
+        """
+        page_token = None
+        try:
+            while True:
+                results = self.service.users().history().list(
+                    userId='me',
+                    startHistoryId=start_history_id,
+                    pageToken=page_token
+                ).execute()
+                
+                yield results
+
+                page_token = results.get('nextPageToken')
+                if not page_token:
+                    break
+        except HttpError as e:
+            if e.resp.status == 404:
+                raise HistoryExpiredError(f"History ID {start_history_id} is expired or invalid.")
+            raise HistoryInvalidError(f"Failed to fetch history: {str(e)}")
+
+    def parse_history_response(self, history_records):
+        """
+        Parse a list of history records into a clean structured object.
+
+        Args:
+            history_records (list): List of history items from history.list response.
+
+        Returns:
+            dict: Structured delta categorizing message mutations.
+        """
+        delta = {
+            'messagesAdded': [],
+            'messagesDeleted': [],
+            'labelsAdded': [],
+            'labelsRemoved': []
+        }
+        
+        if not history_records:
+            return delta
+
+        for record in history_records:
+            for added in record.get('messagesAdded', []):
+                delta['messagesAdded'].append(added['message'])
+            for deleted in record.get('messagesDeleted', []):
+                delta['messagesDeleted'].append(deleted['message'])
+            for label_added in record.get('labelsAdded', []):
+                delta['labelsAdded'].append(label_added)
+            for label_removed in record.get('labelsRemoved', []):
+                delta['labelsRemoved'].append(label_removed)
+
+        return delta
+
+    def get_latest_history_id(self, history_response):
+        """
+        Extract the newest historyId from a Gmail API response payload.
+
+        Args:
+            history_response (dict): The JSON payload from a list/get/history call.
+
+        Returns:
+            str: The newest historyId, or None if not found.
+        """
+        return history_response.get('historyId')
+
+    def batch_fetch_messages(self, message_ids):
+        """
+        Fetch multiple full messages efficiently using googleapiclient.http.BatchHttpRequest.
+        Yields the full message payloads. Note: Google limits batch size to 100 per request.
+
+        Args:
+            message_ids (list): List of Gmail message IDs to fetch.
+
+        Yields:
+            dict: Full message payload or error object.
+        """
+        from googleapiclient.http import BatchHttpRequest
+        
+        results = []
+        
+        def callback(request_id, response, exception):
+            if exception:
+                if isinstance(exception, HttpError) and exception.resp.status == 404:
+                    results.append({'error': 404, 'id': request_id})
+                else:
+                    logger.error(f"Batch fetch failed for message {request_id}: {str(exception)}")
+            else:
+                results.append(response)
+
+        # Gmail batch limits to 100 requests per batch.
+        batch_size = 100
+        for i in range(0, len(message_ids), batch_size):
+            chunk = message_ids[i:i + batch_size]
+            batch = self.service.new_batch_http_request(callback=callback)
+            
+            for msg_id in chunk:
+                request = self.service.users().messages().get(userId='me', id=msg_id, format='full')
+                # Overriding the request ID allows us to identify it in the callback
+                batch.add(request, request_id=msg_id)
+                
+            batch.execute()
+            
+            for res in results:
+                yield res
+            results.clear()

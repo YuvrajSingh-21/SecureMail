@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, EmailMessage, Attachment, ThreatIndicator, ThreatAnalysis, Notification, LinkAnalysis, RiskScore
+from .models import Profile, EmailMessage, Attachment, ThreatIndicator, ThreatAnalysis, Notification, LinkAnalysis, RiskScore, ConnectedAccount
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -54,3 +54,9 @@ class ThreatAnalysisAdmin(admin.ModelAdmin):
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'type', 'read', 'created_at')
     list_filter = ('type', 'read')
+
+@admin.register(ConnectedAccount)
+class ConnectedAccountAdmin(admin.ModelAdmin):
+    list_display = ('email', 'user', 'provider', 'history_id')
+    readonly_fields = ('history_id',)
+    search_fields = ('email', 'user__username', 'google_id')

@@ -245,6 +245,14 @@ class ConnectedAccount(models.Model):
     token_expiry = models.DateTimeField()
     profile_picture = models.URLField(max_length=500, null=True, blank=True)
     
+    # Phase 1 Migration: Gmail History API
+    # history_id stores the state of the user's mailbox at the last successful sync.
+    # It is a large unsigned 64-bit integer, so we use CharField(max_length=255) to 
+    # prevent potential overflow issues across different database backends (like Postgres BigIntegerField).
+    # It will be populated after a successful baseline sync.
+    # Note: In Phase 1, this field exists only for schema preparation and is NOT yet used for synchronization.
+    history_id = models.CharField(max_length=255, null=True, blank=True, default=None)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
