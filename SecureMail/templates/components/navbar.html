@@ -3,9 +3,7 @@
     <!-- Left: Logo & Mobile Toggle -->
     <div class="flex items-center gap-4">
         <button onclick="if(window.toggleSidebar) toggleSidebar();" class="flex items-center gap-3 group focus:outline-none">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-glow group-hover:scale-105 transition-transform">
-                <i data-lucide="shield-check" class="w-6 h-6 text-white"></i>
-            </div>
+            <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-sm" alt="SecureMail">
             <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white hidden sm:block">SecureMail</span>
         </button>
     </div>

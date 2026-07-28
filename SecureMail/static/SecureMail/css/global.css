@@ -372,3 +372,32 @@ input::placeholder {
     overflow: hidden !important;
     border: none !important;
 }
+
+/* App Logo Styling */
+.app-logo {
+    object-fit: contain;
+}
+
+.app-logo-sm {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}
+
+.app-logo-md {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
+}
+
+.app-logo-lg {
+    height: 90px;
+    width: auto;
+    object-fit: contain;
+}
+
+.app-logo-xl {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+}
