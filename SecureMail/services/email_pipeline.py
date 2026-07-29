@@ -10,6 +10,7 @@ from ..models import EmailMessage, Attachment, LinkAnalysis, RiskScore, ThreatAn
 from .virustotal_service import VirusTotalService
 from .safe_browsing_service import SafeBrowsingService
 from .risk_engine import RiskEngine
+from .gemini_service import GeminiService
 from ..ml.predictor import PhishingPredictor
 from ..ml.category_classifier import CategoryClassifier
 from ..ml.sender_reputation import SenderReputationEngine
@@ -27,6 +28,7 @@ class EmailPipeline:
             self.vt = VirusTotalService() if os.getenv('VIRUSTOTAL_API_KEY') else None
             self.gsb = SafeBrowsingService() if os.getenv('SAFE_BROWSING_API_KEY') else None
             self.engine = RiskEngine()
+            self.gemini_service = GeminiService()
             self.ml_predictor = PhishingPredictor()
             self.cat_classifier = CategoryClassifier()
             self.reputation_engine = SenderReputationEngine()
@@ -106,7 +108,7 @@ class EmailPipeline:
                     attachment_results=attachment_results,
                     sender_email=email.sender_email
                 )
-                
+
                 # 7. Update Reputation (Post-Analysis)
                 is_phishing = risk_data['category'] in ['high', 'critical'] or email.ml_label == 'PHISHING'
                 self.reputation_engine.update_reputation(domain, is_phishing)

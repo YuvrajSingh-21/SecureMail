@@ -423,10 +423,15 @@ def export_dataset_csv(request):
     response['Content-Disposition'] = 'attachment; filename="threat_analytics_dataset.csv"'
     
     writer = csv.writer(response)
-    writer.writerow(['ID', 'Subject', 'Sender', 'Date', 'Category', 'Risk Score', 'ML Label'])
+    writer.writerow(['ID', 'Subject', 'Sender', 'Date', 'Category', 'Risk Score', 'ML Label', 'Gemini Explanation'])
     
-    emails = EmailMessage.objects.filter(user=request.user).order_by('-timestamp')
+    emails = EmailMessage.objects.filter(user=request.user).select_related('analysis').order_by('-timestamp')
     for email in emails:
+        gemini_exp = ''
+        if hasattr(email, 'analysis') and email.analysis and 'analysis' in email.analysis.detailed_report:
+            analysis_data = email.analysis.detailed_report['analysis']
+            gemini_exp = analysis_data.get('gemini_explanation', {}).get('user_explanation', '')
+            
         writer.writerow([
             email.id,
             email.subject,
@@ -434,7 +439,8 @@ def export_dataset_csv(request):
             email.timestamp.strftime('%Y-%m-%d %H:%M:%S') if email.timestamp else '',
             email.category,
             email.risk_score,
-            email.ml_label
+            email.ml_label,
+            gemini_exp
         ])
         
     return response
@@ -509,3 +515,72 @@ def cookie(request):
 
 def support(request):
     return render(request, 'public_support.html')
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import time
+import logging
+from .services.gemini_service import GeminiService
+
+@login_required(login_url='login')
+@require_POST
+def generate_explanation(request, id):
+    logger = logging.getLogger(__name__)
+    email_service = EmailService()
+    email = get_object_or_404(EmailMessage, id=id, user=request.user)
+    
+    if not hasattr(email, 'analysis') or not email.analysis:
+        return JsonResponse({'error': 'No threat analysis found.'}, status=404)
+        
+    report = email.analysis.detailed_report
+    analysis_payload = report.get('analysis', report)
+    
+    # 2. Check if gemini_explanation exists
+    if 'gemini_explanation' in analysis_payload and analysis_payload['gemini_explanation']:
+        logger.info(f"Cache hit for Gemini explanation on email {id}")
+        return JsonResponse({'status': 'cached', 'explanation': analysis_payload['gemini_explanation']})
+        
+    # 4. Otherwise: Generate explanation
+    logger.info(f"Cache miss. Generation started for Gemini explanation on email {id}")
+    start_time = time.time()
+    
+    # Construct input data
+    ml_results = email_service.get_email_verdict(email)
+    
+    gemini_input_data = {
+        'subject': email.subject,
+        'body_snippet': (email.plain_body or email.snippet or "")[:500],
+        'urls': [], # URLs aren't fully preserved in detail unless we parse them again, but we pass empty for now or extract from features
+        'spf': getattr(email, 'spf_pass', True),
+        'dkim': getattr(email, 'dkim_pass', True),
+        'dmarc': getattr(email, 'dmarc_pass', True),
+        'vt_threats': 0,
+        'gsb_threats': 0,
+        'features': ml_results.get('features', {}),
+        'prediction': ml_results.get('label', 'UNKNOWN'),
+        'confidence': ml_results.get('confidence', 0),
+        'threat_score': ml_results.get('score', 0)
+    }
+    
+    gemini_service = GeminiService()
+    try:
+        gemini_explanation = gemini_service.explain_analysis(gemini_input_data)
+        latency_ms = (time.time() - start_time) * 1000
+        logger.info(f"Generation completed for email {id}. Latency: {latency_ms:.2f}ms")
+        
+        # Save into database
+        analysis_payload['gemini_explanation'] = gemini_explanation
+        if 'analysis' in report:
+            report['analysis'] = analysis_payload
+        else:
+            report.update(analysis_payload)
+            
+        email.analysis.detailed_report = report
+        email.analysis.save(update_fields=['detailed_report'])
+        
+        return JsonResponse({'status': 'generated', 'explanation': gemini_explanation})
+        
+    except Exception as e:
+        logger.error(f"Error generating Gemini explanation for email {id}: {str(e)}", exc_info=True)
+        return JsonResponse({'error': 'Unable to generate AI explanation.'}, status=500)
+

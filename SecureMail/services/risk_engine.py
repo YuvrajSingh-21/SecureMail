@@ -46,27 +46,32 @@ class RiskEngine:
         suspicious_phrases = []
         risk_score_pool = 0
         safe_score_pool = 0
+        score_breakdown = []
         
         # 1. Evaluate Safe Signals (Negative Weights)
         if is_trusted:
             safe_factors.append(f"Sender domain establishing historical trust ({domain})")
             forensic_signals.append({"type": "trust", "severity": "safe", "message": "✔ Trusted sender domain recognized"})
             safe_score_pool += abs(self.S_TRUSTED_DOMAIN)
+            score_breakdown.append({'points': self.S_TRUSTED_DOMAIN, 'reason': f'Sender domain establishing historical trust ({domain})'})
 
         if features.get('is_free_provider', 1) == 0 and not is_trusted:
             safe_factors.append("Authenticated corporate sender identity verified")
             forensic_signals.append({"type": "auth", "severity": "safe", "message": "✔ Sender authentication checks passed"})
             safe_score_pool += abs(self.S_AUTHENTICATED)
+            score_breakdown.append({'points': self.S_AUTHENTICATED, 'reason': 'Authenticated corporate sender identity verified'})
 
         if features.get('marketing_count', 0) > 0 and features.get('login_request_indicator', 0) == 0:
             safe_factors.append("Linguistic patterns align with legitimate marketing communication")
             safe_score_pool += abs(self.S_LEGIT_MARKETING)
+            score_breakdown.append({'points': self.S_LEGIT_MARKETING, 'reason': 'Linguistic patterns align with legitimate marketing communication'})
         
         # 2. Evaluate Risk Signals (Positive Weights)
         if features.get('login_request_indicator', 0) == 1:
             risk_factors.append(f"Credential harvesting pattern detected (Keywords: {', '.join(triggered.get('credentials', []))})")
             forensic_signals.append({"type": "login", "severity": "critical", "message": "⚠ Credential harvesting attempt detected"})
             risk_score_pool += self.R_HARVESTING
+            score_breakdown.append({'points': self.R_HARVESTING, 'reason': f'Credential harvesting pattern detected (Keywords: {", ".join(triggered.get("credentials", []))})'})
             suspicious_phrases.extend(triggered.get('credentials', []))
 
         # Authentication Failure Flags
@@ -84,72 +89,85 @@ class RiskEngine:
             risk_factors.append("Sender identity mismatch (Potential impersonation or spoofing)")
             forensic_signals.append({"type": "spoofing", "severity": "high", "message": "⚠ Sender name/domain mismatch identified"})
             risk_score_pool += self.R_SPOOFING
+            score_breakdown.append({'points': self.R_SPOOFING, 'reason': 'Sender identity mismatch (Potential impersonation or spoofing)'})
 
         if features.get('ip_url_count', 0) > 0:
             risk_factors.append("Communication contains obfuscated IP-based URLs")
             forensic_signals.append({"type": "ip_url", "severity": "high", "message": "⚠ Obfuscated IP-based URLs detected"})
             risk_score_pool += self.R_IP_URL
+            score_breakdown.append({'points': self.R_IP_URL, 'reason': 'Communication contains obfuscated IP-based URLs'})
 
         if features.get('link_mismatch', 0) == 1:
             risk_factors.append("URL link mismatch detected (visible text does not match actual destination)")
             forensic_signals.append({"type": "url_mismatch", "severity": "critical", "message": "⚠ Hidden URL Mismatch Detected"})
             risk_score_pool += 50
+            score_breakdown.append({'points': 50, 'reason': 'URL link mismatch detected (visible text does not match actual destination)'})
             
         if features.get('homoglyph_detected', 0) == 1:
             risk_factors.append("Cyrillic homoglyphs detected in URL (Likely domain spoofing)")
             forensic_signals.append({"type": "homoglyph", "severity": "critical", "message": "⚠ Malicious Homoglyph URL Detected"})
             risk_score_pool += 60
+            score_breakdown.append({'points': 60, 'reason': 'Cyrillic homoglyphs detected in URL (Likely domain spoofing)'})
 
         if features.get('url_count', 0) > 8:
             risk_factors.append(f"Excessive link density ({features.get('url_count')} outbound links)")
             forensic_signals.append({"type": "excessive_links", "severity": "medium", "message": "⚠ Excessive outbound links detected"})
             risk_score_pool += self.R_CTA_DENSITY
+            score_breakdown.append({'points': self.R_CTA_DENSITY, 'reason': f'Excessive link density ({features.get("url_count")} outbound links)'})
 
         if features.get('cta_phrase_count', 0) >= 2:
             risk_factors.append(f"Repeated high-action CTA prompts detected ({', '.join(triggered.get('cta', []))})")
             forensic_signals.append({"type": "cta_density", "severity": "medium", "message": "⚠ Repeated high-action CTA prompts identified"})
             risk_score_pool += self.R_CTA_DENSITY
+            score_breakdown.append({'points': self.R_CTA_DENSITY, 'reason': f'Repeated high-action CTA prompts detected ({", ".join(triggered.get("cta", []))})'})
             suspicious_phrases.extend(triggered.get('cta', []))
 
         if features.get('body_urgency', 0) > 0 or features.get('subj_urgency', 0) > 0:
             risk_factors.append(f"Urgency-driven language detected (Keywords: {', '.join(triggered.get('urgency', []))})")
             forensic_signals.append({"type": "urgency", "severity": "medium", "message": "⚠ Urgency-oriented language identified"})
             risk_score_pool += self.R_URGENCY
+            score_breakdown.append({'points': self.R_URGENCY, 'reason': f'Urgency-driven language detected (Keywords: {", ".join(triggered.get("urgency", []))})'})
             suspicious_phrases.extend(triggered.get('urgency', []))
 
         if features.get('scarcity_count', 0) > 0:
             risk_factors.append(f"Scarcity manipulation tactics identified ({', '.join(triggered.get('scarcity', []))})")
             forensic_signals.append({"type": "scarcity", "severity": "medium", "message": "⚠ Scarcity tactics identified"})
             risk_score_pool += self.R_SCARCITY_TACTICS if hasattr(self, 'R_SCARCITY_TACTICS') else 15
+            score_breakdown.append({'points': self.R_SCARCITY_TACTICS if hasattr(self, 'R_SCARCITY_TACTICS') else 15, 'reason': f'Scarcity manipulation tactics identified ({", ".join(triggered.get("scarcity", []))})'})
             suspicious_phrases.extend(triggered.get('scarcity', []))
 
         if features.get('body_money', 0) > 0:
             risk_factors.append(f"Financial reward bait detected ({', '.join(triggered.get('money', []))})")
             forensic_signals.append({"type": "reward", "severity": "high", "message": "⚠ Reward bait detected"})
             risk_score_pool += self.R_REWARD_BAIT
+            score_breakdown.append({'points': self.R_REWARD_BAIT, 'reason': f'Financial reward bait detected ({", ".join(triggered.get("money", []))})'})
             suspicious_phrases.extend(triggered.get('money', []))
 
         if features.get('body_authority', 0) > 0:
             risk_factors.append(f"Pseudo-authority indicators detected ({', '.join(triggered.get('authority', []))})")
             forensic_signals.append({"type": "authority", "severity": "medium", "message": "⚠ Fake authority indicators identified"})
             risk_score_pool += self.R_AUTHORITY
+            score_breakdown.append({'points': self.R_AUTHORITY, 'reason': f'Pseudo-authority indicators detected ({", ".join(triggered.get("authority", []))})'})
             suspicious_phrases.extend(triggered.get('authority', []))
 
         if features.get('suspicious_tld_count', 0) > 0:
             risk_factors.append("Message contains links to high-risk Top-Level Domains")
             risk_score_pool += self.R_SUSPICIOUS_TLD
+            score_breakdown.append({'points': self.R_SUSPICIOUS_TLD, 'reason': 'Message contains links to high-risk Top-Level Domains'})
 
         link_threat = any(l.get('is_malicious') for l in link_results) if link_results else False
         if link_threat:
             risk_factors.append("Real-time database confirms one or more links are MALICIOUS")
             forensic_signals.append({"type": "blacklist", "severity": "critical", "message": "⚠ Verified MALICIOUS payload URLs detected"})
             risk_score_pool += self.R_MALICIOUS_URL
+            score_breakdown.append({'points': self.R_MALICIOUS_URL, 'reason': 'Real-time database confirms one or more links are MALICIOUS'})
             
         attach_threat = any(a.get('is_malicious') for a in attachment_results) if attachment_results else False
         if attach_threat:
             risk_factors.append("VirusTotal confirms MALWARE in attachments")
             forensic_signals.append({"type": "malware", "severity": "critical", "message": "⚠ MALWARE DETECTED in attachments"})
             risk_score_pool += self.R_MALWARE
+            score_breakdown.append({'points': self.R_MALWARE, 'reason': 'VirusTotal confirms MALWARE in attachments'})
 
         # 3. Final Scoring (The Formula)
         final_score = risk_score_pool - safe_score_pool
@@ -203,6 +221,7 @@ class RiskEngine:
             "entropy_score": round(float((len(set(features.get('combined_text', '').split())) / len(features.get('combined_text', '').split() or [1])) * 100), 1),
             "cta_count": features.get('url_count', 0) + features.get('cta_phrase_count', 0),
             "suspicious_phrases": list(set(suspicious_phrases)),
+            "score_breakdown": score_breakdown,
             "status": "FINALIZED"
         }
 
@@ -252,6 +271,8 @@ class RiskEngine:
             "complexity_score": inner.get('complexity_score', 24.5),
             "entropy_score": inner.get('entropy_score', 12.8),
             "suspicious_phrases": inner.get('suspicious_phrases', []),
-            "status": inner.get('status', "FINALIZED")
+            "score_breakdown": inner.get('score_breakdown', []),
+            "status": inner.get('status', "FINALIZED"),
+            "gemini_explanation": inner.get('gemini_explanation')
         }
         return norm

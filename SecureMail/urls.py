@@ -17,6 +17,7 @@ urlpatterns = [
     path('inbox/<str:folder>/', views.inbox, name='inbox_folder'),
     path('sync/', views.sync_gmail, name='sync_gmail'),
     path('email/<int:id>/', views.email_view, name='email_view'),
+    path('email/<int:id>/generate-explanation/', views.generate_explanation, name='generate_explanation'),
     path('email/<int:id>/star/', views.toggle_star, name='toggle_star'),
     path('email/<int:id>/delete/', views.delete_email, name='delete_email'),
     path('email/<int:id>/false-positive/', views.report_false_positive, name='report_false_positive'),

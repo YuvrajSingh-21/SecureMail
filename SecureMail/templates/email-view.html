@@ -167,35 +167,6 @@
                                 </p>
                             </div>
 
-                            <!-- Forensic Explanations -->
-                            <div class="space-y-8 mb-10">
-                                <p class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-[0.2em] border-b border-gray-100  pb-3">Forensic Explanations</p>
-                                <ul class="space-y-6">
-                                    {% if forensic.analysis.explanations %}
-                                        {% for exp in forensic.analysis.explanations %}
-                                        <li class="flex items-start gap-5 group">
-                                            <div class="w-8 h-8 rounded-xl 
-                                                {% if exp.severity == 'critical' or exp.severity == 'high' %}bg-red-100 
-                                                {% elif exp.severity == 'medium' %}bg-amber-100 
-                                                {% else %}bg-green-100{% endif %} 
-                                                flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
-                                                <i data-lucide="{% if exp.severity == 'safe' %}check-circle{% elif exp.severity == 'critical' %}shield-off{% else %}alert-circle{% endif %}" 
-                                                   class="w-4 h-4 {% if exp.severity == 'critical' or exp.severity == 'high' %}text-red-600 
-                                                                  {% elif exp.severity == 'medium' %}text-amber-600 
-                                                                  {% else %}text-green-600{% endif %}"></i>
-                                            </div>
-                                            <span class="text-[13px] font-bold text-[var(--sys-text)]  leading-relaxed">{{ exp.message }}</span>
-                                        </li>
-                                        {% endfor %}
-                                    {% else %}
-                                        <li class="flex items-center gap-4 text-[var(--sys-text-secondary)]">
-                                            <i data-lucide="info" class="w-4 h-4"></i>
-                                            <span class="text-[13px] font-bold uppercase tracking-tight">No suspicious behavioral indicators detected.</span>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-
                             <!-- Engine Synopsis Card -->
                             <div class="p-6 rounded-3xl 
                                 {% if forensic.analysis.label == 'PHISHING' %}bg-red-50/50  border-red-100/50 
@@ -208,10 +179,10 @@
                                     {% elif forensic.analysis.label == 'SAFE' or forensic.analysis.label == 'PROMOTIONAL' or forensic.analysis.label == 'NEWSLETTER' or forensic.analysis.label == 'SOCIAL' %}text-green-600
                                     {% else %}text-blue-600{% endif %} mb-3 flex items-center gap-2 uppercase tracking-widest">
                                     <i data-lucide="info" class="w-4 h-4"></i>
-                                    Engine Synopsis
+                                    AI Summary
                                 </p>
                                 <p class="text-[13px] text-[var(--sys-text)]  leading-relaxed font-bold">
-                                    {{ forensic.analysis.summary|default:"Forensic analysis completed. Structural and linguistic integrity verified." }}
+                                    {{ forensic.analysis.gemini_explanation.summary|default:forensic.analysis.summary }}
                                 </p>
                             </div>
                         </div>
@@ -220,7 +191,7 @@
                             <div class="relative z-10">
                                 <h4 class="text-2xl font-black mb-3 tracking-tight">Safe Link™</h4>
                                 <p class="text-xs text-blue-50 opacity-90 leading-relaxed mb-10 font-bold uppercase tracking-wider">Every URL in this message has been neutralized and wrapped in our real-time scanning proxy.</p>
-                                <button onclick="document.getElementById('audit-modal').classList.remove('hidden')" class="w-full py-4 bg-gray-100 hover:bg-white/30 rounded-2xl text-[10px] font-black tracking-[0.3em] transition-all uppercase backdrop-blur-md">Full Technical Audit</button>
+                                <button onclick="openAuditModal()" class="w-full py-4 bg-gray-100 hover:bg-white/30 rounded-2xl text-[10px] font-black tracking-[0.3em] transition-all uppercase backdrop-blur-md">Full Technical Audit</button>
                             </div>
                             <i data-lucide="link-2" class="absolute -right-8 -bottom-8 w-48 h-48 text-[var(--sys-text)]/10 -rotate-12 group-hover:scale-110 transition-transform duration-700"></i>
                         </div>
@@ -233,165 +204,272 @@
 
 <!-- AUDIT MODAL -->
 <div id="audit-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10 bg-black/80 backdrop-blur-sm animate-fade-in">
-    <div class="bg-white  w-full max-w-5xl max-h-[90vh] rounded-[3rem] border border-gray-100  shadow-2xl flex flex-col overflow-hidden animate-slide-up">
-        <!-- Modal Header -->
-        <div class="p-8 border-b border-gray-100  flex items-center justify-between">
+    <div class="bg-white w-full max-w-[1000px] max-h-[90vh] rounded-3xl border border-gray-100 shadow-2xl flex flex-col overflow-hidden animate-slide-up">
+        
+        <!-- Header -->
+        <div class="p-6 border-b border-gray-100 bg-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-                <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="SecureMail">
+                <img src="{% static 'SecureMail/images/logo.png' %}" class="w-10 h-10 rounded-xl" alt="SecureMail">
                 <div>
-                    <h2 class="text-2xl font-black text-[var(--sys-text)]  tracking-tight uppercase">Technical Forensic Audit</h2>
-                    <p class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest mt-1">INTERNAL SECURITY INTELLIGENCE REPORT</p>
+                    <h2 class="text-xl font-black text-[var(--sys-text)] tracking-tight uppercase">Technical Forensic Audit</h2>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Incident ID: #{{ email.id }} | {{ email.received_at|date:"Y-m-d H:i:s" }}</p>
                 </div>
             </div>
-            <button onclick="document.getElementById('audit-modal').classList.add('hidden')" class="p-3 hover:bg-gray-100  rounded-2xl transition-colors">
-                <i data-lucide="x" class="w-6 h-6 text-[var(--sys-text-secondary)]"></i>
-            </button>
+            <div class="flex items-center gap-4 self-end sm:self-auto">
+                <div class="text-right hidden sm:block">
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Risk Score</p>
+                    <p class="text-lg font-black text-[var(--sys-text)] leading-none">{{ forensic.analysis.score|floatformat:1 }}/100</p>
+                </div>
+                <div class="px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest
+                    {% if forensic.analysis.label == 'PHISHING' %}bg-red-100 text-red-600
+                    {% elif forensic.analysis.label == 'SUSPICIOUS' %}bg-amber-100 text-amber-600
+                    {% elif forensic.analysis.label == 'PROMOTIONAL' %}bg-blue-100 text-blue-600
+                    {% else %}bg-green-100 text-green-600{% endif %}">
+                    {{ forensic.analysis.label|default:"SAFE" }}
+                </div>
+                <button onclick="document.getElementById('audit-modal').classList.add('hidden')" class="p-2 hover:bg-gray-200 rounded-xl transition-colors shrink-0">
+                    <i data-lucide="x" class="w-5 h-5 text-gray-500"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- Modal Body -->
-        <div class="flex-1 overflow-y-auto p-8 md:p-12 custom-scrollbar">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <!-- Section A: Threat Summary -->
-                <div class="space-y-8">
-                    <div>
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-4">SECTION A — THREAT SUMMARY</p>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-gray-50  p-6 rounded-3xl border border-gray-100 ">
-                                <p class="text-[9px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest mb-1">Threat Level</p>
-                                <p class="text-xl font-black uppercase tracking-tight
-                                    {% if forensic.analysis.label == 'PHISHING' %}text-red-500
-                                    {% elif forensic.analysis.label == 'SUSPICIOUS' %}text-yellow-500
-                                    {% elif forensic.analysis.label == 'PROMOTIONAL' %}text-[var(--sys-primary)]
-                                    {% else %}text-green-500{% endif %}">
-                                    {{ forensic.analysis.label|default:"SAFE" }}
-                                </p>
-                            </div>
-                            <div class="bg-gray-50  p-6 rounded-3xl border border-gray-100 ">
-                                <p class="text-[9px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest mb-1">Risk Score</p>
-                                <p class="text-xl font-black text-[var(--sys-text)] ">{{ forensic.analysis.score|floatformat:1 }}<span class="text-xs text-[var(--sys-text-secondary)]">/100</span></p>
-                            </div>
-                            <div class="bg-gray-50  p-6 rounded-3xl border border-gray-100 ">
-                                <p class="text-[9px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest mb-1">ML Confidence</p>
-                                <p class="text-xl font-black text-[var(--sys-text)] ">{{ forensic.analysis.confidence|floatformat:1 }}%</p>
-                            </div>
-                            <div class="bg-gray-50  p-6 rounded-3xl border border-gray-100 ">
-                                <p class="text-[9px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest mb-1">Verdict Status</p>
-                                <p class="text-xl font-black text-[var(--sys-primary)]">{{ forensic.analysis.status|default:"FINALIZED" }}</p>
-                            </div>
-                        </div>
+        <!-- Body -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar bg-white space-y-8">
+            
+            <!-- SECTION 1: Executive Summary -->
+            <div class="bg-gray-50 border border-gray-100 rounded-2xl p-6">
+                <h3 class="text-xs font-black text-gray-400 uppercase tracking-widest mb-4 border-b border-gray-200 pb-2">Executive Summary</h3>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-700 leading-relaxed" id="gemini-summary-container">
+                            {% if forensic.analysis.gemini_explanation %}
+                                {{ forensic.analysis.gemini_explanation.summary|default:forensic.analysis.summary|default:"No summary available." }}
+                            {% else %}
+                                <span class="animate-pulse text-gray-400">Waiting for AI summary...</span>
+                            {% endif %}
+                        </p>
                     </div>
-
-                    <!-- Section B: Intelligence Balancing -->
-                    <div>
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-6">SECTION B — INTELLIGENCE BALANCING</p>
-                        <div class="space-y-6">
-                            <div>
-                                <p class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-3">RISK FACTORS IDENTIFIED</p>
-                                <div class="space-y-2">
-                                    {% for factor in forensic.analysis.risk_factors %}
-                                        {% if factor == "No manipulative behavioral signals detected." or factor == "No phishing, credential harvesting, or manipulative behavioral signals detected." %}
-                                            <div class="flex items-center gap-3 p-3 bg-green-500/5 border border-green-500/10 rounded-xl text-[11px] font-bold text-green-600">
-                                                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                                {{ factor }}
-                                            </div>
-                                        {% else %}
-                                            <div class="flex items-center gap-3 p-3 bg-red-500/5 border border-red-500/10 rounded-xl text-[11px] font-bold text-red-600">
-                                                <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                                                {{ factor }}
-                                            </div>
-                                        {% endif %}
-                                    {% empty %}
-                                        <div class="flex items-center gap-3 p-3 bg-green-500/5 border border-green-500/10 rounded-xl text-[11px] font-bold text-green-600">
-                                            <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                            No phishing, credential harvesting, or manipulative behavioral signals were detected.
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-
-                            <div>
-                                <p class="text-[9px] font-black text-green-500 uppercase tracking-widest mb-3">SAFE FACTORS DETECTED</p>
-                                <div class="space-y-2">
-                                    {% for factor in forensic.analysis.safe_factors %}
-                                    <div class="flex items-center gap-3 p-3 bg-green-500/5 border border-green-500/10 rounded-xl text-[11px] font-bold text-green-600">
-                                        <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                        {{ factor }}
-                                    </div>
-                                    {% empty %}
-                                    <div class="text-[11px] text-[var(--sys-text-secondary)] italic px-3">Standard validation passed.</div>
-                                    {% endfor %}
-                                </div>
-                            </div>
+                    <div class="flex gap-6 shrink-0 border-t md:border-t-0 md:border-l border-gray-200 pt-4 md:pt-0 md:pl-6">
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Verdict</p>
+                            <p class="text-lg font-black text-gray-800">{{ forensic.analysis.label|default:"SAFE" }}</p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Right Column -->
-                <div class="space-y-8">
-                    <!-- Section C: URL Analysis -->
-                    <div>
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-6">SECTION C — URL FORENSICS</p>
-                        <div class="bg-gray-100  rounded-3xl p-6 font-mono text-[11px] text-green-700  border border-gray-200  shadow-inner">
-                            <div class="flex justify-between mb-2"><span>CTA Density:</span> <span class="text-[var(--sys-text)] ">{{ forensic.analysis.cta_count }}</span></div>
-                            <div class="flex justify-between mb-2"><span>Redirect Density:</span> <span class="text-[var(--sys-text)] ">{{ forensic.features.marketing_count|default:0 }}</span></div>
-                            <div class="flex justify-between mb-2"><span>Obfuscated Links:</span> <span class="text-[var(--sys-text)] ">{{ forensic.features.shortened_url_count|default:0 }}</span></div>
-                            <div class="flex justify-between mb-4"><span>Target Domains:</span> <span class="text-[var(--sys-text)] ">{{ forensic.features.domain_count|default:1 }}</span></div>
-                            <div class="border-t border-gray-300  pt-4 space-y-2">
-                                <p class="text-[var(--sys-text-secondary)] uppercase text-[9px]">Target Audit:</p>
-                                {% for link in email.analysis.detailed_report.links|slice:":3" %}
-                                <div class="flex items-center justify-between gap-4">
-                                    <span class="truncate text-[var(--sys-text-secondary)]" title="{{ link.url }}">{{ link.url }}</span>
-                                    <span class="{% if link.is_malicious %}text-red-500{% else %}text-green-500{% endif %} uppercase text-[9px]">[{{ link.threat_type|default:"SAFE" }}]</span>
-                                </div>
-                                {% empty %}
-                                <p class="text-[var(--sys-text-secondary)] italic">No external links found.</p>
-                                {% endfor %}
-                            </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Confidence</p>
+                            <p class="text-lg font-black text-gray-800">{{ forensic.analysis.confidence|floatformat:1 }}%</p>
                         </div>
-                    </div>
-
-                    <!-- Section D: Sender Analysis -->
-                    <div>
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-6">SECTION D — SENDER REPUTATION</p>
-                        <div class="bg-gray-50  p-6 rounded-3xl border border-gray-100 ">
-                            <div class="flex items-center gap-4 mb-6">
-                                <div class="w-10 h-10 rounded-xl bg-gray-200  flex items-center justify-center text-[var(--sys-text-secondary)] font-bold">@</div>
-                                <div>
-                                    <p class="text-xs font-black text-[var(--sys-text)]  tracking-tight">{{ email.sender_email }}</p>
-                                    <p class="text-[9px] text-[var(--sys-text-secondary)] font-bold uppercase tracking-widest">Authenticated Sender</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-white  rounded-xl border border-gray-100 ">
-                                <span class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase">Trust Score</span>
-                                <span class="text-sm font-black {% if forensic.analysis.sender_reputation >= 80 %}text-green-500{% elif forensic.analysis.sender_reputation >= 40 %}text-yellow-500{% else %}text-red-500{% endif %}">{{ forensic.analysis.sender_reputation|floatformat:0 }}/100</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Section E: ML Breakdown -->
-                    <div>
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mb-6">SECTION E — ML DECISION BREAKDOWN</p>
-                        <div class="space-y-4">
-                            <p class="text-xs text-[var(--sys-text-secondary)] leading-relaxed font-bold">Linguistic and structural vectorization results:</p>
-                            <div class="flex flex-wrap gap-2 mb-4">
-                                {% for phrase in forensic.analysis.suspicious_phrases %}
-                                <span class="px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-red-500/20">Trigger: "{{ phrase }}"</span>
-                                {% empty %}
-                                <span class="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-[9px] font-black uppercase tracking-widest border border-green-500/10">No Suspicious Phrases Detected</span>
-                                {% endfor %}
-                                <span class="px-3 py-1 bg-blue-500/10 text-[var(--sys-primary)] rounded-full text-[9px] font-black uppercase tracking-widest border border-blue-500/20">Linguistic Complexity: {{ forensic.analysis.complexity_score|default:"24.8" }}</span>
-                                <span class="px-3 py-1 bg-gray-500/10 text-[var(--sys-text-secondary)] rounded-full text-[9px] font-black uppercase tracking-widest border border-gray-500/20">Structural Entropy: {{ forensic.analysis.entropy_score|default:"12.4" }}</span>
-                            </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Risk Score</p>
+                            <p class="text-lg font-black text-gray-800">{{ forensic.analysis.score|floatformat:1 }}</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- SECTION 2: AI Investigation -->
+            <div class="bg-purple-50/30 border border-purple-100 rounded-2xl p-6">
+                <h3 class="text-xs font-black text-purple-400 uppercase tracking-widest mb-4 border-b border-purple-100 pb-2 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> AI Investigation Report
+                </h3>
+                <div id="gemini-modal-container" class="gemini-dynamic-container">
+                    {% if forensic.analysis.gemini_explanation %}
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Analyst Explanation</h4>
+                            <p class="text-sm font-medium text-gray-800 leading-relaxed">{{ forensic.analysis.gemini_explanation.user_explanation }}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Technical Analysis</h4>
+                            <p class="text-sm font-medium text-gray-800 leading-relaxed">{{ forensic.analysis.gemini_explanation.technical_analysis }}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Confidence Assessment</h4>
+                            <p class="text-sm font-medium text-gray-800 leading-relaxed">{{ forensic.analysis.gemini_explanation.confidence_comment }}</p>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                            <h4 class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Recommended Action</h4>
+                            <p class="text-sm font-bold text-blue-800">{{ forensic.analysis.gemini_explanation.recommended_action }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="flex flex-col items-center justify-center py-10">
+                        <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-purple-500 mb-3"></i>
+                        <p class="text-sm font-bold text-gray-600 mb-1">Generating AI Investigation...</p>
+                        <p class="text-xs text-gray-400">Analyzing email... This may take a few seconds.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- SECTION 4: Red Flags (Render if present) -->
+            <div id="gemini-red-flags-container">
+                {% if forensic.analysis.gemini_explanation and forensic.analysis.gemini_explanation.red_flags %}
+                <div class="bg-red-50 border border-red-100 rounded-2xl p-6">
+                    <h3 class="text-xs font-black text-red-400 uppercase tracking-widest mb-4 border-b border-red-100 pb-2 flex items-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i> Red Flags Identified
+                    </h3>
+                    <ul class="space-y-3">
+                        {% for flag in forensic.analysis.gemini_explanation.red_flags %}
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i>
+                            <span class="text-sm font-bold text-red-800">{{ flag }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- SECTION 3: Technical Evidence -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Sender Intelligence -->
+                <div class="border border-gray-100 rounded-2xl p-5 bg-white">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Sender Intelligence</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center pb-2 border-b border-gray-50">
+                            <span class="text-xs text-gray-500">Sender Domain</span>
+                            <span class="text-xs font-bold text-gray-800 truncate pl-4">{{ email.sender_email }}</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2 border-b border-gray-50">
+                            <span class="text-xs text-gray-500">Status</span>
+                            <span class="text-xs font-bold {% if forensic.analysis.trusted_sender %}text-green-600{% else %}text-amber-600{% endif %}">
+                                {% if forensic.analysis.trusted_sender %}Verified{% else %}Unverified{% endif %}
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Reputation Score</span>
+                            <span class="text-xs font-bold text-gray-800">{{ forensic.analysis.sender_reputation|floatformat:0 }}/100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threat Indicators -->
+                <div class="border border-gray-100 rounded-2xl p-5 bg-white">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Threat Indicators</h3>
+                    <div class="space-y-2 max-h-32 overflow-y-auto custom-scrollbar pr-2">
+                        {% for factor in forensic.analysis.risk_factors %}
+                            {% if factor == "No manipulative behavioral signals detected." or factor == "No phishing, credential harvesting, or manipulative behavioral signals detected." %}
+                                <div class="text-xs font-bold text-green-600 flex items-center gap-2">
+                                    <i data-lucide="check" class="w-3 h-3"></i> None Detected
+                                </div>
+                            {% else %}
+                                <div class="text-xs font-bold text-red-600 flex items-start gap-2">
+                                    <i data-lucide="alert-triangle" class="w-3 h-3 shrink-0 mt-0.5"></i> {{ factor }}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="text-xs font-bold text-green-600 flex items-center gap-2">
+                                <i data-lucide="check" class="w-3 h-3"></i> None Detected
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ML Metrics -->
+                <div class="border border-gray-100 rounded-2xl p-5 bg-white">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">ML Engine Metrics</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Complexity</p>
+                            <p class="text-lg font-black text-gray-800">{{ forensic.analysis.complexity_score|default:"N/A" }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest">Entropy</p>
+                            <p class="text-lg font-black text-gray-800">{{ forensic.analysis.entropy_score|default:"N/A" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trigger Phrases -->
+                <div class="border border-gray-100 rounded-2xl p-5 bg-white">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Trigger Phrases</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% if forensic.analysis.suspicious_phrases %}
+                            {% for phrase in forensic.analysis.suspicious_phrases %}
+                            <span class="px-2 py-1 bg-red-50 text-red-600 rounded md text-[10px] font-bold border border-red-100">"{{ phrase }}"</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="text-xs text-gray-500 italic">No suspicious phrases detected.</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: IOC Summary Table -->
+            <div class="border border-gray-100 rounded-2xl overflow-hidden bg-white">
+                <div class="bg-gray-50 p-4 border-b border-gray-100">
+                    <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Indicators of Compromise (IoCs) & Auth</h3>
+                </div>
+                <table class="w-full text-left border-collapse">
+                    <tbody>
+                        {% if email.analysis.detailed_report.links %}
+                        <tr class="border-b border-gray-100">
+                            <td class="p-4 text-[10px] font-black text-gray-500 uppercase tracking-widest w-1/4 align-top">URLs</td>
+                            <td class="p-4 space-y-2">
+                                {% for link in email.analysis.detailed_report.links %}
+                                <div class="flex items-center justify-between gap-4">
+                                    <span class="text-xs font-mono text-gray-800 break-all">{{ link.url }}</span>
+                                    <span class="shrink-0 text-[9px] font-black uppercase px-2 py-0.5 rounded {% if link.is_malicious %}bg-red-100 text-red-600{% else %}bg-green-100 text-green-600{% endif %}">
+                                        {{ link.threat_type|default:"SAFE" }}
+                                    </span>
+                                </div>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        <tr class="border-b border-gray-100 hidden sm:table-row">
+                            <td class="p-4 text-[10px] font-black text-gray-500 uppercase tracking-widest w-1/4">Authentication</td>
+                            <td class="p-4">
+                                <div class="flex gap-4">
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[10px] font-bold text-gray-500">SPF:</span>
+                                        {% if email.spf_pass %}<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>{% else %}<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>{% endif %}
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[10px] font-bold text-gray-500">DKIM:</span>
+                                        {% if email.dkim_pass %}<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>{% else %}<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>{% endif %}
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[10px] font-bold text-gray-500">DMARC:</span>
+                                        {% if email.dmarc_pass %}<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>{% else %}<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>{% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Mobile Auth -->
+                        <tr class="border-b border-gray-100 sm:hidden">
+                            <td colspan="2" class="p-4">
+                                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3">Authentication</p>
+                                <div class="flex justify-between">
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[10px] font-bold text-gray-500">SPF:</span>
+                                        {% if email.spf_pass %}<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>{% else %}<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>{% endif %}
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[10px] font-bold text-gray-500">DKIM:</span>
+                                        {% if email.dkim_pass %}<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>{% else %}<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>{% endif %}
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[10px] font-bold text-gray-500">DMARC:</span>
+                                        {% if email.dmarc_pass %}<i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i>{% else %}<i data-lucide="x-circle" class="w-4 h-4 text-red-500"></i>{% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
         <!-- Footer -->
-        <div class="p-8 bg-gray-50  border-t border-gray-100  flex items-center justify-between">
-            <p class="text-[9px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest italic">Generated by SecureMail Local Intelligence Engine v2.4</p>
-            <button id="export-pdf-btn" class="px-6 py-2 bg-blue-600 text-[var(--sys-text)] rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-500">Export PDF Report</button>
+        <div class="p-6 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+            <button onclick="document.getElementById('audit-modal').classList.add('hidden')" class="px-5 py-2 hover:bg-gray-200 text-gray-600 rounded-lg text-xs font-bold transition-colors">
+                Close
+            </button>
+            <button id="export-pdf-btn" class="px-5 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold shadow-md hover:bg-blue-700 transition-colors flex items-center gap-2">
+                <i data-lucide="download" class="w-4 h-4"></i> Export PDF Report
+            </button>
         </div>
     </div>
 </div>
@@ -484,11 +562,12 @@
 
                 // Create a temporary container
                 const reportContainer = document.createElement('div');
-                reportContainer.style.padding = '40px';
+                reportContainer.style.padding = '0px';
                 reportContainer.style.fontFamily = 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
                 reportContainer.style.color = '#1f2937';
                 reportContainer.style.backgroundColor = '#ffffff';
-                reportContainer.style.width = '800px';
+                reportContainer.style.width = '100%';
+                reportContainer.style.boxSizing = 'border-box';
 
                 // Email Metadata
                 const subject = document.querySelector('h1')?.innerText || 'No Subject';
@@ -517,105 +596,202 @@
                 }
 
                 // Build Audit Report HTML cleanly
-                const riskList = (analysis.risk_factors || []).map(f => `<li style="margin-bottom: 8px; color: #dc2626;">⚠ ${f}</li>`).join('') || '<li style="color: #16a34a;">✔ No manipulative behavioral signals detected.</li>';
-                const safeList = (analysis.safe_factors || []).map(f => `<li style="margin-bottom: 8px; color: #16a34a;">✔ ${f}</li>`).join('');
+                const gemini = analysis.gemini_explanation || {};
                 
-                // URL Forensics
-                const linkNodes = Array.from(document.querySelectorAll('.border-t.pt-4 .flex.items-center, .border-t.border-gray-300.pt-4 .flex.items-center, .border-t.border-gray-800.pt-4 .flex.items-center'));
+                // 1. Exec Summary
+                const summaryHtml = gemini.summary || analysis.summary || 'No summary available.';
+                
+                // 3. Red Flags
+                const flags = gemini.red_flags || [];
+                const redFlagsHtml = flags.length > 0 ? `
+                    <div style="margin-bottom: 30px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; page-break-inside: avoid;">
+                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #dc2626; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #fecaca; padding-bottom: 10px;">Red Flags</h2>
+                        <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 13px;">
+                            ${flags.map(f => `<li style="margin-bottom: 8px; color: #991b1b; display: flex; align-items: flex-start; gap: 8px;"><span style="color: #ef4444;">⚠</span> <span>${f}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
+                // 5. Threat Indicators
+                const riskList = (analysis.risk_factors || []).map(f => `<li style="margin-bottom: 8px; color: #dc2626; display: flex; align-items: flex-start; gap: 8px;"><span style="color: #ef4444;">⚠</span> <span>${f}</span></li>`).join('') || '<li style="margin-bottom: 8px; color: #16a34a; display: flex; align-items: center; gap: 8px;"><span style="color: #22c55e;">✔</span> <span>None Detected</span></li>';
+
+                // 7. Trigger Phrases
+                const phrasesHtml = (analysis.suspicious_phrases && analysis.suspicious_phrases.length > 0)
+                    ? analysis.suspicious_phrases.map(p => `<span style="display: inline-block; padding: 4px 8px; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 4px; font-size: 11px; margin: 0 4px 4px 0; font-weight: bold;">"${p}"</span>`).join('')
+                    : '<span style="font-size: 12px; color: #6b7280; font-style: italic;">No suspicious phrases detected.</span>';
+
+                // 8. IOC Summary
+                const linkNodes = Array.from(document.querySelectorAll('.border-t.pt-4 .flex.items-center, .border-t.border-gray-300.pt-4 .flex.items-center, .border-t.border-gray-800.pt-4 .flex.items-center, td.p-4.space-y-2 .flex.items-center.justify-between.gap-4'));
                 let linksHtml = '';
                 if (linkNodes.length > 0) {
                     linksHtml = linkNodes.map(el => {
-                        const url = el.querySelector('span.truncate')?.innerText || '';
+                        const url = el.querySelector('span.truncate, span.break-all')?.innerText || '';
                         const status = el.querySelectorAll('span')[1]?.innerText || '';
                         const color = status.includes('SAFE') ? '#16a34a' : '#dc2626';
-                        return `<tr><td style="padding: 6px; font-size: 11px; font-family: monospace; border-bottom: 1px solid #e2e8f0; color: #374151; word-break: break-all;">${url}</td><td style="padding: 6px; font-size: 11px; font-family: monospace; border-bottom: 1px solid #e2e8f0; text-align: right; color: ${color};">${status}</td></tr>`;
+                        return `<tr><td style="padding: 8px; font-size: 11px; font-family: monospace; border-bottom: 1px solid #e2e8f0; color: #374151; word-break: break-all;">${url}</td><td style="padding: 8px; font-size: 10px; font-weight: bold; border-bottom: 1px solid #e2e8f0; text-align: right; color: ${color};">${status}</td></tr>`;
                     }).join('');
                 } else {
-                    linksHtml = '<tr><td colspan="2" style="padding: 6px; font-size: 12px; color: #6b7280; font-style: italic; border-bottom: 1px solid #e2e8f0;">No external links found.</td></tr>';
+                    linksHtml = '<tr><td colspan="2" style="padding: 8px; font-size: 12px; color: #6b7280; font-style: italic; border-bottom: 1px solid #e2e8f0;">No external links found.</td></tr>';
                 }
 
+                // Auth
+                const spf = `{% if email.spf_pass %}<span style="color: #16a34a; font-weight: bold;">PASS</span>{% else %}<span style="color: #dc2626; font-weight: bold;">FAIL</span>{% endif %}`;
+                const dkim = `{% if email.dkim_pass %}<span style="color: #16a34a; font-weight: bold;">PASS</span>{% else %}<span style="color: #dc2626; font-weight: bold;">FAIL</span>{% endif %}`;
+                const dmarc = `{% if email.dmarc_pass %}<span style="color: #16a34a; font-weight: bold;">PASS</span>{% else %}<span style="color: #dc2626; font-weight: bold;">FAIL</span>{% endif %}`;
+
                 reportContainer.innerHTML = `
-                    <div style="border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px;">
-                        <h1 style="color: #2563eb; margin: 0 0 10px 0; font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;">SecureMail Forensic Report</h1>
-                        <p style="margin: 0; color: #6b7280; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em;">Generated by SecureMail Local Intelligence Engine v2.4</p>
-                    </div>
-                    
-                    <div style="margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Email Metadata</h2>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>Subject:</strong> ${subject}</p>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>Sender:</strong> ${sender} ${emailAddress}</p>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>Date:</strong> ${date}</p>
+                    <div style="border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 25px;">
+                        <h1 style="color: #2563eb; margin: 0 0 10px 0; font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;">Technical Forensic Audit</h1>
+                        <p style="margin: 0; color: #6b7280; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em;">Incident ID: #${"{{ email.id }}"} | Generated by SecureMail Engine v2.4</p>
                     </div>
 
-                    <div style="margin-bottom: 40px;">
-                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Original Email Content (Text Extraction)</h2>
-                        <div style="border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; background: #f8fafc; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; color: #1f2937;">${plainText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
-                    </div>
-
-                    <div style="page-break-before: always;">
-                        <h2 style="margin: 0 0 20px 0; font-size: 16px; font-weight: 900; color: #1f2937; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Technical Audit Summary</h2>
-                        
-                        <table style="width: 100%; margin-bottom: 30px; border-collapse: collapse;">
-                            <tr>
-                                <td style="padding: 15px; border: 1px solid #e2e8f0; background: #f8fafc; width: 25%;"><strong>Threat Level:</strong><br><span style="font-size: 18px; color: ${analysis.label === 'PHISHING' ? '#dc2626' : (analysis.label === 'SUSPICIOUS' ? '#d97706' : '#16a34a')}">${analysis.label || 'SAFE'}</span></td>
-                                <td style="padding: 15px; border: 1px solid #e2e8f0; background: #f8fafc; width: 25%;"><strong>Risk Score:</strong><br><span style="font-size: 18px;">${analysis.score || 0}/100</span></td>
-                                <td style="padding: 15px; border: 1px solid #e2e8f0; background: #f8fafc; width: 25%;"><strong>Confidence:</strong><br><span style="font-size: 18px;">${analysis.confidence || 0}%</span></td>
-                                <td style="padding: 15px; border: 1px solid #e2e8f0; background: #f8fafc; width: 25%;"><strong>Status:</strong><br><span style="font-size: 18px; color: #2563eb;">${analysis.status || 'FINALIZED'}</span></td>
-                            </tr>
-                        </table>
-
-                        <div style="margin-bottom: 30px; page-break-inside: avoid;">
-                            <h3 style="font-size: 14px; font-weight: bold; color: #dc2626; margin-bottom: 10px;">RISK FACTORS IDENTIFIED</h3>
-                            <ul style="list-style-type: none; padding: 0; font-size: 13px;">
-                                ${riskList}
-                            </ul>
+                    <!-- 1. Executive Summary -->
+                    <div style="margin-bottom: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; page-break-inside: avoid;">
+                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Executive Summary</h2>
+                        <div style="display: flex; gap: 20px;">
+                            <div style="flex: 1; font-size: 14px; color: #374151; line-height: 1.5;">${summaryHtml}</div>
+                            <div style="width: 200px; border-left: 1px solid #e2e8f0; padding-left: 20px;">
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase;">Verdict</div>
+                                    <div style="font-size: 18px; font-weight: 900; color: ${analysis.label === 'PHISHING' ? '#dc2626' : (analysis.label === 'SUSPICIOUS' ? '#d97706' : '#16a34a')}">${analysis.label || 'SAFE'}</div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase;">Confidence</div>
+                                    <div style="font-size: 18px; font-weight: 900; color: #1f2937;">${analysis.confidence || 0}%</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase;">Risk Score</div>
+                                    <div style="font-size: 18px; font-weight: 900; color: #1f2937;">${analysis.score || 0}/100</div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <div style="margin-bottom: 40px; page-break-inside: avoid;">
-                            <h3 style="font-size: 14px; font-weight: bold; color: #16a34a; margin-bottom: 10px;">SAFE FACTORS DETECTED</h3>
-                            <ul style="list-style-type: none; padding: 0; font-size: 13px;">
-                                ${safeList}
-                            </ul>
+                    <!-- 2. AI Investigation Report -->
+                    <div style="margin-bottom: 25px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 20px; page-break-inside: auto;">
+                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #9333ea; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e9d5ff; padding-bottom: 10px;">AI Investigation Report</h2>
+                        
+                        <div style="margin-bottom: 15px; page-break-inside: avoid;">
+                            <h3 style="margin: 0 0 5px 0; font-size: 11px; font-weight: 900; color: #6b7280; text-transform: uppercase;">Analyst Explanation</h3>
+                            <p style="margin: 0; font-size: 14px; color: #1f2937; line-height: 1.5;">${gemini.user_explanation || 'No analyst explanation available.'}</p>
                         </div>
                         
-                        <table style="width: 100%; border-collapse: separate; border-spacing: 20px 0; margin-left: -20px; page-break-inside: avoid;">
+                        <div style="margin-bottom: 15px; page-break-inside: avoid;">
+                            <h3 style="margin: 0 0 5px 0; font-size: 11px; font-weight: 900; color: #6b7280; text-transform: uppercase;">Technical Analysis</h3>
+                            <p style="margin: 0; font-size: 14px; color: #1f2937; line-height: 1.5;">${gemini.technical_analysis || 'No technical analysis available.'}</p>
+                        </div>
+
+                        <div style="margin-bottom: 15px; page-break-inside: avoid;">
+                            <h3 style="margin: 0 0 5px 0; font-size: 11px; font-weight: 900; color: #6b7280; text-transform: uppercase;">Confidence Assessment</h3>
+                            <p style="margin: 0; font-size: 14px; color: #1f2937; line-height: 1.5;">${gemini.confidence_comment || 'No assessment available.'}</p>
+                        </div>
+
+                        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; page-break-inside: avoid;">
+                            <h3 style="margin: 0 0 5px 0; font-size: 11px; font-weight: 900; color: #3b82f6; text-transform: uppercase;">Recommended Action</h3>
+                            <p style="margin: 0; font-size: 14px; font-weight: bold; color: #1e40af;">${gemini.recommended_action || 'N/A'}</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Red Flags -->
+                    ${redFlagsHtml.replace('margin-bottom: 30px;', 'margin-bottom: 25px;')}
+
+                    <div style="display: table; width: 100%; table-layout: fixed; margin-bottom: 25px; page-break-inside: avoid;">
+                        <div style="display: table-row;">
+                            <!-- Left Column -->
+                            <div style="display: table-cell; width: 48%; padding-right: 2%; vertical-align: top;">
+                                <!-- 4. Sender Intelligence -->
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                    <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Sender Intelligence</h3>
+                                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 8px;">
+                                        <span style="font-size: 12px; color: #6b7280;">Domain</span>
+                                        <span style="font-size: 12px; font-weight: bold; color: #1f2937;">${emailAddress.split('@')[1] || emailAddress}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 8px;">
+                                        <span style="font-size: 12px; color: #6b7280;">Status</span>
+                                        <span style="font-size: 12px; font-weight: bold; color: ${analysis.trusted_sender ? '#16a34a' : '#d97706'};">${analysis.trusted_sender ? 'Verified' : 'Unverified'}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span style="font-size: 12px; color: #6b7280;">Reputation Score</span>
+                                        <span style="font-size: 12px; font-weight: bold; color: #1f2937;">${analysis.sender_reputation || 0}/100</span>
+                                    </div>
+                                </div>
+
+                                <!-- 6. ML Metrics -->
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                    <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">ML Metrics</h3>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div>
+                                            <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase;">Complexity</div>
+                                            <div style="font-size: 16px; font-weight: 900; color: #1f2937;">${analysis.complexity_score || 'N/A'}</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase;">Entropy</div>
+                                            <div style="font-size: 16px; font-weight: 900; color: #1f2937;">${analysis.entropy_score || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right Column -->
+                            <div style="display: table-cell; width: 48%; padding-left: 2%; vertical-align: top;">
+                                <!-- 5. Threat Indicators -->
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                    <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Threat Indicators</h3>
+                                    <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 12px; font-weight: bold;">
+                                        ${riskList}
+                                    </ul>
+                                </div>
+                                
+                                <!-- 7. Trigger Phrases -->
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                    <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Trigger Phrases</h3>
+                                    <div style="line-height: 1.8;">
+                                        ${phrasesHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. IOC Summary & URL Intelligence -->
+                    <div style="margin-bottom: 25px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; overflow: hidden; page-break-inside: avoid;">
+                        <div style="background: #f8fafc; padding: 15px; border-bottom: 1px solid #e2e8f0;">
+                            <h2 style="margin: 0; font-size: 12px; font-weight: 900; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em;">Indicators of Compromise (IoCs) & Auth</h2>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 50%; vertical-align: top; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; background: #f8fafc; box-sizing: border-box;">
-                                    <h3 style="font-size: 12px; font-weight: 900; color: #2563eb; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">URL Forensics</h3>
-                                    <table style="width: 100%; font-size: 12px; font-family: monospace; margin-bottom: 15px;">
-                                        <tr><td style="color: #6b7280; padding-bottom: 8px;">CTA Density:</td><td style="font-weight: bold; text-align: right; padding-bottom: 8px;">${analysis.cta_count || 0}</td></tr>
-                                        <tr><td style="color: #6b7280; padding-bottom: 8px;">Redirect Density:</td><td style="font-weight: bold; text-align: right; padding-bottom: 8px;">${features.marketing_count || 0}</td></tr>
-                                        <tr><td style="color: #6b7280; padding-bottom: 8px;">Obfuscated Links:</td><td style="font-weight: bold; text-align: right; padding-bottom: 8px;">${features.shortened_url_count || 0}</td></tr>
-                                        <tr><td style="color: #6b7280; padding-bottom: 8px;">Target Domains:</td><td style="font-weight: bold; text-align: right; padding-bottom: 8px;">${features.domain_count || 1}</td></tr>
-                                    </table>
-                                    <h4 style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px;">Target Audit:</h4>
-                                    <table style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                                <td style="width: 25%; padding: 15px; border-bottom: 1px solid #e2e8f0; font-size: 11px; font-weight: 900; color: #6b7280; text-transform: uppercase; vertical-align: top;">URLs</td>
+                                <td style="padding: 15px; border-bottom: 1px solid #e2e8f0;">
+                                    <table style="width: 100%; border-collapse: collapse;">
                                         ${linksHtml}
                                     </table>
                                 </td>
-                                
-                                <td style="width: 50%; vertical-align: top; box-sizing: border-box;">
-                                    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; background: #f8fafc; margin-bottom: 20px;">
-                                        <h3 style="font-size: 12px; font-weight: 900; color: #2563eb; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">Sender Reputation</h3>
-                                        <p style="font-size: 14px; font-weight: bold; margin-bottom: 5px; word-break: break-all;">${emailAddress}</p>
-                                        <p style="font-size: 12px; color: ${analysis.trusted_sender ? '#16a34a' : '#6b7280'}; margin-bottom: 15px;">${analysis.trusted_sender ? '✔ Authenticated Sender' : 'Standard Validation'}</p>
-                                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
-                                            <span style="color: #6b7280;">Trust Score:</span> <span style="font-weight: bold;">${analysis.sender_reputation || 50}/100</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; background: #f8fafc;">
-                                        <h3 style="font-size: 12px; font-weight: 900; color: #2563eb; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">ML Decision Breakdown</h3>
-                                        <p style="font-size: 11px; color: #6b7280; margin-bottom: 10px;">Linguistic and structural vectorization results:</p>
-                                        <p style="font-size: 12px; font-weight: bold; color: #374151; margin-bottom: 15px; word-break: break-word;">${(analysis.suspicious_phrases || []).join(', ') || 'No Suspicious Phrases Detected'}</p>
-                                        <table style="width: 100%; font-size: 12px; font-family: monospace;">
-                                            <tr><td style="color: #6b7280; padding-bottom: 8px;">Linguistic Complexity:</td><td style="font-weight: bold; text-align: right; padding-bottom: 8px;">${analysis.complexity_score || 0}</td></tr>
-                                            <tr><td style="color: #6b7280;">Structural Entropy:</td><td style="font-weight: bold; text-align: right;">${analysis.entropy_score || 0}</td></tr>
-                                        </table>
+                            </tr>
+                            <tr>
+                                <td style="width: 25%; padding: 15px; font-size: 11px; font-weight: 900; color: #6b7280; text-transform: uppercase; vertical-align: top;">Authentication</td>
+                                <td style="padding: 15px;">
+                                    <div style="display: flex; gap: 20px; font-size: 12px;">
+                                        <div><span style="font-weight: bold; color: #6b7280;">SPF:</span> ${spf}</div>
+                                        <div><span style="font-weight: bold; color: #6b7280;">DKIM:</span> ${dkim}</div>
+                                        <div><span style="font-weight: bold; color: #6b7280;">DMARC:</span> ${dmarc}</div>
                                     </div>
                                 </td>
                             </tr>
                         </table>
+                    </div>
+
+                    <!-- 10. Email Metadata -->
+                    <div style="margin-bottom: 25px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; page-break-inside: avoid;">
+                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Email Metadata</h2>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Subject:</strong> ${subject}</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Sender:</strong> ${sender} &lt;${emailAddress}&gt;</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Date:</strong> ${date}</p>
+                    </div>
+
+                    <!-- 11. Original Email -->
+                    <div style="margin-bottom: 25px; page-break-inside: auto;">
+                        <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Original Email Content (Text Extraction)</h2>
+                        <div style="border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; background: #f8fafc; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; color: #1f2937;">${plainText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
                     </div>
                 `;
 
@@ -632,11 +808,26 @@
                 doc.open();
                 doc.write('<!DOCTYPE html><html><head><title>SecureMail Forensic Report</title>');
                 doc.write('<style>');
-                doc.write('@page { size: A4 portrait; margin: 15mm; }');
-                doc.write('body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #1f2937; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; background: #ffffff; }');
+                doc.write('@page { size: A4 portrait; margin: 0; }');
+                doc.write('body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #1f2937; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0 0 0 -10px; padding: 0; background: #ffffff; }');
+                doc.write('#print-footer { position: fixed; bottom: 5mm; left: -10px; width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: 8px; color: #9ca3af; text-transform: uppercase; font-weight: bold; padding: 0 20mm; box-sizing: border-box; border-top: 1px solid #f3f4f6; padding-top: 2mm; }');
                 doc.write('</style>');
                 doc.write('</head><body>');
+                
+                // Using a table wrapper forces repeating headers/footers natively to create consistent top/bottom breathing room on every page even with @page margin: 0
+                doc.write('<table style="width: 100%; border-collapse: collapse; margin: 0; padding: 0; border: none;">');
+                doc.write('<thead><tr><td style="height: 15mm; border: none;"></td></tr></thead>');
+                doc.write('<tbody><tr><td style="padding: 0 20mm; border: none; vertical-align: top;">');
+                doc.write('<div style="max-width: 170mm; margin: 0 auto; box-sizing: border-box; widows: 3; orphans: 3;">');
+                
                 doc.write(reportContainer.outerHTML);
+                
+                doc.write('</div>');
+                doc.write('</td></tr></tbody>');
+                doc.write('<tfoot><tr><td style="height: 15mm; border: none;"></td></tr></tfoot>');
+                doc.write('</table>');
+                
+                doc.write('<div id="print-footer"><span>SecureMail Confidential</span><span>Generated by SecureMail Intelligence Engine v2.4</span></div>');
                 doc.write('</body></html>');
                 doc.close();
 
@@ -657,6 +848,124 @@
             });
         }
     });
+    
+    // Lazy Loading Gemini Explainability on Button Click
+    const hasGemini = {% if forensic.analysis.gemini_explanation %}true{% else %}false{% endif %};
+    let geminiFetchStarted = false;
+        
+        window.openAuditModal = function() {
+            document.getElementById('audit-modal').classList.remove('hidden');
+            
+            if (!hasGemini && !geminiFetchStarted) {
+                geminiFetchStarted = true;
+                loadGeminiExplanation();
+            }
+        };
+
+        function loadGeminiExplanation() {
+            const url = "{% url 'generate_explanation' email.id %}";
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.status === 429) {
+                    throw new Error('AI explanation temporarily unavailable.');
+                }
+                if (!response.ok) {
+                    throw new Error('Unable to generate AI explanation.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                if (data.explanation) {
+                    updateGeminiUI(data.explanation);
+                } else {
+                    throw new Error('AI returned an invalid response.');
+                }
+            })
+            .catch(error => {
+                const msg = error.message || 'Connection lost while contacting AI service.';
+                const errorHtml = `
+                    <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 text-center">
+                        <p class="text-xs font-bold text-red-500 mb-3">${msg}</p>
+                        <button onclick="geminiFetchStarted=true; loadGeminiExplanation()" class="px-4 py-2 bg-purple-500 text-white rounded-xl text-xs font-bold shadow-md hover:bg-purple-600 transition-all">Retry</button>
+                    </div>
+                `;
+                document.querySelectorAll('.gemini-dynamic-container').forEach(el => {
+                    el.innerHTML = errorHtml;
+                });
+            });
+        }
+        
+        function updateGeminiUI(exp) {
+            // Update Summary
+            const summaryContainer = document.getElementById('gemini-summary-container');
+            if (summaryContainer) {
+                summaryContainer.innerHTML = exp.summary || exp.user_explanation || 'No summary available.';
+            }
+
+            // Update AI Investigation Block
+            const modalContainer = document.getElementById('gemini-modal-container');
+            if (modalContainer) {
+                modalContainer.innerHTML = `
+                    <div class="space-y-6 animate-fade-in">
+                        <div>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Analyst Explanation</h4>
+                            <p class="text-sm font-medium text-gray-800 leading-relaxed">${exp.user_explanation || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Technical Analysis</h4>
+                            <p class="text-sm font-medium text-gray-800 leading-relaxed">${exp.technical_analysis || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">Confidence Assessment</h4>
+                            <p class="text-sm font-medium text-gray-800 leading-relaxed">${exp.confidence_comment || 'N/A'}</p>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                            <h4 class="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Recommended Action</h4>
+                            <p class="text-sm font-bold text-blue-800">${exp.recommended_action || 'N/A'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Update Red Flags
+            const redFlagsContainer = document.getElementById('gemini-red-flags-container');
+            if (redFlagsContainer && exp.red_flags && exp.red_flags.length > 0) {
+                let flagsHtml = exp.red_flags.map(f => `
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-500 shrink-0 mt-0.5"></i>
+                        <span class="text-sm font-bold text-red-800">${f}</span>
+                    </li>
+                `).join('');
+                redFlagsContainer.innerHTML = `
+                    <div class="bg-red-50 border border-red-100 rounded-2xl p-6 animate-fade-in">
+                        <h3 class="text-xs font-black text-red-400 uppercase tracking-widest mb-4 border-b border-red-100 pb-2 flex items-center gap-2">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-red-500"></i> Red Flags Identified
+                        </h3>
+                        <ul class="space-y-3">
+                            ${flagsHtml}
+                        </ul>
+                    </div>
+                `;
+            } else if (redFlagsContainer) {
+                redFlagsContainer.innerHTML = '';
+            }
+            
+            // Re-initialize lucide icons for newly injected HTML
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
 </script>
 
 <!-- False Positive Modal -->
