@@ -88,6 +88,62 @@ class EmailService:
         
         return analysis
 
+    def build_forensic_context(self, email):
+        """
+        Builds a single canonical context dictionary required by both
+        the HTML Modal and the ReportLab PDF to prevent logic divergence.
+        """
+        analysis = self.get_email_verdict(email)
+        gemini = analysis.get('gemini_explanation', {})
+        
+        # Determine sender string formatting
+        sender_display = email.sender_email
+        if hasattr(email, 'sender_name') and email.sender_name and email.sender_name != email.sender_email:
+            sender_display = f"{email.sender_name} <{email.sender_email}>"
+            
+        links = []
+        if hasattr(email, 'analysis') and hasattr(email.analysis, 'detailed_report'):
+            links = email.analysis.detailed_report.get('links', [])
+            
+        return {
+            'incident_id': email.id,
+            'subject': email.subject or 'No Subject',
+            'sender_email': email.sender_email,
+            'sender_display': sender_display,
+            'date': email.timestamp.strftime('%B %d, %Y %I:%M %p') if getattr(email, 'timestamp', None) else 'Unknown Date',
+            
+            'verdict': analysis.get('label', 'SAFE'),
+            'confidence': analysis.get('confidence', 0),
+            'risk_score': analysis.get('score', 0),
+            
+            'executive_summary': gemini.get('summary') or analysis.get('summary', 'No summary available.'),
+            
+            'analyst_explanation': gemini.get('user_explanation', 'No analyst explanation available.'),
+            'technical_analysis': gemini.get('technical_analysis', 'No technical analysis available.'),
+            'confidence_assessment': gemini.get('confidence_comment', 'No assessment available.'),
+            'recommended_action': gemini.get('recommended_action', 'N/A'),
+            
+            'red_flags': gemini.get('red_flags', []),
+            
+            'trusted_sender': analysis.get('trusted_sender', False),
+            'sender_reputation': analysis.get('sender_reputation', 0),
+            
+            'threat_indicators': analysis.get('risk_factors', []),
+            
+            'complexity_score': analysis.get('complexity_score', 'N/A'),
+            'entropy_score': analysis.get('entropy_score', 'N/A'),
+            
+            'trigger_phrases': analysis.get('suspicious_phrases', []),
+            
+            'links': links,
+            
+            'spf_pass': getattr(email, 'spf_pass', False),
+            'dkim_pass': getattr(email, 'dkim_pass', False),
+            'dmarc_pass': getattr(email, 'dmarc_pass', False),
+            
+            'original_content': getattr(email, 'plain_text', None) or getattr(email, 'body', 'No text available.')
+        }
+
 class ProfileService:
     def __init__(self):
         self.repository = ProfileRepository()

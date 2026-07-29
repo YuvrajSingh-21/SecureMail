@@ -259,12 +259,33 @@ def email_view(request, id):
         if not features and 'ml_metadata' in report:
             features = report['ml_metadata'].get('features', {})
         
+    # Unified forensic context
+    context = email_service.build_forensic_context(email)
+    
     forensic = {
-        'analysis': analysis_norm,
-        'features': features
+        'analysis': email_service.get_email_verdict(email),
+        'features': context.get('features', {})
     }
     
-    return render(request, 'email-view.html', {'email': email, 'forensic': forensic})
+    return render(request, 'email-view.html', {'email': email, 'forensic': forensic, 'report_context': context})
+
+from django.http import FileResponse
+from .services.pdf.forensic_report import ForensicPDFReport
+
+@login_required(login_url='login')
+def export_pdf(request, id):
+    email_service = EmailService()
+    email = email_service.get_email_detail(request.user, id)
+    
+    context = email_service.build_forensic_context(email)
+    
+    report = ForensicPDFReport(context)
+    pdf_bytes = report.generate()
+    
+    from io import BytesIO
+    buffer = BytesIO(pdf_bytes)
+    return FileResponse(buffer, as_attachment=True, filename=f"Technical_Forensic_Audit_{email.id}.pdf")
+
 
 from .decorators import rate_limit_view
 
