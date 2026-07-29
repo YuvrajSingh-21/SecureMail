@@ -575,6 +575,7 @@
                 const sender = senderEl ? senderEl.innerText : 'Unknown Sender';
                 const emailAddressEl = document.querySelector('span.text-blue-600.font-mono');
                 const emailAddress = emailAddressEl ? emailAddressEl.innerText : '';
+                const senderDisplay = (sender && sender !== emailAddress && sender !== 'Unknown Sender') ? sender + ' &lt;' + emailAddress + '&gt;' : (emailAddress || sender);
                 const dateEl = Array.from(document.querySelectorAll('p')).find(p => p.textContent.toLowerCase().includes('sent on'));
                 const date = dateEl ? dateEl.textContent.trim().replace(/sent on/i, '').trim() : '';
                 
@@ -604,7 +605,7 @@
                 // 3. Red Flags
                 const flags = gemini.red_flags || [];
                 const redFlagsHtml = flags.length > 0 ? `
-                    <div style="margin-bottom: 30px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; page-break-inside: avoid;">
+                    <div style="margin-bottom: 30px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 20px; page-break-inside: avoid; break-inside: avoid;">
                         <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #dc2626; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #fecaca; padding-bottom: 10px;">Red Flags</h2>
                         <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 13px;">
                             ${flags.map(f => `<li style="margin-bottom: 8px; color: #991b1b; display: flex; align-items: flex-start; gap: 8px;"><span style="color: #ef4444;">⚠</span> <span>${f}</span></li>`).join('')}
@@ -646,7 +647,7 @@
                     </div>
 
                     <!-- 1. Executive Summary -->
-                    <div style="margin-bottom: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; page-break-inside: avoid;">
+                    <div style="margin-bottom: 25px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; page-break-inside: avoid; break-inside: avoid;">
                         <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Executive Summary</h2>
                         <div style="display: flex; gap: 20px;">
                             <div style="flex: 1; font-size: 14px; color: #374151; line-height: 1.5;">${summaryHtml}</div>
@@ -668,7 +669,7 @@
                     </div>
 
                     <!-- 2. AI Investigation Report -->
-                    <div style="margin-bottom: 25px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 20px; page-break-inside: auto;">
+                    <div style="margin-bottom: 25px; background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 20px; page-break-inside: avoid; break-inside: avoid;">
                         <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #9333ea; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e9d5ff; padding-bottom: 10px;">AI Investigation Report</h2>
                         
                         <div style="margin-bottom: 15px; page-break-inside: avoid;">
@@ -686,7 +687,7 @@
                             <p style="margin: 0; font-size: 14px; color: #1f2937; line-height: 1.5;">${gemini.confidence_comment || 'No assessment available.'}</p>
                         </div>
 
-                        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; page-break-inside: avoid;">
+                        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; page-break-inside: avoid; break-inside: avoid;">
                             <h3 style="margin: 0 0 5px 0; font-size: 11px; font-weight: 900; color: #3b82f6; text-transform: uppercase;">Recommended Action</h3>
                             <p style="margin: 0; font-size: 14px; font-weight: bold; color: #1e40af;">${gemini.recommended_action || 'N/A'}</p>
                         </div>
@@ -695,12 +696,12 @@
                     <!-- 3. Red Flags -->
                     ${redFlagsHtml.replace('margin-bottom: 30px;', 'margin-bottom: 25px;')}
 
-                    <div style="display: table; width: 100%; table-layout: fixed; margin-bottom: 25px; page-break-inside: avoid;">
+                    <div style="display: table; width: 100%; table-layout: fixed; margin-bottom: 25px; page-break-inside: auto; break-inside: auto;">
                         <div style="display: table-row;">
                             <!-- Left Column -->
                             <div style="display: table-cell; width: 48%; padding-right: 2%; vertical-align: top;">
                                 <!-- 4. Sender Intelligence -->
-                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff; page-break-inside: avoid; break-inside: avoid;">
                                     <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Sender Intelligence</h3>
                                     <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 8px;">
                                         <span style="font-size: 12px; color: #6b7280;">Domain</span>
@@ -717,7 +718,7 @@
                                 </div>
 
                                 <!-- 6. ML Metrics -->
-                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff; page-break-inside: avoid; break-inside: avoid;">
                                     <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">ML Metrics</h3>
                                     <div style="display: flex; justify-content: space-between;">
                                         <div>
@@ -735,7 +736,7 @@
                             <!-- Right Column -->
                             <div style="display: table-cell; width: 48%; padding-left: 2%; vertical-align: top;">
                                 <!-- 5. Threat Indicators -->
-                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff; page-break-inside: avoid; break-inside: avoid;">
                                     <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Threat Indicators</h3>
                                     <ul style="list-style-type: none; padding: 0; margin: 0; font-size: 12px; font-weight: bold;">
                                         ${riskList}
@@ -743,7 +744,7 @@
                                 </div>
                                 
                                 <!-- 7. Trigger Phrases -->
-                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff;">
+                                <div style="margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; background: #ffffff; page-break-inside: avoid; break-inside: avoid;">
                                     <h3 style="margin: 0 0 10px 0; font-size: 11px; font-weight: 900; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.1em;">Trigger Phrases</h3>
                                     <div style="line-height: 1.8;">
                                         ${phrasesHtml}
@@ -754,7 +755,7 @@
                     </div>
 
                     <!-- 8. IOC Summary & URL Intelligence -->
-                    <div style="margin-bottom: 25px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; overflow: hidden; page-break-inside: avoid;">
+                    <div style="margin-bottom: 25px; border: 1px solid #e2e8f0; border-radius: 12px; background: #ffffff; overflow: hidden; page-break-inside: avoid; break-inside: avoid;">
                         <div style="background: #f8fafc; padding: 15px; border-bottom: 1px solid #e2e8f0;">
                             <h2 style="margin: 0; font-size: 12px; font-weight: 900; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em;">Indicators of Compromise (IoCs) & Auth</h2>
                         </div>
@@ -781,15 +782,15 @@
                     </div>
 
                     <!-- 10. Email Metadata -->
-                    <div style="margin-bottom: 25px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; page-break-inside: avoid;">
+                    <div style="margin-bottom: 25px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; page-break-inside: avoid; break-inside: avoid;">
                         <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Email Metadata</h2>
                         <p style="margin: 8px 0; font-size: 14px;"><strong>Subject:</strong> ${subject}</p>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>Sender:</strong> ${sender} &lt;${emailAddress}&gt;</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Sender:</strong> ${senderDisplay}</p>
                         <p style="margin: 8px 0; font-size: 14px;"><strong>Date:</strong> ${date}</p>
                     </div>
 
                     <!-- 11. Original Email -->
-                    <div style="margin-bottom: 25px; page-break-inside: auto;">
+                    <div style="margin-bottom: 25px; page-break-inside: avoid; break-inside: avoid;">
                         <h2 style="margin: 0 0 15px 0; font-size: 14px; font-weight: 900; color: #4b5563; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Original Email Content (Text Extraction)</h2>
                         <div style="border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; background: #f8fafc; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; color: #1f2937;">${plainText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
                     </div>
