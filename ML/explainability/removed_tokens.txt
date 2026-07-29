@@ -1,0 +1,28 @@
+Removed Tokens during TF-IDF sanitization:
+
+CORPORATE ARTIFACTS (Enron bias prevention):
+- enron
+- houston
+- ect
+- kaminski
+- vince
+- shirley
+- jones
+- smith
+- 2000
+- 2001
+- 2002
+- 1999
+
+TRANSPORT HEADERS (Leakage prevention):
+- message-id
+- x-origin
+- x-folder
+- x-filename
+- mime-version
+- content-type
+- content-transfer-encoding
+- x-from
+- x-to
+- x-cc
+- x-bcc
