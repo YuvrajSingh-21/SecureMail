@@ -262,7 +262,7 @@ class RiskEngine:
             "summary": inner.get('summary', "Structural and linguistic integrity verified."),
             "reasons": inner.get('reasons', []),
             "safe_factors": inner.get('safe_factors') or (["Standard validation passed."] if inner.get('risk_factors') else ["No phishing or harvesting signals identified."]),
-            "risk_factors": inner.get('risk_factors') or ["No manipulative behavioral signals detected."],
+            "risk_factors": inner.get('risk_factors') or [],
             "explanations": inner.get('explanations', []),
             "sender_reputation": int(inner.get('sender_reputation', 50)),
             "trusted_sender": bool(inner.get('trusted_sender', False)),
@@ -275,4 +275,26 @@ class RiskEngine:
             "status": inner.get('status', "FINALIZED"),
             "gemini_explanation": inner.get('gemini_explanation')
         }
+
+        # Issue 2: Categorize findings
+        critical, warning, info = [], [], []
+        
+        for factor in norm['risk_factors']:
+            f_lower = factor.lower()
+            if any(k in f_lower for k in ['credential', 'malicious', 'executable', 'spf/dkim', 'phishing', 'ioc', 'malware', 'virus', 'password']):
+                critical.append(factor)
+            elif any(k in f_lower for k in ['shortener', 'generic sender', 'recently registered', 'suspicious formatting', 'urgency', 'domain mismatch']):
+                warning.append(factor)
+            else:
+                info.append(factor)
+                
+        # If there are no real findings but a placeholder was used
+        if not norm['risk_factors'] or norm['risk_factors'] == ["No manipulative behavioral signals detected."]:
+            info = ["No manipulative behavioral signals detected."]
+            norm['risk_factors'] = ["No manipulative behavioral signals detected."]
+            
+        norm['critical_findings'] = critical
+        norm['warning_findings'] = warning
+        norm['informational_findings'] = info
+        
         return norm

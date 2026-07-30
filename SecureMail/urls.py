@@ -25,7 +25,6 @@ urlpatterns = [
     path('email/<int:id>/true-positive/', views.report_true_positive, name='report_true_positive'),
     path('compose/', views.compose, name='compose'),
     path('reports/', views.reports, name='reports'),
-    path('export/dataset/', views.export_dataset_csv, name='export_dataset'),
     path('settings/', views.settings_view, name='settings'),
     path('notifications/read/', views.mark_notifications_read, name='mark_notifications_read'),
     path('notifications/clear/', views.clear_notifications, name='clear_notifications'),

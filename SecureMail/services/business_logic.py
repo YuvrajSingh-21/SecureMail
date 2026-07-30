@@ -9,7 +9,14 @@ logger = logging.getLogger(__name__)
 class EmailService:
     def __init__(self):
         self.repository = EmailRepository()
-        self.pipeline = EmailPipeline()
+        self._pipeline = None
+
+    @property
+    def pipeline(self):
+        if not self._pipeline:
+            from .email_pipeline import EmailPipeline
+            self._pipeline = EmailPipeline()
+        return self._pipeline
 
     def sync_gmail(self, user, limit=50):
         """On-demand sync for a specific user. Pass limit=None for full sync."""
@@ -30,13 +37,19 @@ class EmailService:
             email.unread = False
             email.save()
             
-            # Sync to Gmail if applicable
+            # Sync to Gmail if applicable (in background to avoid latency)
             if email.gmail_message_id:
                 try:
                     account = ConnectedAccount.objects.get(user=user)
-                    GmailService(account).mark_as_read(email.gmail_message_id)
+                    import threading
+                    def sync_read():
+                        try:
+                            GmailService(account).mark_as_read(email.gmail_message_id)
+                        except Exception as e:
+                            logger.warning(f"Failed to sync read status to Gmail: {str(e)}")
+                    threading.Thread(target=sync_read).start()
                 except Exception as e:
-                    logger.warning(f"Failed to sync read status to Gmail: {str(e)}")
+                    logger.warning(f"Failed to launch Gmail sync thread: {str(e)}")
 
         return email
 
@@ -93,42 +106,42 @@ class EmailService:
         Builds a single canonical context dictionary required by both
         the HTML Modal and the ReportLab PDF to prevent logic divergence.
         """
-        analysis = self.get_email_verdict(email)
-        gemini = analysis.get('gemini_explanation', {})
+        analysis = self.get_email_verdict(email) or {}
+        gemini = analysis.get('gemini_explanation') or {}
         
         # Determine sender string formatting
-        sender_display = email.sender_email
-        if hasattr(email, 'sender_name') and email.sender_name and email.sender_name != email.sender_email:
-            sender_display = f"{email.sender_name} <{email.sender_email}>"
+        sender_display = getattr(email, 'sender_email', 'Unknown Sender')
+        if hasattr(email, 'sender_name') and email.sender_name and email.sender_name != sender_display:
+            sender_display = f"{email.sender_name} <{sender_display}>"
             
         links = []
         if hasattr(email, 'analysis') and hasattr(email.analysis, 'detailed_report'):
-            links = email.analysis.detailed_report.get('links', [])
+            links = (email.analysis.detailed_report or {}).get('links', [])
             
         return {
-            'incident_id': email.id,
-            'subject': email.subject or 'No Subject',
-            'sender_email': email.sender_email,
+            'incident_id': getattr(email, 'id', 'Unknown'),
+            'subject': getattr(email, 'subject', None) or 'No Subject',
+            'sender_email': getattr(email, 'sender_email', 'Unknown Sender'),
             'sender_display': sender_display,
             'date': email.timestamp.strftime('%B %d, %Y %I:%M %p') if getattr(email, 'timestamp', None) else 'Unknown Date',
             
-            'verdict': analysis.get('label', 'SAFE'),
-            'confidence': analysis.get('confidence', 0),
-            'risk_score': analysis.get('score', 0),
+            'verdict': analysis.get('label') or 'SAFE',
+            'confidence': analysis.get('confidence') or 0,
+            'risk_score': analysis.get('score') or 0,
             
-            'executive_summary': gemini.get('summary') or analysis.get('summary', 'No summary available.'),
+            'executive_summary': gemini.get('summary') or analysis.get('summary') or 'No data available.',
             
-            'analyst_explanation': gemini.get('user_explanation', 'No analyst explanation available.'),
-            'technical_analysis': gemini.get('technical_analysis', 'No technical analysis available.'),
-            'confidence_assessment': gemini.get('confidence_comment', 'No assessment available.'),
-            'recommended_action': gemini.get('recommended_action', 'N/A'),
+            'analyst_explanation': gemini.get('user_explanation') or 'No data available.',
+            'technical_analysis': gemini.get('technical_analysis') or 'No data available.',
+            'confidence_assessment': gemini.get('confidence_comment') or 'No data available.',
+            'recommended_action': gemini.get('recommended_action') or 'No data available.',
             
-            'red_flags': gemini.get('red_flags', []),
+            'red_flags': gemini.get('red_flags') or [],
             
-            'trusted_sender': analysis.get('trusted_sender', False),
-            'sender_reputation': analysis.get('sender_reputation', 0),
+            'trusted_sender': analysis.get('trusted_sender') or False,
+            'sender_reputation': analysis.get('sender_reputation') or 0,
             
-            'threat_indicators': analysis.get('risk_factors', []),
+            'threat_indicators': analysis.get('risk_factors') or [],
             
             'complexity_score': analysis.get('complexity_score', 'N/A'),
             'entropy_score': analysis.get('entropy_score', 'N/A'),

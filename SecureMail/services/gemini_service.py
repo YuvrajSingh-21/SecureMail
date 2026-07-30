@@ -4,8 +4,8 @@ import logging
 import time
 from typing import Dict, Any
 from django.conf import settings
-import google.generativeai as genai
-from google.generativeai.types import generation_types
+from google import genai
+from google.genai import types
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +22,12 @@ class GeminiService:
         if not self._client_initialized:
             api_key = getattr(settings, 'GEMINI_API_KEY', os.getenv('GEMINI_API_KEY'))
             if api_key:
-                genai.configure(api_key=api_key)
-                self.model = genai.GenerativeModel('gemini-flash-latest')
+                self.client = genai.Client(api_key=api_key)
+                self.model_name = 'gemini-flash-latest'
                 self._client_initialized = True
                 logger.info("GeminiService initialized successfully.")
             else:
-                self.model = None
+                self.client = None
                 logger.warning("GEMINI_API_KEY is missing. Gemini explainability is disabled.")
 
     def explain_analysis(self, email_data: Dict[str, Any], max_retries=2) -> Dict[str, Any]:
@@ -36,8 +36,8 @@ class GeminiService:
         Does NOT make security decisions. Only explains them.
         """
         logger.info("[GEMINI] explain_analysis() entered")
-        if not self.model:
-            logger.error("[GEMINI] self.model is None. Returning fallback.")
+        if not self.client:
+            logger.error("[GEMINI] self.client is None. Returning fallback.")
             return self._get_fallback_explanation(email_data)
 
         prompt = self._build_prompt(email_data)
@@ -50,15 +50,16 @@ class GeminiService:
                 
                 print("\n=========================================")
                 print("GEMINI REQUEST START")
-                print(f"Model: {self.model.model_name}")
+                print(f"Model: {self.model_name}")
                 print(f"Prompt Length: {len(prompt)}")
                 print(f"Prompt:\n{prompt}")
                 print("=========================================\n")
                 
                 logger.info("[GEMINI] Sending request...")
-                response = self.model.generate_content(
-                    prompt,
-                    generation_config=genai.types.GenerationConfig(
+                response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
                         response_mime_type="application/json",
                         temperature=0.2,
                     )
@@ -100,7 +101,7 @@ class GeminiService:
                 # Add cache metadata
                 import datetime
                 result['generated_at'] = datetime.datetime.now().isoformat()
-                result['model_version'] = self.model.model_name
+                result['model_version'] = self.model_name
                 result['prompt_version'] = "1.0"
                 if hasattr(response, 'usage_metadata'):
                     try:

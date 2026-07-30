@@ -146,11 +146,6 @@
                                 <div class="flex items-center gap-4 shrink-0">
                                     <input type="checkbox" form="bulk-action-form" name="email_ids" value="{{ email.id }}" onclick="event.stopPropagation(); updateBulkActions();" class="w-4 h-4 rounded border-gray-300  bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all">
                                     
-                                    {% if email.verdict.label != 'SAFE' %}
-                                    <button onclick="event.preventDefault(); event.stopPropagation(); document.getElementById('false-positive-modal').classList.remove('hidden'); document.getElementById('false-positive-form').action='/email/' + {{ email.id }} + '/false-positive/';" class="text-[var(--sys-text-secondary)] hover:text-green-500 transition-colors duration-300" title="Report False Positive">
-                                        <i data-lucide="shield-check" class="w-5 h-5"></i>
-                                    </button>
-                                    {% endif %}
 
                                     <a href="{% url 'toggle_star' email.id %}" onclick="event.stopPropagation()" class="{% if email.starred %}text-yellow-400{% else %}text-[var(--sys-text-secondary)]{% endif %} hover:text-yellow-400 transition-colors duration-300">
                                         <i data-lucide="star" class="w-5 h-5 {% if email.starred %}fill-current{% endif %}"></i>

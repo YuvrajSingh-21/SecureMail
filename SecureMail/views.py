@@ -439,34 +439,6 @@ import csv
 from django.http import HttpResponse, JsonResponse
 
 @login_required(login_url='login')
-def export_dataset_csv(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="threat_analytics_dataset.csv"'
-    
-    writer = csv.writer(response)
-    writer.writerow(['ID', 'Subject', 'Sender', 'Date', 'Category', 'Risk Score', 'ML Label', 'Gemini Explanation'])
-    
-    emails = EmailMessage.objects.filter(user=request.user).select_related('analysis').order_by('-timestamp')
-    for email in emails:
-        gemini_exp = ''
-        if hasattr(email, 'analysis') and email.analysis and 'analysis' in email.analysis.detailed_report:
-            analysis_data = email.analysis.detailed_report['analysis']
-            gemini_exp = analysis_data.get('gemini_explanation', {}).get('user_explanation', '')
-            
-        writer.writerow([
-            email.id,
-            email.subject,
-            email.sender_email,
-            email.timestamp.strftime('%Y-%m-%d %H:%M:%S') if email.timestamp else '',
-            email.category,
-            email.risk_score,
-            email.ml_label,
-            gemini_exp
-        ])
-        
-    return response
-
-@login_required(login_url='login')
 def mark_notifications_read(request):
     return JsonResponse({'status': 'success'})
 
