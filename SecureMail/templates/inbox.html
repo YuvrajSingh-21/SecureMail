@@ -170,9 +170,13 @@
                                     <input type="checkbox" form="bulk-action-form" name="email_ids" value="{{ email.id }}" onclick="event.stopPropagation(); updateBulkActions();" class="w-4 h-4 rounded border-gray-300  bg-transparent text-blue-600 focus:ring-blue-500/20 transition-all">
                                     
 
-                                    <a href="{% url 'toggle_star' email.id %}" onclick="event.stopPropagation()" class="{% if email.starred %}text-yellow-400{% else %}text-[var(--sys-text-secondary)]{% endif %} hover:text-yellow-400 transition-colors duration-300">
+                                    <button type="button"
+                                        data-star-url="{% url 'toggle_star' email.id %}"
+                                        data-starred="{% if email.starred %}true{% else %}false{% endif %}"
+                                        onclick="event.stopPropagation(); postToggleStar(this);"
+                                        class="{% if email.starred %}text-yellow-400{% else %}text-[var(--sys-text-secondary)]{% endif %} hover:text-yellow-400 transition-colors duration-300">
                                         <i data-lucide="star" class="w-5 h-5 {% if email.starred %}fill-current{% endif %}"></i>
-                                    </a>
+                                    </button>
                                 </div>
                                 
                                 <div class="relative w-10 h-10 shrink-0">
@@ -279,15 +283,67 @@
 
 {% block extra_js %}
 <script>
-    // Automated Mail Loading
-    // Periodically syncs with Gmail and reloads the inbox to show new emails
-    setInterval(async () => {
-        try {
-            await fetch('{% url "sync_gmail" %}');
-            window.location.reload();
-        } catch (e) {
-            console.error("Automated sync failed", e);
+    // Helper: read Django csrftoken cookie
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            document.cookie.split(';').forEach(function(cookie) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.slice(name.length + 1));
+                }
+            });
         }
+        return cookieValue;
+    }
+
+    // Phase 3: POST-based toggle star
+    function postToggleStar(btn) {
+        var url = btn.getAttribute('data-star-url');
+        var starred = btn.getAttribute('data-starred') === 'true';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin'
+        }).then(function(response) {
+            if (response.ok || response.redirected) {
+                // Toggle visual state without full reload
+                starred = !starred;
+                btn.setAttribute('data-starred', starred ? 'true' : 'false');
+                var icon = btn.querySelector('i[data-lucide="star"]');
+                if (starred) {
+                    btn.classList.add('text-yellow-400');
+                    btn.classList.remove('text-[var(--sys-text-secondary)]');
+                    if (icon) icon.classList.add('fill-current');
+                } else {
+                    btn.classList.remove('text-yellow-400');
+                    btn.classList.add('text-[var(--sys-text-secondary)]');
+                    if (icon) icon.classList.remove('fill-current');
+                }
+            }
+        }).catch(function(e) {
+            console.error('Star toggle failed', e);
+        });
+    }
+
+    // Phase 4: Periodic sync — POST-only
+    setInterval(function() {
+        fetch('{% url "sync_gmail" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin',
+            body: new URLSearchParams({'auto': '1'})
+        }).then(function() {
+            window.location.reload();
+        }).catch(function(e) {
+            console.error('Automated sync failed', e);
+        });
     }, 60000); // 60 seconds
 
     function toggleSelectDropdown(e) {

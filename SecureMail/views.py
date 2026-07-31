@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .services.business_logic import EmailService, ProfileService
@@ -8,11 +9,14 @@ from .services.sync_manager import SyncManager
 from .services.audit_service import AuditService
 from .services.profile_service import ProfileService as MetricProfileService
 from .models import EmailMessage, EmailReport, ConnectedAccount, AuditLog
+from .utils import safe_redirect
 
 @login_required(login_url='login')
+@require_POST
 def sync_gmail(request):
-    full_sync = request.GET.get('all') == 'true'
-    is_auto = request.GET.get('auto') == '1'
+    # Parameters migrated from GET query string to POST body
+    full_sync = request.POST.get('all') == 'true'
+    is_auto = request.POST.get('auto') == '1'
     
     if is_auto:
         from .models import SyncJob
@@ -161,7 +165,7 @@ def inbox(request, folder=None):
                 'counts': counts
             })
             
-        return redirect(request.META.get('HTTP_REFERER', 'inbox'))
+        return safe_redirect(request, request.META.get('HTTP_REFERER'), fallback='inbox')
 
     query = request.GET.get('q')
     msg_filter = request.GET.get('filter')
@@ -232,12 +236,18 @@ def inbox(request, folder=None):
     })
 
 @login_required(login_url='login')
+@require_POST
 def toggle_star(request, id):
     email_service = EmailService()
-    email_service.toggle_star(request.user, id)
-    return redirect(request.META.get('HTTP_REFERER', 'inbox'))
+    try:
+        email_service.toggle_star(request.user, id)
+    except EmailMessage.DoesNotExist:
+        from django.http import Http404
+        raise Http404
+    return safe_redirect(request, request.META.get('HTTP_REFERER'), fallback='inbox')
 
 @login_required(login_url='login')
+@require_POST
 def delete_email(request, id):
     email = get_object_or_404(EmailMessage, id=id, user=request.user)
     if email.in_trash:
@@ -254,7 +264,7 @@ def delete_email(request, id):
         messages.info(request, "Message moved to trash.")
         AuditService.log(request.user, 'delete_email', category='email', metadata={'count': 1}, request=request)
         MetricProfileService.recalculate_security_metrics(request.user)
-    return redirect(request.META.get('HTTP_REFERER', 'inbox'))
+    return safe_redirect(request, request.META.get('HTTP_REFERER'), fallback='inbox')
 
 @login_required(login_url='login')
 def report_false_positive(request, id):
@@ -531,7 +541,6 @@ def logout_view(request):
     messages.info(request, "You have been logged out.")
     return redirect('index')
 
-import csv
 from django.http import HttpResponse, JsonResponse
 
 @login_required(login_url='login')

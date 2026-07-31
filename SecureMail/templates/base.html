@@ -43,13 +43,25 @@
 
     {% if user.is_authenticated %}
     <script>
-        // Auto-sync in the background after page load
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                fetch("{% url 'sync_gmail' %}?auto=1", {
-                    method: 'GET',
-                    headers: {'X-Requested-With': 'XMLHttpRequest'}
-                }).catch(err => console.error("Auto-sync error:", err));
+        // Auto-sync in the background after page load (POST-only, CSRF-protected)
+        function getCSRFToken() {
+            var name = 'csrftoken=';
+            return document.cookie.split(';').map(function(c){ return c.trim(); })
+                .filter(function(c){ return c.startsWith(name); })
+                .map(function(c){ return decodeURIComponent(c.slice(name.length)); })[0] || '';
+        }
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                fetch("{% url 'sync_gmail' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    credentials: 'same-origin',
+                    body: 'auto=1'
+                }).catch(function(err) { console.error('Auto-sync error:', err); });
             }, 1000); // 1s delay so it doesn't block critical page load
         });
     </script>

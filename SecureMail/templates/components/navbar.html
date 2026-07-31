@@ -37,9 +37,12 @@
             </div>
 
             <div class="flex items-center gap-1">
-                <a href="{% url 'sync_gmail' %}?next={{ request.get_full_path|urlencode }}" class="p-2.5 text-[var(--sys-text-secondary)] hover:bg-gray-100 rounded-xl transition-all">
-                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
-                </a>
+                <form method="post" action="{% url 'sync_gmail' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="p-2.5 text-[var(--sys-text-secondary)] hover:bg-gray-100 rounded-xl transition-all" title="Sync Gmail">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                    </button>
+                </form>
 
                 <!-- Notifications -->
                 <div class="relative group">

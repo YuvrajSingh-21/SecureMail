@@ -20,7 +20,6 @@ django-extensions==4.1
 django-ratelimit==4.1.0
 djangorestframework==3.17.1
 filelock==3.32.2
-google-ai-generativelanguage==0.6.15
 google-api-core==2.25.2
 google-api-python-client==2.196.0
 google-auth==2.53.0
