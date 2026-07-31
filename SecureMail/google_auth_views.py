@@ -18,6 +18,7 @@ def get_redirect_uri(request):
     return f"{protocol}://{host}/auth/google/callback/"
 
 from .decorators import rate_limit_view
+from .services.audit_service import AuditService
 
 @rate_limit_view(key='ip', rate='10/m')
 def google_login(request):
@@ -82,6 +83,7 @@ def google_callback(request):
             # Case 1: Existing user connecting their Gmail
             service.update_or_create_connected_account(request.user, credentials)
             messages.success(request, "Gmail account connected successfully!")
+            AuditService.log(request.user, 'connect_gmail', category='system', request=request)
             return redirect('settings')
         else:
             # Case 2: New/Returning user signing in with Google
@@ -95,6 +97,7 @@ def google_callback(request):
                 messages.success(request, f"Welcome to SecureMail, {user.username}!")
             
             login(request, user)
+            AuditService.log(user, 'login', category='auth', request=request)
             
             # Now update/create the ConnectedAccount for this user
             account = service.update_or_create_connected_account(user, credentials)
@@ -163,6 +166,7 @@ def google_disconnect(request):
             request.user.profile.save()
             
         messages.info(request, "Gmail account disconnected.")
+        AuditService.log(request.user, 'disconnect_gmail', category='system', request=request)
     except ConnectedAccount.DoesNotExist:
         pass
         

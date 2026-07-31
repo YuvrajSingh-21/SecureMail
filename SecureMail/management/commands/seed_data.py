@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from SecureMail.models import EmailMessage, ThreatIndicator, ThreatAnalysis
+from SecureMail.models import EmailMessage, ThreatIndicator, ThreatAnalysis, AuditLog
 import random
 from django.utils import timezone
 
@@ -17,6 +17,7 @@ class Command(BaseCommand):
 
         # Clear existing emails for this user to avoid duplicates on multiple runs
         EmailMessage.objects.filter(user=user).delete()
+        AuditLog.objects.filter(user=user).delete()
 
         mock_data = [
             {
@@ -124,4 +125,11 @@ class Command(BaseCommand):
                     detailed_report={'score': data['risk_score'], 'findings': threats}
                 )
 
+        
+        # Create some mock audit logs
+        AuditLog.objects.create(user=user, action='login', category='auth', ip_address='192.168.1.5', user_agent='Chrome on Windows')
+        AuditLog.objects.create(user=user, action='mailbox_sync', category='system', metadata={'full_sync': True})
+        AuditLog.objects.create(user=user, action='settings_changed', category='system', metadata={'action': 'update_settings'})
+        AuditLog.objects.create(user=user, action='report_true_positive', category='security', metadata={'email_id': 1})
+        
         self.stdout.write(self.style.SUCCESS(f'Successfully seeded {len(mock_data)} emails for user {user.username}'))

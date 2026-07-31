@@ -1,0 +1,752 @@
+[
+    {
+        "id": 16561,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16562,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16563,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16564,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16565,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16566,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16567,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16568,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16569,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16570,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16571,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16572,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16573,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16574,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16575,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16576,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16577,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16578,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16579,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16580,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16581,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16582,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16583,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16584,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16585,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16586,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16587,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16588,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16589,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16590,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16591,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16592,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16593,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16594,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16595,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16596,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16597,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16598,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16599,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16600,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16601,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16602,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16603,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16604,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16605,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16606,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16607,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16608,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16609,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16610,
+        "label": "SAFE",
+        "category": "Safe"
+    },
+    {
+        "id": 16611,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16612,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16613,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16614,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16615,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16616,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16617,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16618,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16619,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16620,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16621,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16622,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16623,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16624,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16625,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16626,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16627,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16628,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16629,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16630,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16631,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16632,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16633,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16634,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16635,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16636,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16637,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16638,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16639,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16640,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16641,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16642,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16643,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16644,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16645,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16646,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16647,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16648,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16649,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16650,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16651,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16652,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16653,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16654,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16655,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16656,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16657,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16658,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16659,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16660,
+        "label": "PHISHING",
+        "category": "Credential Phishing"
+    },
+    {
+        "id": 16661,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16662,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16663,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16664,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16665,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16666,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16667,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16668,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16669,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16670,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16671,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16672,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16673,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16674,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16675,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16676,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16677,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16678,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16679,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16680,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16681,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16682,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16683,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16684,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16685,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16686,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16687,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16688,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16689,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16690,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16691,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16692,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16693,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16694,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16695,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16696,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16697,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16698,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16699,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16700,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16701,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16702,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16703,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16704,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16705,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16706,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16707,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16708,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16709,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    },
+    {
+        "id": 16710,
+        "label": "MALWARE",
+        "category": "Malware Delivery"
+    }
+]

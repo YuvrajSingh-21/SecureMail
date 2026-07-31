@@ -108,6 +108,13 @@ class GmailService:
             logger.error(f"Failed to get Gmail message {message_id}: {str(e)}")
             return None
 
+    def get_attachment(self, message_id, attachment_id):
+        try:
+            return self._call_api(self.service.users().messages().attachments().get, userId='me', messageId=message_id, id=attachment_id)
+        except Exception as e:
+            logger.error(f"Failed to get attachment {attachment_id}: {str(e)}")
+            return None
+
     def parse_message_data(self, msg_payload):
         """Parse Gmail API response into a flat dictionary."""
         headers = msg_payload['payload'].get('headers', [])
@@ -147,8 +154,8 @@ class GmailService:
                 data['dkim_pass'] = 'dkim=pass' in val
                 data['dmarc_pass'] = 'dmarc=pass' in val
 
-        # Extract body
         parts = msg_payload['payload'].get('parts', [])
+        data['attachments'] = []
         if not parts: # Simple message
             body_data = msg_payload['payload'].get('body', {}).get('data', '')
             mime_type = msg_payload['payload'].get('mimeType', 'text/plain')
@@ -168,7 +175,26 @@ class GmailService:
             bodies = self._get_body_from_parts(parts)
             data['plain_body'] = bodies.get('plain', '')
             data['html_body'] = bodies.get('html', '')
-            data['has_attachments'] = any(p.get('filename') for p in parts)
+            
+            def extract_attachments(p_list):
+                for p in p_list:
+                    filename = p.get('filename')
+                    mime_type = p.get('mimeType', '')
+                    body = p.get('body', {})
+                    attachment_id = body.get('attachmentId')
+                    size = body.get('size', 0)
+                    if filename and attachment_id:
+                        data['attachments'].append({
+                            'filename': filename,
+                            'mimeType': mime_type,
+                            'attachmentId': attachment_id,
+                            'size': size
+                        })
+                    if 'parts' in p:
+                        extract_attachments(p['parts'])
+            
+            extract_attachments(parts)
+            data['has_attachments'] = len(data['attachments']) > 0
 
         # STRICT MIME PARSING PRIORITY: Never concatenate HTML and Plain.
         if data['html_body']:
@@ -187,9 +213,7 @@ class GmailService:
         text_body_included = bool(data['plain_body'])
         html_used = bool(data['html_body'])
 
-        print("FINAL HTML LENGTH:", len(final_html))
-        print("TEXT BODY INCLUDED:", text_body_included)
-        print("HTML BODY INCLUDED:", html_used)
+
 
         logger.info(f"FINAL HTML LENGTH: {len(final_html)}")
         logger.info(f"TEXT BODY INCLUDED: {text_body_included}")

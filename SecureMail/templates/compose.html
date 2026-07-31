@@ -484,7 +484,13 @@
             for (let i = 0; i < input.files.length; i++) {
                 attachmentNames.push(input.files[i].name);
             }
-            alert('Files attached (Frontend only): ' + attachmentNames.join(', '));
+            openSmConfirm({
+                title: 'Attachments Added',
+                message: 'Files attached (Frontend only): ' + attachmentNames.join(', '),
+                confirmText: 'OK',
+                confirmVariant: 'blue',
+                icon: 'check-circle'
+            });
         }
     };
 

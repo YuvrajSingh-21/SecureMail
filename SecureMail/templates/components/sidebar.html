@@ -133,4 +133,42 @@ function toggleSidebar() {
         }, 50);
     }
 })();
+
+window.addEventListener('updateSidebarCounters', function(e) {
+    const counts = e.detail;
+    
+    const updaters = {
+        'inbox': counts.unread_count,
+        'starred': counts.starred_count,
+        'sent': counts.sent_count,
+        'drafts': counts.drafts_count,
+        'archive': counts.archive_count,
+        'spam': counts.spam_count,
+        'trash': counts.trash_count
+    };
+    
+    for (const [folder, count] of Object.entries(updaters)) {
+        const item = document.querySelector(`.sidebar-item[data-nav="${folder}"]`);
+        if (item) {
+            let badge = item.querySelector('div.sidebar-text');
+            if (count > 0) {
+                if (!badge) {
+                    badge = document.createElement('div');
+                    badge.className = 'sidebar-text';
+                    // We need to match the classes for different badges
+                    let badgeClass = 'text-[10px] px-2 py-0.5 rounded-full font-bold ';
+                    if (folder === 'inbox') badgeClass += 'sys-btn-primary font-black';
+                    else if (folder === 'spam') badgeClass += 'bg-red-100 text-red-600 font-black';
+                    else badgeClass += 'bg-gray-100 text-[var(--sys-text-secondary)]';
+                    
+                    badge.innerHTML = `<span class="${badgeClass}"></span>`;
+                    item.appendChild(badge);
+                }
+                badge.querySelector('span').textContent = count;
+            } else {
+                if (badge) badge.remove();
+            }
+        }
+    }
+});
 </script>

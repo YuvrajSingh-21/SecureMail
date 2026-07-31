@@ -100,10 +100,10 @@
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                                         <div class="space-y-3">
-                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Display Username</label>
+                                            <label class="text-[10px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Display Name</label>
                                             <div class="relative">
                                                 <i data-lucide="at-sign" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-[var(--sys-text-secondary)]"></i>
-                                                <input type="text" name="username" value="{{ user.username }}" required class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--sys-text)]  outline-none hover:bg-white ">
+                                                <input type="text" name="display_name" value="{{ user.get_full_name }}" required class="w-full pl-11 pr-4 py-3.5 rounded-2xl sys-card border border-gray-100  text-sm font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all text-[var(--sys-text)]  outline-none hover:bg-white ">
                                             </div>
                                         </div>
                                         <div class="space-y-3">
@@ -209,7 +209,7 @@
                                                 </div>
                                             </div>
                                             <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" checked class="sr-only peer">
+                                                <input type="checkbox" name="block_tracking_pixels" {% if user.profile.block_tracking_pixels %}checked{% endif %} class="sr-only peer">
                                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all  peer-checked:bg-gray-800 "></div>
                                             </label>
                                         </div>
@@ -289,7 +289,7 @@
                                                 </div>
                                             </div>
                                             {% if user.google_account %}
-                                                <a href="{% url 'google_disconnect' %}" class="px-6 py-2.5 sys-card text-red-600 border border-gray-200  hover:bg-red-50  hover:border-red-200  rounded-xl text-xs font-black transition-all">
+                                                <a href="{% url 'google_disconnect' %}" onclick="event.preventDefault(); openSmConfirm({ title: 'Disconnect Google Account?', message: 'Are you sure you want to disconnect your Google Workspace account? SecureMail will no longer be able to analyze your emails.', confirmText: 'Revoke Access', confirmVariant: 'red', icon: 'link-2-off', actionIcon: 'trash-2', onConfirm: () => { window.location.href = this.href; } });" class="px-6 py-2.5 sys-card text-red-600 border border-gray-200  hover:bg-red-50  hover:border-red-200  rounded-xl text-xs font-black transition-all">
                                                     Revoke Access
                                                 </a>
                                             {% else %}

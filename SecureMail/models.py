@@ -15,6 +15,7 @@ class Profile(models.Model):
     alert_digest = models.BooleanField(default=True)
     timezone = models.CharField(max_length=50, default='UTC (Coordinated Universal Time)')
     language = models.CharField(max_length=50, default='English (US)')
+    block_tracking_pixels = models.BooleanField(default=True)
 
     class Meta:
         indexes = [
@@ -153,18 +154,60 @@ class SyncJob(models.Model):
     def __str__(self):
         return f"Sync for {self.user.username} - {self.status}"
 
+class AuditLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='audit_logs', db_index=True)
+    action = models.CharField(max_length=255)
+    category = models.CharField(max_length=50, default='system')
+    severity = models.CharField(max_length=20, default='info')
+    metadata = models.JSONField(default=dict, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"[{self.created_at}] {self.user.username} - {self.action}"
+
 class Attachment(models.Model):
+    SCAN_STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('QUEUED', 'Queued'),
+        ('ANALYZING', 'Analyzing'),
+        ('COMPLETED', 'Completed'),
+        ('FAILED', 'Failed'),
+    )
+
     email = models.ForeignKey(EmailMessage, on_delete=models.CASCADE, related_name='attachments', db_index=True)
     file = models.FileField(upload_to='attachments/')
     filename = models.CharField(max_length=255)
     size = models.IntegerField() # In bytes
     content_type = models.CharField(max_length=100)
     sha256 = models.CharField(max_length=64, null=True, blank=True, db_index=True)
+    md5 = models.CharField(max_length=32, null=True, blank=True, db_index=True)
+    scan_status = models.CharField(max_length=20, choices=SCAN_STATUS_CHOICES, default='PENDING')
     is_malicious = models.BooleanField(default=False)
     vt_report = models.JSONField(null=True, blank=True)
+    upload_timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return self.filename
+
+class AttachmentAnalysis(models.Model):
+    attachment = models.OneToOneField(Attachment, on_delete=models.CASCADE, related_name='analysis')
+    risk_score = models.FloatField(default=0.0)
+    risk_level = models.CharField(max_length=50, default="UNKNOWN")
+    findings = models.JSONField(default=list)
+    metadata = models.JSONField(default=dict)
+    iocs = models.JSONField(default=list)
+    entropy = models.FloatField(default=0.0)
+    analyzer_used = models.CharField(max_length=100)
+    analysis_version = models.CharField(max_length=50, default='1.0.0')
+    execution_time_ms = models.FloatField(default=0.0)
+    errors = models.JSONField(default=list)
+    raw_report = models.JSONField(default=dict)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 class LinkAnalysis(models.Model):
     email = models.ForeignKey(EmailMessage, on_delete=models.CASCADE, related_name='link_analyses', db_index=True)

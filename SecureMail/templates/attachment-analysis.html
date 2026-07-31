@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Attachment Analysis - {{ attachment.filename }}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-full bg-slate-50 overflow-y-auto">
+    {% include "components/navbar.html" %}
+    <div class="flex flex-1 overflow-hidden">
+        {% include "components/sidebar.html" %}
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+            <div class="max-w-5xl mx-auto w-full flex flex-col gap-6">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-4">
+                        <a href="{% url 'email_view' attachment.email.id %}" class="p-3 bg-white rounded-2xl shadow-sm hover:text-blue-600 transition-all border border-gray-100">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-2xl font-black text-slate-800 tracking-tight">{{ attachment.filename }}</h1>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">ATAE Threat Report</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overview Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Verdict</p>
+                        <span class="text-2xl font-black {% if analysis.risk_level == 'MALICIOUS' %}text-red-500{% elif analysis.risk_level == 'SUSPICIOUS' %}text-yellow-500{% else %}text-green-500{% endif %}">
+                            {{ analysis.risk_level }}
+                        </span>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Risk Score</p>
+                        <span class="text-2xl font-black text-slate-800">{{ analysis.risk_score|floatformat:1 }}</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Analyzer Used</p>
+                        <span class="text-lg font-black text-blue-600">{{ analysis.analyzer_used }}</span>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Analysis Time</p>
+                        <span class="text-lg font-black text-slate-800">{{ analysis.execution_time_ms|floatformat:0 }}ms</span>
+                    </div>
+                </div>
+
+                <!-- Findings Details -->
+                <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                        <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="shield-alert" class="w-5 h-5 text-slate-500"></i>
+                            Security Findings
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        {% if analysis.findings %}
+                        <ul class="space-y-4">
+                            {% for f in analysis.findings %}
+                            <li class="p-4 rounded-2xl border {% if f.severity == 'CRITICAL' or f.severity == 'HIGH' %}bg-red-50 border-red-100{% elif f.severity == 'MEDIUM' %}bg-yellow-50 border-yellow-100{% else %}bg-blue-50 border-blue-100{% endif %}">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h4 class="text-sm font-bold {% if f.severity == 'CRITICAL' or f.severity == 'HIGH' %}text-red-700{% elif f.severity == 'MEDIUM' %}text-yellow-700{% else %}text-blue-700{% endif %}">{{ f.title|default:"Finding" }}</h4>
+                                    <span class="text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded bg-white/50">{{ f.severity }}</span>
+                                </div>
+                                <p class="text-xs {% if f.severity == 'CRITICAL' or f.severity == 'HIGH' %}text-red-600{% elif f.severity == 'MEDIUM' %}text-yellow-600{% else %}text-blue-600{% endif %}">{{ f.description|default:"No description provided." }}</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p class="text-sm text-slate-500 font-medium">No significant threat findings detected during analysis.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- File Metadata -->
+                <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                        <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="file-json" class="w-5 h-5 text-slate-500"></i>
+                            Extracted Metadata
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% for key, val in analysis.metadata.items %}
+                            <div class="flex flex-col gap-1 border-b border-gray-50 pb-2">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ key }}</span>
+                                <span class="text-sm font-medium text-slate-800 break-all">{{ val }}</span>
+                            </div>
+                            {% empty %}
+                            <p class="text-sm text-slate-500">No metadata available.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IOCs -->
+                {% if analysis.iocs %}
+                <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-50 bg-gray-50/50">
+                        <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="target" class="w-5 h-5 text-slate-500"></i>
+                            Indicators of Compromise
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <ul class="space-y-2 text-sm text-slate-600">
+                            {% for ioc in analysis.iocs %}
+                            <li class="font-mono bg-gray-50 p-2 rounded">{{ ioc }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Errors -->
+                {% if analysis.errors %}
+                <div class="bg-red-50 rounded-3xl border border-red-100 shadow-sm overflow-hidden mt-4">
+                    <div class="p-6 border-b border-red-100">
+                        <h2 class="text-sm font-black text-red-700 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                            Analysis Errors
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <ul class="list-disc list-inside space-y-1 text-sm text-red-600">
+                            {% for err in analysis.errors %}
+                            <li>{{ err }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

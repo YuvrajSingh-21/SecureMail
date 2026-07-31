@@ -18,3 +18,15 @@ def analyze_email_on_create(sender, instance, created, **kwargs):
     if created and not getattr(instance, 'skip_analysis', False):
         pipeline = EmailPipeline()
         pipeline.run(instance.id)
+
+from django.contrib.auth.signals import user_logged_in, user_logged_out
+from ..services.audit_service import AuditService
+
+@receiver(user_logged_in)
+def log_user_login(sender, request, user, **kwargs):
+    AuditService.log(user, 'login', category='auth', metadata={'method': 'session'}, request=request)
+
+@receiver(user_logged_out)
+def log_user_logout(sender, request, user, **kwargs):
+    if user:
+        AuditService.log(user, 'logout', category='auth', request=request)

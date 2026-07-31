@@ -5,7 +5,9 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from .services.business_logic import EmailService, ProfileService
 from .services.sync_manager import SyncManager
-from .models import EmailMessage, EmailReport, ConnectedAccount
+from .services.audit_service import AuditService
+from .services.profile_service import ProfileService as MetricProfileService
+from .models import EmailMessage, EmailReport, ConnectedAccount, AuditLog
 
 @login_required(login_url='login')
 def sync_gmail(request):
@@ -21,6 +23,7 @@ def sync_gmail(request):
 
     manager = SyncManager(request.user)
     job = manager.start_sync(full_sync=full_sync)
+    AuditService.log(request.user, 'mailbox_sync', category='system', metadata={'full_sync': full_sync}, request=request)
     
     if is_auto:
         from django.http import JsonResponse
@@ -71,19 +74,93 @@ def inbox(request, folder=None):
     if request.method == 'POST':
         action = request.POST.get('action')
         email_ids = request.POST.getlist('email_ids')
-        if email_ids:
+        if action == 'empty_trash':
+            trash_emails = EmailMessage.objects.filter(user=request.user, in_trash=True)
+            count = trash_emails.count()
+            for msg in trash_emails:
+                for att in msg.attachments.all():
+                    if att.file:
+                        try:
+                            att.file.delete(save=False)
+                        except: pass
+            trash_emails.delete()
+            msg_text = f'Permanently deleted {count} emails from Trash.'
+            messages.success(request, msg_text)
+            AuditService.log(request.user, 'empty_trash', category='email', metadata={'count': count}, request=request)
+            MetricProfileService.recalculate_security_metrics(request.user)
+        elif email_ids:
             if action == 'delete':
-                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(in_trash=True)
-                messages.success(request, f'Moved {len(email_ids)} emails to trash.')
+                if folder == 'trash':
+                    # Delete Forever if in Trash
+                    to_delete = EmailMessage.objects.filter(id__in=email_ids, user=request.user, in_trash=True)
+                    count = to_delete.count()
+                    for msg in to_delete:
+                        for att in msg.attachments.all():
+                            if att.file:
+                                try:
+                                    att.file.delete(save=False)
+                                except: pass
+                    to_delete.delete()
+                    msg_text = f'Permanently deleted {count} emails.'
+                    messages.success(request, msg_text)
+                    AuditService.log(request.user, 'permanent_delete', category='email', metadata={'count': count}, request=request)
+                    MetricProfileService.recalculate_security_metrics(request.user)
+                else:
+                    EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(in_trash=True)
+                    msg_text = f'Moved {len(email_ids)} emails to trash.'
+                    messages.success(request, msg_text)
+                    AuditService.log(request.user, 'delete_email', category='email', metadata={'count': len(email_ids)}, request=request)
+                    MetricProfileService.recalculate_security_metrics(request.user)
+            elif action == 'delete_forever':
+                to_delete = EmailMessage.objects.filter(id__in=email_ids, user=request.user)
+                count = to_delete.count()
+                for msg in to_delete:
+                    for att in msg.attachments.all():
+                        if att.file:
+                            try:
+                                att.file.delete(save=False)
+                            except: pass
+                to_delete.delete()
+                msg_text = f'Permanently deleted {count} emails.'
+                messages.success(request, msg_text)
+                AuditService.log(request.user, 'permanent_delete', category='email', metadata={'count': count}, request=request)
+                MetricProfileService.recalculate_security_metrics(request.user)
+            elif action == 'restore':
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(in_trash=False, folder='INBOX')
+                msg_text = f'Restored {len(email_ids)} emails to Inbox.'
+                messages.success(request, msg_text)
+                AuditService.log(request.user, 'restore_email', category='email', metadata={'count': len(email_ids)}, request=request)
+                MetricProfileService.recalculate_security_metrics(request.user)
             elif action == 'archive':
-                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(folder='ARCHIVE')
-                messages.success(request, f'Archived {len(email_ids)} emails.')
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(folder='ARCHIVE', in_trash=False)
+                msg_text = f'Archived {len(email_ids)} emails.'
+                messages.success(request, msg_text)
+                AuditService.log(request.user, 'archive_email', category='email', metadata={'count': len(email_ids)}, request=request)
+            elif action == 'unarchive':
+                EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(folder='INBOX', in_trash=False)
+                msg_text = f'Moved {len(email_ids)} emails to Inbox.'
+                messages.success(request, msg_text)
+                AuditService.log(request.user, 'unarchive_email', category='email', metadata={'count': len(email_ids)}, request=request)
             elif action == 'mark_read':
                 EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(unread=False)
-                messages.success(request, f'Marked {len(email_ids)} emails as read.')
+                msg_text = f'Marked {len(email_ids)} emails as read.'
+                messages.success(request, msg_text)
             elif action == 'mark_unread':
                 EmailMessage.objects.filter(id__in=email_ids, user=request.user).update(unread=True)
-                messages.success(request, f'Marked {len(email_ids)} emails as unread.')
+                msg_text = f'Marked {len(email_ids)} emails as unread.'
+                messages.success(request, msg_text)
+        
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.headers.get('accept') == 'application/json':
+            from django.http import JsonResponse
+            from SecureMail.context_processors import sidebar_stats
+            counts = sidebar_stats(request)
+            return JsonResponse({
+                'success': True, 
+                'status': 'ok',
+                'message': locals().get('msg_text', 'Action completed successfully.'),
+                'counts': counts
+            })
+            
         return redirect(request.META.get('HTTP_REFERER', 'inbox'))
 
     query = request.GET.get('q')
@@ -162,10 +239,22 @@ def toggle_star(request, id):
 
 @login_required(login_url='login')
 def delete_email(request, id):
-    email_service = EmailService()
-    email_service.delete_email(request.user, id)
-    messages.info(request, "Message moved to trash.")
-    return redirect('inbox')
+    email = get_object_or_404(EmailMessage, id=id, user=request.user)
+    if email.in_trash:
+        for att in email.attachments.all():
+            if att.file:
+                try:
+                    att.file.delete(save=False)
+                except: pass
+        email.delete()
+        messages.info(request, "Message permanently deleted.")
+    else:
+        email.in_trash = True
+        email.save()
+        messages.info(request, "Message moved to trash.")
+        AuditService.log(request.user, 'delete_email', category='email', metadata={'count': 1}, request=request)
+        MetricProfileService.recalculate_security_metrics(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'inbox'))
 
 @login_required(login_url='login')
 def report_false_positive(request, id):
@@ -267,6 +356,13 @@ def email_view(request, id):
         'features': context.get('features', {})
     }
     
+    if hasattr(request.user, 'profile') and request.user.profile.block_tracking_pixels:
+        if email.html_body:
+            import re
+            email.html_body = re.sub(r'<img[^>]*width=["\']?[01]["\']?[^>]*height=["\']?[01]["\']?[^>]*>', '', email.html_body, flags=re.IGNORECASE)
+            email.html_body = re.sub(r'<img[^>]*height=["\']?[01]["\']?[^>]*width=["\']?[01]["\']?[^>]*>', '', email.html_body, flags=re.IGNORECASE)
+            # Also remove images with tracking pixel domains or base64 1x1 if needed, but above covers standard 1x1s
+    
     return render(request, 'email-view.html', {'email': email, 'forensic': forensic, 'report_context': context})
 
 from django.http import FileResponse
@@ -361,20 +457,21 @@ def settings_view(request):
         is_protected = request.POST.get('is_protected') == 'on'
         alert_threats = request.POST.get('alert_threats') == 'on'
         alert_digest = request.POST.get('alert_digest') == 'on'
+        block_tracking_pixels = request.POST.get('block_tracking_pixels') == 'on'
         timezone = request.POST.get('timezone')
         language = request.POST.get('language')
         username = request.POST.get('username')
+        display_name = request.POST.get('display_name')
         
         service = ProfileService()
         profile = service.repository.get_by_user(request.user)
         
-        if username and username != request.user.username:
-            try:
-                request.user.username = username
-                request.user.save()
-                messages.success(request, "Username updated successfully.")
-            except Exception as e:
-                messages.error(request, f"Error updating username: {str(e)}")
+        if display_name:
+            parts = display_name.split(' ', 1)
+            request.user.first_name = parts[0]
+            request.user.last_name = parts[1] if len(parts) > 1 else ''
+            request.user.save()
+            messages.success(request, "Display name updated successfully.")
 
         if timezone:
             profile.timezone = timezone
@@ -384,6 +481,7 @@ def settings_view(request):
         profile.is_protected = is_protected
         profile.alert_threats = alert_threats
         profile.alert_digest = alert_digest
+        profile.block_tracking_pixels = block_tracking_pixels
         profile.save()
         
         new_username = request.POST.get('username')
@@ -397,6 +495,7 @@ def settings_view(request):
                 messages.success(request, "Username updated successfully.")
         
         if not messages.get_messages(request):
+            AuditService.log(request.user, 'settings_changed', category='system', metadata={'action': 'update_settings'}, request=request)
             messages.success(request, "Settings updated successfully.")
             
         return redirect('settings')
@@ -405,12 +504,7 @@ def settings_view(request):
 
 @login_required(login_url='login')
 def profile_view(request):
-    activity = [
-        {'action': 'Account logged in from Chrome on Windows', 'time': '2 minutes ago', 'icon': 'log-in'},
-        {'action': 'Synced entire Gmail mailbox', 'time': '10 minutes ago', 'icon': 'refresh-cw'},
-        {'action': 'Password successfully validated', 'time': '1 hour ago', 'icon': 'key'},
-        {'action': 'Weekly security report generated', 'time': 'Yesterday', 'icon': 'file-text'},
-    ]
+    activity = AuditLog.objects.filter(user=request.user).order_by('-created_at')[:10]
     return render(request, 'profile.html', {'activity': activity})
 
 def index(request):
@@ -431,6 +525,8 @@ def login_view(request):
     return render(request, 'login.html')
 
 def logout_view(request):
+    if request.user.is_authenticated:
+        AuditService.log(request.user, 'logout', category='auth', request=request)
     logout(request)
     messages.info(request, "You have been logged out.")
     return redirect('index')
@@ -540,19 +636,36 @@ def generate_explanation(request, id):
     # Construct input data
     ml_results = email_service.get_email_verdict(email)
     
+    # 5. Get Attachment Security Analysis Data
+    attachment_findings = []
+    if email.has_attachments:
+        for att in email.attachments.all():
+            if hasattr(att, 'analysis') and att.scan_status == 'COMPLETED':
+                attachment_findings.append({
+                    'filename': att.filename,
+                    'risk_level': att.analysis.risk_level,
+                    'risk_score': att.analysis.risk_score,
+                    'analyzer_used': att.analysis.analyzer_used,
+                    'findings': att.analysis.findings
+                })
+    
+    # Send only structured analysis, no raw data.
     gemini_input_data = {
-        'subject': email.subject,
-        'body_snippet': (email.plain_body or email.snippet or "")[:500],
-        'urls': [], # URLs aren't fully preserved in detail unless we parse them again, but we pass empty for now or extract from features
-        'spf': getattr(email, 'spf_pass', True),
-        'dkim': getattr(email, 'dkim_pass', True),
-        'dmarc': getattr(email, 'dmarc_pass', True),
-        'vt_threats': 0,
-        'gsb_threats': 0,
-        'features': ml_results.get('features', {}),
-        'prediction': ml_results.get('label', 'UNKNOWN'),
-        'confidence': ml_results.get('confidence', 0),
-        'threat_score': ml_results.get('score', 0)
+        'header_analysis': {
+            'spf_pass': getattr(email, 'spf_pass', True),
+            'dkim_pass': getattr(email, 'dkim_pass', True),
+            'dmarc_pass': getattr(email, 'dmarc_pass', True)
+        },
+        'sender': email.sender_email,
+        'sender_reputation': ml_results.get('sender_reputation', 0),
+        'url_analysis': report.get('links', []),
+        'machine_learning': {
+            'prediction': ml_results.get('label', 'UNKNOWN'),
+            'confidence': ml_results.get('confidence', 0),
+            'features': ml_results.get('features', {})
+        },
+        'attachment_findings': attachment_findings,
+        'overall_risk_score': ml_results.get('score', 0)
     }
     
     gemini_service = GeminiService()
@@ -577,3 +690,54 @@ def generate_explanation(request, id):
         logger.error(f"Error generating Gemini explanation for email {id}: {str(e)}", exc_info=True)
         return JsonResponse({'error': 'Unable to generate AI explanation.'}, status=500)
 
+
+from .models import Attachment, AttachmentAnalysis
+import mimetypes
+from django.shortcuts import get_object_or_404
+
+@login_required(login_url='login')
+def download_attachment(request, id):
+    att = get_object_or_404(Attachment, id=id, email__user=request.user)
+    AuditService.log(request.user, 'download_attachment', category='email', metadata={'attachment_id': id}, request=request)
+    try:
+        return FileResponse(att.file.open('rb'), as_attachment=True, filename=att.filename)
+    except Exception as e:
+        messages.error(request, f"Could not download attachment: {str(e)}")
+        return redirect('email_view', id=att.email.id)
+
+@login_required(login_url='login')
+def preview_attachment(request, id):
+    att = get_object_or_404(Attachment, id=id, email__user=request.user)
+    AuditService.log(request.user, 'preview_attachment', category='email', metadata={'attachment_id': id}, request=request)
+    
+    if any(ext in att.filename.lower() for ext in ['.exe', '.dll', '.zip', '.tar', '.gz', '.rar', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.bin']):
+        messages.warning(request, "Preview is not supported for this file type.")
+        return redirect('email_view', id=att.email.id)
+        
+    try:
+        content_type = mimetypes.guess_type(att.filename)[0] or att.content_type or 'application/octet-stream'
+        
+        # Render Markdown and text formats directly in an HTML wrapper
+        ext = att.filename.split('.')[-1].lower()
+        if ext in ['md', 'txt', 'json', 'csv', 'yaml', 'yml', 'js', 'py', 'sh']:
+            content = att.file.read().decode('utf-8', errors='replace')
+            return render(request, 'preview_attachment.html', {
+                'content': content,
+                'ext': ext
+            })
+            
+        return FileResponse(att.file.open('rb'), content_type=content_type)
+    except Exception as e:
+        messages.error(request, "Could not load preview.")
+        return redirect('email_view', id=att.email.id)
+
+@login_required(login_url='login')
+def attachment_analysis_view(request, id):
+    att = get_object_or_404(Attachment, id=id, email__user=request.user)
+    try:
+        analysis = att.analysis
+    except AttachmentAnalysis.DoesNotExist:
+        messages.warning(request, "Analysis not yet completed or not found.")
+        return redirect('email_view', id=att.email.id)
+        
+    return render(request, 'attachment-analysis.html', {'attachment': att, 'analysis': analysis})

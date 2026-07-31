@@ -175,6 +175,9 @@ class SyncManager:
                             }
                         )
                         email_id = email.id
+                        if created:
+                            self._process_attachments(email, parsed)
+                            
                         if (created or not email.analysis_completed) and self.pipeline:
                             needs_analysis = True
                         elif email.analysis_completed and hasattr(email, 'analysis') and 'analysis' not in email.analysis.detailed_report and self.pipeline:
@@ -227,6 +230,44 @@ class SyncManager:
                 logger.info(f"History ID skipped for {self.user.username} (already initialized)")
         except Exception as e:
             logger.error(f"Failed to extract historyId for {self.user.username}: {str(e)}")
+
+    def _process_attachments(self, email, parsed):
+        if not parsed.get('attachments'):
+            return
+            
+        from django.core.files.base import ContentFile
+        from ..models import Attachment
+        import hashlib
+        import base64
+        from ..tasks import analyze_attachment_task
+        
+        for att in parsed['attachments']:
+            att_data = self.gmail.get_attachment(parsed['gmail_id'], att['attachmentId'])
+            if att_data and 'data' in att_data:
+                try:
+                    # Some padding might be missing in urlsafe b64
+                    b64_data = att_data['data'].replace('-', '+').replace('_', '/')
+                    b64_data += '=' * ((4 - len(b64_data) % 4) % 4)
+                    raw_data = base64.b64decode(b64_data)
+                    
+                    sha256 = hashlib.sha256(raw_data).hexdigest()
+                    md5 = hashlib.md5(raw_data).hexdigest()
+                    
+                    new_att = Attachment(
+                        email=email,
+                        filename=att['filename'],
+                        size=att['size'] if att.get('size') else len(raw_data),
+                        content_type=att['mimeType'],
+                        sha256=sha256,
+                        md5=md5,
+                        scan_status='QUEUED'
+                    )
+                    new_att.file.save(f"{sha256}_{att['filename']}", ContentFile(raw_data), save=True)
+                    
+                    # Queue ATAE task
+                    analyze_attachment_task.delay(new_att.id)
+                except Exception as att_err:
+                    logger.error(f"Failed to process attachment {att['filename']}: {str(att_err)}")
 
     def _incremental_sync(self, job):
         """Phase 3B: Incremental Synchronization via History API."""
@@ -296,6 +337,9 @@ class SyncManager:
                                 'dmarc_pass': parsed.get('dmarc_pass', True)
                             }
                         )
+                        if created:
+                            self._process_attachments(email, parsed)
+                            
                         if created or not email.analysis_completed:
                             new_email_ids.append(email.id)
                             

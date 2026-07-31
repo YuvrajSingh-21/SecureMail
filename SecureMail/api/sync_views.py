@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from ..services.sync_manager import SyncManager
 from ..models import SyncJob
+from ..services.audit_service import AuditService
 from django.utils.decorators import method_decorator
 from ..decorators import rate_limit_view
 
@@ -14,6 +15,7 @@ class SyncStartAPI(APIView):
         full_sync = request.data.get('all', False)
         manager = SyncManager(request.user)
         job = manager.start_sync(full_sync=full_sync)
+        AuditService.log(request.user, 'mailbox_sync', category='system', metadata={'full_sync': full_sync}, request=request)
         
         if job:
             return Response({

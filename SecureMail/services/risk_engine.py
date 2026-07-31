@@ -164,12 +164,18 @@ class RiskEngine:
             
         attach_threat = any(a.get('is_malicious') for a in attachment_results) if attachment_results else False
         if attach_threat:
-            risk_factors.append("VirusTotal confirms MALWARE in attachments")
-            forensic_signals.append({"type": "malware", "severity": "critical", "message": "⚠ MALWARE DETECTED in attachments"})
+            risk_factors.append("ATAE Engine confirms MALICIOUS attachments")
+            forensic_signals.append({"type": "malware", "severity": "critical", "message": "⚠ MALICIOUS ATTACHMENT DETECTED"})
             risk_score_pool += self.R_MALWARE
-            score_breakdown.append({'points': self.R_MALWARE, 'reason': 'VirusTotal confirms MALWARE in attachments'})
+            score_breakdown.append({'points': self.R_MALWARE, 'reason': 'ATAE Engine confirms MALICIOUS attachments'})
 
         # 3. Final Scoring (The Formula)
+        # SENDER INTELLIGENCE FIX: Trusted sender should not negate hard malicious indicators
+        if risk_score_pool >= 80:
+            safe_score_pool = 0 # Ignore safe signals if heavily malicious
+        elif risk_score_pool >= 50:
+            safe_score_pool = min(safe_score_pool, 20) # Cap safe signals
+            
         final_score = risk_score_pool - safe_score_pool
         final_score = int(max(0, min(100, final_score)))
 
@@ -177,25 +183,29 @@ class RiskEngine:
         if final_score >= 80 or attach_threat or link_threat:
             label = 'PHISHING'
             badge = "Credential Harvesting Risk"
+            final_score = max(80, final_score)
         elif final_score >= 50:
             label = 'SUSPICIOUS'
             badge = "High-Risk Engagement"
-        elif is_trusted:
+            final_score = max(50, final_score)
+        elif is_trusted and final_score < 30:
             if features.get('marketing_count', 0) > 0 or features.get('url_count', 0) > 5:
                 label = 'PROMOTIONAL'
                 badge = "Marketing Communication"
+                final_score = max(20, min(40, final_score))
             else:
                 label = 'SAFE'
                 badge = "Trusted Source"
+                final_score = max(5, min(15, final_score))
         else:
-            label = 'SAFE'
-            badge = "Legitimate Communication"
-
-        # Baseline alignment for UX
-        if label == 'SAFE': final_score = max(5, min(15, final_score))
-        elif label == 'PROMOTIONAL': final_score = max(20, min(40, final_score))
-        elif label == 'SUSPICIOUS': final_score = max(50, min(70, final_score))
-        elif label == 'PHISHING': final_score = max(80, final_score)
+            if final_score < 30:
+                label = 'SAFE'
+                badge = "Legitimate Communication"
+                final_score = max(5, min(15, final_score))
+            else:
+                label = 'PROMOTIONAL'
+                badge = "Marketing Communication"
+                final_score = max(20, min(40, final_score))
 
         # Inconsistency Validation
         if label == "PHISHING" and not risk_factors:

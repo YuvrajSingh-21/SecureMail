@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 20px; }
+        #content { max-width: 100%; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+    {{ content|json_script:"attachment-content" }}
+    {{ ext|json_script:"attachment-ext" }}
+    <script>
+        const ext = JSON.parse(document.getElementById('attachment-ext').textContent);
+        const content = JSON.parse(document.getElementById('attachment-content').textContent);
+        const el = document.getElementById('content');
+        if (ext === 'md') {
+            el.innerHTML = marked.parse(content);
+        } else {
+            const pre = document.createElement('pre');
+            const code = document.createElement('code');
+            code.className = "language-" + ext;
+            code.textContent = content;
+            pre.appendChild(code);
+            el.appendChild(pre);
+            hljs.highlightElement(code);
+        }
+    </script>
+</body>
+</html>

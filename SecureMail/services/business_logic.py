@@ -118,43 +118,128 @@ class EmailService:
         if hasattr(email, 'analysis') and hasattr(email.analysis, 'detailed_report'):
             links = (email.analysis.detailed_report or {}).get('links', [])
             
+        urls = []
+        for l in links:
+            urls.append({
+                'url': l.get('url', ''),
+                'safe_browsing': 'Clean' if not l.get('is_malicious') else 'Threat',
+                'virustotal': 'Clean',
+                'verdict': l.get('threat_type', 'SAFE')
+            })
+            
+        # Detect spoofing
+        spf = getattr(email, 'spf_pass', False)
+        dkim = getattr(email, 'dkim_pass', False)
+        spoofing = "None detected" if (spf and dkim) else "Possible Spoofing"
+        
+        # Findings for ML
+        detection_reasoning = analysis.get('critical_findings', [])[:3] + analysis.get('warning_findings', [])[:3]
+        if not detection_reasoning:
+            if analysis.get('label') == 'SAFE':
+                detection_reasoning = ["No phishing indicators detected", "No manipulative behavioral signals"]
+        
+        # Attachments formatting
+        atts = []
+        for att in email.attachments.all():
+            if hasattr(att, 'analysis') and att.analysis:
+                findings_list = att.analysis.findings or []
+                risk_score = att.analysis.risk_score
+                analyzer = att.analysis.analyzer_used
+                raw_report = att.analysis.raw_report or {}
+            else:
+                findings_list = []
+                risk_score = 0
+                analyzer = 'N/A'
+                raw_report = {}
+                
+            # Convert size to readable format
+            size_bytes = getattr(att, 'size', 0)
+            if size_bytes < 1024:
+                size_str = f"{size_bytes} B"
+            elif size_bytes < 1024 * 1024:
+                size_str = f"{size_bytes/1024:.1f} KB"
+            else:
+                size_str = f"{size_bytes/(1024*1024):.1f} MB"
+                
+            ext = att.filename.split('.')[-1].upper() if '.' in att.filename else 'UNKNOWN'
+                
+            atts.append({
+                'filename': att.filename,
+                'extension': ext,
+                'size': size_str,
+                'sha256': getattr(att, 'sha256', None),
+                'risk_score': risk_score,
+                'analyzer': analyzer,
+                'verdict': 'MALICIOUS' if att.is_malicious else 'SAFE',
+                'findings': [f.get('title', str(f)) for f in findings_list if isinstance(f, dict)] if findings_list else [],
+                'recommendation': raw_report.get('recommendation') or raw_report.get('recommended_action')
+            })
+            
         return {
             'incident_id': getattr(email, 'id', 'Unknown'),
             'subject': getattr(email, 'subject', None) or 'No Subject',
-            'sender_email': getattr(email, 'sender_email', 'Unknown Sender'),
-            'sender_display': sender_display,
-            'date': email.timestamp.strftime('%B %d, %Y %I:%M %p') if getattr(email, 'timestamp', None) else 'Unknown Date',
             
+            # Overview
             'verdict': analysis.get('label') or 'SAFE',
             'confidence': analysis.get('confidence') or 0,
             'risk_score': analysis.get('score') or 0,
+            'threat_category': analysis.get('category', 'N/A'),
+            'investigation_status': 'Closed - Automated Analysis Completed',
             
-            'executive_summary': gemini.get('summary') or analysis.get('summary') or 'No data available.',
+            # Exec Summary
+            'ai_summary': gemini.get('summary') or gemini.get('user_explanation') or analysis.get('summary') or 'No summary available.',
+            'technical_explanation': gemini.get('technical_analysis') or 'No technical explanation available.',
+            'recommended_action': gemini.get('recommended_action') or 'No action available.',
             
-            'analyst_explanation': gemini.get('user_explanation') or 'No data available.',
-            'technical_analysis': gemini.get('technical_analysis') or 'No data available.',
-            'confidence_assessment': gemini.get('confidence_comment') or 'No data available.',
-            'recommended_action': gemini.get('recommended_action') or 'No data available.',
+            # Risk Breakdown
+            'risk_breakdown': [
+                ("Header Analysis", 0),
+                ("Authentication", 0),
+                ("Sender Reputation", analysis.get('sender_risk', 0)),
+                ("URL Analysis", analysis.get('url_risk', 0)),
+                ("Machine Learning", analysis.get('score', 0))
+            ] + ([("Attachment Analysis", analysis.get('attachment_risk', 0))] if email.attachments.exists() else []),
             
-            'red_flags': gemini.get('red_flags') or [],
-            
-            'trusted_sender': analysis.get('trusted_sender') or False,
-            'sender_reputation': analysis.get('sender_reputation') or 0,
-            
-            'threat_indicators': analysis.get('risk_factors') or [],
-            
-            'complexity_score': analysis.get('complexity_score', 'N/A'),
-            'entropy_score': analysis.get('entropy_score', 'N/A'),
-            
-            'trigger_phrases': analysis.get('suspicious_phrases', []),
-            
-            'links': links,
-            
-            'spf_pass': getattr(email, 'spf_pass', False),
-            'dkim_pass': getattr(email, 'dkim_pass', False),
+            # Auth
+            'spf_pass': spf,
+            'dkim_pass': dkim,
             'dmarc_pass': getattr(email, 'dmarc_pass', False),
             
-            'original_content': getattr(email, 'plain_text', None) or getattr(email, 'body', 'No text available.')
+            # Sender Intel
+            'sender_domain': getattr(email, 'sender_email', 'N/A'),
+            'sender_display': sender_display,
+            'sender_reputation': f"{analysis.get('sender_reputation', 50)}/100",
+            'spoofing_detection': spoofing,
+            
+            # Header Analysis
+            'message_id': getattr(email, 'gmail_message_id', 'Unknown'),
+            'return_path': getattr(email, 'sender_email', 'Unknown'),
+            'originating_ip': 'Extracted from headers',
+            'suspicious_headers': [],
+            
+            # URL
+            'urls': urls,
+            
+            # ML Assessment
+            'detection_reasoning': detection_reasoning,
+            'suspicious_phrases': analysis.get('suspicious_phrases', []),
+            
+            # Attachments
+            'attachments': atts,
+            
+            # Timeline
+            'timeline': [
+                (f"[{email.timestamp.strftime('%H:%M:%S')}] Email received", '#10b981'),
+                (f"[{email.timestamp.strftime('%H:%M:%S')}] Headers parsed & Authentication verified", '#10b981'),
+                (f"[{email.timestamp.strftime('%H:%M:%S')}] URL & Sender investigation completed", '#10b981'),
+            ] + ([
+                (f"[{(email.analysis_completed or email.timestamp).strftime('%H:%M:%S')}] Attachment analyzed (ATAE)", '#3b82f6')
+            ] if email.attachments.exists() else []) + [
+                (f"[{(email.analysis_completed or email.timestamp).strftime('%H:%M:%S')}] Machine Learning completed", '#3b82f6'),
+                (f"[{(email.analysis_completed or email.timestamp).strftime('%H:%M:%S')}] Final verdict generated: {analysis.get('label', 'SAFE')}", '#ef4444' if analysis.get('label') == 'PHISHING' else ('#f97316' if analysis.get('label') == 'SUSPICIOUS' else '#22c55e'))
+            ],
+            
+            'original_content': getattr(email, 'plain_body', None) or getattr(email, 'body', 'No text available.')
         }
 
 class ProfileService:

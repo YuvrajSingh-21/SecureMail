@@ -48,12 +48,7 @@ class GeminiService:
             try:
                 start_time = time.time()
                 
-                print("\n=========================================")
-                print("GEMINI REQUEST START")
-                print(f"Model: {self.model_name}")
-                print(f"Prompt Length: {len(prompt)}")
-                print(f"Prompt:\n{prompt}")
-                print("=========================================\n")
+
                 
                 logger.info("[GEMINI] Sending request...")
                 response = self.client.models.generate_content(
@@ -65,20 +60,7 @@ class GeminiService:
                     )
                 )
                 
-                print("\n=========================================")
-                print("GEMINI RESPONSE")
-                if hasattr(response, 'candidates') and response.candidates:
-                    print(f"Status: SUCCESS (Candidates found)")
-                    print(f"Finish Reason: {response.candidates[0].finish_reason}")
-                    print(f"Candidates: {len(response.candidates)}")
-                else:
-                    print("Status: SUCCESS (No candidates)")
-                
-                if hasattr(response, 'usage_metadata'):
-                    print(f"Tokens: {response.usage_metadata}")
-                if hasattr(response, 'text'):
-                    print(f"Raw Response:\n{response.text}")
-                print("=========================================\n")
+
                 
                 logger.info("[GEMINI] Response received")
                 if hasattr(response, 'candidates') and response.candidates:
@@ -129,25 +111,21 @@ class GeminiService:
 
     def _build_prompt(self, email_data: Dict[str, Any]) -> str:
         return f"""You are an expert cybersecurity forensic analyst for SecureMail.
-Your task is to EXPLAIN the security decision made by the SecureMail ML Engine.
-You MUST NOT change the prediction, confidence, or threat score. The engine has already decided.
+Your task is to EXPLAIN the security decision made by the SecureMail engines.
+You MUST NOT change the prediction, confidence, or threat score. The engines have already decided.
 You MUST explain why the engine made this decision to a non-technical end user, based on the provided signals.
 
---- Data Provided by ML Engine ---
-Subject: {email_data.get('subject', '')}
-Body Snippet: {email_data.get('body_snippet', '')}
-URLs Found: {email_data.get('urls', [])}
-SPF Pass: {email_data.get('spf', False)}
-DKIM Pass: {email_data.get('dkim', False)}
-DMARC Pass: {email_data.get('dmarc', False)}
-VirusTotal Threats: {email_data.get('vt_threats', 0)}
-Safe Browsing Threats: {email_data.get('gsb_threats', 0)}
-ML Features Triggered: {email_data.get('features', dict())}
+--- Data Provided by Engines ---
+Header Analysis: {email_data.get('header_analysis', {})}
+Sender Email: {email_data.get('sender', '')}
+Sender Reputation: {email_data.get('sender_reputation', 0)}
+URL Analysis: {email_data.get('url_analysis', [])}
+ML Engine Prediction: {email_data.get('machine_learning', {}).get('prediction', 'UNKNOWN')} (Confidence: {email_data.get('machine_learning', {}).get('confidence', 0)}%)
+ML Features Triggered: {email_data.get('machine_learning', {}).get('features', {})}
+Attachment Findings: {email_data.get('attachment_findings', [])}
 
---- ML Engine Verdict (FINAL & NON-NEGOTIABLE) ---
-Prediction: {email_data.get('prediction', 'SAFE')}
-Confidence: {email_data.get('confidence', 0)}%
-Threat Score: {email_data.get('threat_score', 0)}/100
+--- Overall Email Verdict (FINAL & NON-NEGOTIABLE) ---
+Threat Score: {email_data.get('overall_risk_score', 0)}/100
 
 Respond strictly in valid JSON format matching this schema:
 {{

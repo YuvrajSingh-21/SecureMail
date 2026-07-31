@@ -135,8 +135,8 @@ class EmailPipeline:
             return False
 
     def _analyze_links(self, email):
-        if not self.gsb:
-            return []
+        import urllib.parse
+        import re
         
         soup = BeautifulSoup(email.body, 'html.parser')
         urls = []
@@ -147,20 +147,80 @@ class EmailPipeline:
         
         urls = list(set(urls))
         if not urls: return []
-
-        matches = self.gsb.check_urls(urls)
-        match_map = {m['threat']['url']: m for m in matches}
+        
+        # Threat flags
+        shorteners = {'bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'ow.ly', 'is.gd', 'buff.ly'}
+        suspicious_tlds = {'.zip', '.mov', '.tk', '.ml', '.ga', '.cf', '.gq', '.icu', '.top', '.xyz'}
+        
+        # GSB Check
+        matches = []
+        if self.gsb:
+            matches = self.gsb.check_urls(urls)
+        match_map = {m['threat']['url']: m for m in matches} if matches else {}
         
         results = []
         for url in urls:
-            match = match_map.get(url)
+            try:
+                parsed = urllib.parse.urlparse(url)
+                netloc = parsed.netloc.lower()
+            except:
+                continue
+                
+            is_malicious = False
+            threat_type = 'SAFE'
+            risk_score = 0
+            gsb_report = match_map.get(url)
+            
+            # GSB Detection
+            if gsb_report:
+                is_malicious = True
+                threat_type = gsb_report.get('threatType', 'MALWARE')
+                risk_score = 90
+            
+            # Additional Deterministic Detections
+            # Punycode
+            if 'xn--' in netloc:
+                is_malicious = True
+                threat_type = 'PUNYCODE_SPOOF'
+                risk_score = max(risk_score, 85)
+                
+            # IP URL
+            if re.match(r'^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$', netloc):
+                is_malicious = True
+                threat_type = 'IP_URL'
+                risk_score = max(risk_score, 80)
+                
+            # Typosquatting / Fake Microsoft/Google
+            target_brands = ['microsoft', 'google', 'paypal', 'apple', 'amazon', 'chase', 'netflix']
+            for brand in target_brands:
+                if brand in netloc and netloc != f"{brand}.com" and not netloc.endswith(f".{brand}.com"):
+                    is_malicious = True
+                    threat_type = 'TYPOSQUATTING'
+                    risk_score = max(risk_score, 75)
+                    
+            # URL Shorteners
+            if any(s in netloc for s in shorteners):
+                risk_score = max(risk_score, 40)
+                if threat_type == 'SAFE': threat_type = 'SHORTENER'
+                
+            # Suspicious TLDs
+            if any(netloc.endswith(tld) for tld in suspicious_tlds):
+                risk_score = max(risk_score, 50)
+                if threat_type == 'SAFE': threat_type = 'SUSPICIOUS_TLD'
+                
+            # Multiple Redirects (Encoded URLs)
+            if url.count('http') > 1 or '%68%74%74%70' in url.lower():
+                is_malicious = True
+                threat_type = 'MULTIPLE_REDIRECTS'
+                risk_score = max(risk_score, 80)
+            
             analysis = LinkAnalysis.objects.create(
                 email=email,
                 url=url,
-                is_malicious=bool(match),
-                threat_type=match.get('threatType') if match else 'SAFE',
-                risk_score=90 if match else 0,
-                gsb_report=match
+                is_malicious=is_malicious,
+                threat_type=threat_type,
+                risk_score=risk_score,
+                gsb_report=gsb_report
             )
             results.append({
                 'url': url,
@@ -170,8 +230,8 @@ class EmailPipeline:
             if analysis.is_malicious:
                 ThreatIndicator.objects.create(
                     email=email,
-                    description=f"Malicious link detected: {url[:50]}...",
-                    severity='high'
+                    description=f"High risk link detected ({threat_type}): {url[:50]}...",
+                    severity='high' if risk_score >= 70 else 'medium'
                 )
         return results
 
@@ -185,36 +245,52 @@ class EmailPipeline:
 
     def _analyze_attachments(self, email):
         results = []
-        if not self.vt or not email.has_attachments:
+        if not email.has_attachments:
             return results
             
         attachments = Attachment.objects.filter(email=email)
         for attachment in attachments:
             try:
-                file_hash = self.vt.get_file_hash(attachment.file.path)
-                attachment.sha256 = file_hash
-                report = self.vt.scan_hash(file_hash)
-                
-                if not report:
-                    scan_info = self.vt.scan_file(attachment.file.path)
-                    if scan_info:
-                        time.sleep(0.5)
-                        report = self.vt.get_report(scan_info.get('data', {}).get('id'))
-                
-                if report:
-                    attachment.vt_report = report
-                    attachment.is_malicious = self.vt.is_malicious_report(report)
-                    attachment.save()
-                    results.append({'filename': attachment.filename, 'is_malicious': attachment.is_malicious})
+                # Prioritize ATAE (Attachment Analysis Engine) results
+                if hasattr(attachment, 'analysis') and attachment.scan_status == 'COMPLETED':
+                    is_malicious = attachment.is_malicious
+                    risk_score = attachment.analysis.risk_score
+                    results.append({'filename': attachment.filename, 'is_malicious': is_malicious, 'risk_score': risk_score})
                     
-                    if attachment.is_malicious:
+                    if is_malicious:
                         ThreatIndicator.objects.create(
                             email=email,
-                            description=f"Malware found in {attachment.filename}",
-                            severity='high'
+                            description=f"Malicious attachment detected (ATAE): {attachment.filename}",
+                            severity='critical'
                         )
+                    continue
+
+                # Fallback to VirusTotal if ATAE isn't available or hasn't finished
+                if self.vt:
+                    file_hash = self.vt.get_file_hash(attachment.file.path)
+                    attachment.sha256 = file_hash
+                    report = self.vt.scan_hash(file_hash)
+                    
+                    if not report:
+                        scan_info = self.vt.scan_file(attachment.file.path)
+                        if scan_info:
+                            time.sleep(0.5)
+                            report = self.vt.get_report(scan_info.get('data', {}).get('id'))
+                    
+                    if report:
+                        attachment.vt_report = report
+                        attachment.is_malicious = self.vt.is_malicious_report(report)
+                        attachment.save(update_fields=['vt_report', 'is_malicious', 'sha256'])
+                        results.append({'filename': attachment.filename, 'is_malicious': attachment.is_malicious, 'risk_score': 90 if attachment.is_malicious else 0})
+                        
+                        if attachment.is_malicious:
+                            ThreatIndicator.objects.create(
+                                email=email,
+                                description=f"Malicious attachment detected (VT): {attachment.filename}",
+                                severity='critical'
+                            )
             except Exception as e:
-                logger.error(f"Attachment scan failed: {str(e)}")
+                logger.error(f"Failed to analyze attachment {attachment.id}: {str(e)}")
         return results
 
     def _persist_results(self, email, risk_data, link_results, ml_results):
@@ -253,13 +329,19 @@ class EmailPipeline:
         )
 
     def _update_user_profile(self, email):
-        from django.db.models import Avg
-        profile = email.user.profile
-        active_emails = EmailMessage.objects.active(email.user)
+        from .profile_service import ProfileService as MetricProfileService
+        from SecureMail.models import Notification
         
-        profile.emails_scanned = active_emails.filter(analysis_completed__isnull=False).count()
-        profile.threats_blocked = active_emails.filter(risk='dangerous').count()
+        MetricProfileService.recalculate_security_metrics(email.user)
         
-        avg_risk = active_emails.filter(analysis_completed__isnull=False).order_by('-timestamp')[:50].aggregate(Avg('risk_score'))['risk_score__avg'] or 0
-        profile.security_score = max(0, 100 - avg_risk)
-        profile.save()
+        try:
+            profile = email.user.profile
+            if email.risk == 'dangerous' and profile.alert_threats:
+                Notification.objects.create(
+                    user=email.user,
+                    title="Phishing Threat Detected",
+                    message=f"A dangerous email '{email.subject}' was detected.",
+                    type='threat'
+                )
+        except Exception as e:
+            logger.error(f"Failed to create notification: {str(e)}")

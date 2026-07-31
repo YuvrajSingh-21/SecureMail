@@ -57,22 +57,45 @@
                             </a>
                             
                             <div id="bulk-actions" class="hidden items-center gap-2 ml-2">
-                                <button type="submit" form="bulk-action-form" name="action" value="mark_read" class="p-2 hover:bg-blue-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Mark as Read">
-                                    <i data-lucide="mail-open" class="w-4 h-4"></i>
-                                </button>
-                                <button type="submit" form="bulk-action-form" name="action" value="mark_unread" class="p-2 hover:bg-blue-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Mark as Unread">
-                                    <i data-lucide="mail" class="w-4 h-4"></i>
-                                </button>
-                                <button type="submit" form="bulk-action-form" name="action" value="archive" class="p-2 hover:bg-gray-50  rounded-xl transition text-[var(--sys-text-secondary)] shrink-0" title="Archive">
-                                    <i data-lucide="archive" class="w-4 h-4"></i>
-                                </button>
-                                <button type="submit" form="bulk-action-form" name="action" value="delete" class="p-2 hover:bg-red-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-red-600 shrink-0" title="Delete">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
+                                {% if current_folder == 'trash' %}
+                                    <button type="submit" form="bulk-action-form" name="action" value="restore" class="p-2 hover:bg-green-50 rounded-xl transition text-[var(--sys-text-secondary)] hover:text-green-600 shrink-0" title="Restore to Inbox">
+                                        <i data-lucide="archive-restore" class="w-4 h-4"></i>
+                                    </button>
+                                    <button type="submit" form="bulk-action-form" name="action" value="delete_forever" class="p-2 hover:bg-red-50 rounded-xl transition text-[var(--sys-text-secondary)] hover:text-red-600 shrink-0" title="Delete Forever">
+                                        <i data-lucide="trash-2" class="w-4 h-4 text-red-500"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="submit" form="bulk-action-form" name="action" value="mark_read" class="p-2 hover:bg-blue-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Mark as Read">
+                                        <i data-lucide="mail-open" class="w-4 h-4"></i>
+                                    </button>
+                                    <button type="submit" form="bulk-action-form" name="action" value="mark_unread" class="p-2 hover:bg-blue-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Mark as Unread">
+                                        <i data-lucide="mail" class="w-4 h-4"></i>
+                                    </button>
+                                    {% if current_folder == 'archive' %}
+                                        <button type="submit" form="bulk-action-form" name="action" value="unarchive" class="p-2 hover:bg-blue-50 rounded-xl transition text-[var(--sys-text-secondary)] hover:text-blue-600 shrink-0" title="Move to Inbox">
+                                            <i data-lucide="inbox" class="w-4 h-4"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" form="bulk-action-form" name="action" value="archive" class="p-2 hover:bg-gray-50  rounded-xl transition text-[var(--sys-text-secondary)] shrink-0" title="Archive">
+                                            <i data-lucide="archive" class="w-4 h-4"></i>
+                                        </button>
+                                    {% endif %}
+                                    <button type="submit" form="bulk-action-form" name="action" value="delete" class="p-2 hover:bg-red-50  rounded-xl transition text-[var(--sys-text-secondary)] hover:text-red-600 shrink-0" title="Delete">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                {% endif %}
                             </div>
                         </div>
                         
                         <div class="flex items-center gap-4">
+                            {% if current_folder == 'trash' %}
+                            <form method="post" action="">
+                                {% csrf_token %}
+                                <button type="submit" name="action" value="empty_trash" class="text-xs font-bold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors mr-2">
+                                    Empty Trash
+                                </button>
+                            </form>
+                            {% endif %}
                             <!-- Pagination Controls -->
                             <div class="flex items-center gap-2">
                                 {% if page_obj.has_previous %}
@@ -375,5 +398,172 @@
         // Navigate to detail view
         window.location.href = detailUrl;
     }
+
+    // Intercept form submissions for bulk actions to update UI dynamically without page refresh
+    document.addEventListener('submit', async function(e) {
+        const form = e.target;
+        if (form.method.toLowerCase() === 'post' && (form.id === 'bulk-action-form' || form.querySelector('button[value="empty_trash"]'))) {
+            const submitter = e.submitter;
+            if (!submitter) return;
+            
+            // If it's a delete_forever or empty_trash action, ensure confirm is handled by the browser first
+            // Wait, the onclick confirm runs before submit, so if we are here, it was confirmed.
+            e.preventDefault();
+            
+            const action = submitter.value;
+            const formData = new FormData(form);
+            formData.append('action', action);
+            
+            // Collect email IDs from checkboxes for the bulk action form
+            if (form.id !== 'bulk-action-form') {
+                const checkboxes = document.querySelectorAll('input[name="email_ids"]:checked');
+                checkboxes.forEach(cb => formData.append('email_ids', cb.value));
+            }
+            
+            const doAction = async () => {
+                const res = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await res.json();
+                    if (data.success && data.counts) {
+                        // Update DOM elements based on action
+                        const checkedRows = Array.from(document.querySelectorAll('input[name="email_ids"]:checked')).map(cb => cb.closest('.inbox-row'));
+                        
+                        if (['delete', 'delete_forever', 'archive', 'unarchive', 'restore'].includes(action)) {
+                            checkedRows.forEach(row => row.remove());
+                        } else if (action === 'empty_trash') {
+                            document.querySelectorAll('.inbox-row').forEach(row => row.remove());
+                        } else if (action === 'mark_read') {
+                            checkedRows.forEach(row => {
+                                row.classList.remove('unread', 'bg-white');
+                                row.classList.add('bg-transparent');
+                                const dot = row.querySelector('.unread-dot');
+                                if (dot) dot.remove();
+                                row.querySelectorAll('.font-bold, .font-semibold').forEach(el => {
+                                    if (el.tagName === 'P' || (el.tagName === 'SPAN' && el.classList.contains('text-sm'))) {
+                                        el.classList.remove('font-bold', 'font-semibold');
+                                        el.classList.add('font-normal');
+                                    }
+                                });
+                            });
+                        } else if (action === 'mark_unread') {
+                            checkedRows.forEach(row => {
+                                row.classList.add('unread', 'bg-white');
+                                row.classList.remove('bg-transparent');
+                                if (!row.querySelector('.unread-dot')) {
+                                    const dot = document.createElement('div');
+                                    dot.className = 'unread-dot absolute -top-1 -right-1 w-2.5 h-2.5 bg-blue-600 rounded-full border-2 border-white shadow-sm';
+                                    const container = row.querySelector('.relative.w-10.h-10');
+                                    if (container) container.appendChild(dot);
+                                }
+                                row.querySelectorAll('.font-normal').forEach(el => {
+                                    if (el.tagName === 'P' || (el.tagName === 'SPAN' && el.classList.contains('text-sm'))) {
+                                        el.classList.remove('font-normal');
+                                        el.classList.add('font-bold');
+                                    }
+                                });
+                            });
+                        }
+                        
+                        // Hide bulk actions toolbar
+                        const actionsContainer = document.getElementById('bulk-actions');
+                        if (actionsContainer) {
+                            actionsContainer.classList.add('hidden');
+                            actionsContainer.classList.remove('flex');
+                        }
+                        const masterCb = document.getElementById('master-checkbox');
+                        if (masterCb) {
+                            masterCb.checked = false;
+                        }
+                        document.querySelectorAll('input[name="email_ids"]').forEach(cb => cb.checked = false);
+                        
+                        // Check if list is empty, show empty state
+                        if (document.querySelectorAll('.inbox-row').length === 0) {
+                            const list = document.getElementById('email-list');
+                            if (list && !list.querySelector('.animate-pulse')) {
+                                list.innerHTML = `
+                                    <div class="flex flex-col items-center justify-center h-full opacity-30 animate-pulse py-20">
+                                        <div class="w-20 h-20 rounded-3xl bg-gray-100 flex items-center justify-center mb-6">
+                                            <i data-lucide="inbox" class="w-10 h-10 text-[var(--sys-text-secondary)]"></i>
+                                        </div>
+                                        <p class="text-lg font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">Folder Empty</p>
+                                        <p class="text-sm text-[var(--sys-text-secondary)] mt-2">No messages found in this folder.</p>
+                                    </div>
+                                `;
+                                if (window.lucide) window.lucide.createIcons();
+                            }
+                        }
+                        
+                        // Dispatch event to update sidebar
+                        window.dispatchEvent(new CustomEvent('updateSidebarCounters', { detail: data.counts }));
+                        
+                        // Show success toast (if toast function exists, otherwise fallback to standard success handling)
+                        if (typeof showToast === 'function') {
+                            showToast(data.message || 'Action completed successfully.', 'success');
+                        } else {
+                            // Quick toast fallback
+                            const toast = document.createElement('div');
+                            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl font-bold shadow-xl z-50 animate-slide-up flex items-center gap-2';
+                            toast.innerHTML = `<i data-lucide="check-circle" class="w-5 h-5"></i> ${data.message || 'Action completed successfully.'}`;
+                            document.body.appendChild(toast);
+                            if(window.lucide) window.lucide.createIcons();
+                            setTimeout(() => { toast.style.opacity='0'; setTimeout(()=>toast.remove(),300); }, 3000);
+                        }
+                    } else {
+                        // Backend returned JSON but success is false
+                        console.error('Backend returned error:', data.error);
+                        if (typeof showToast === 'function') {
+                            showToast(data.error || 'Failed to complete action.', 'error');
+                        } else {
+                            alert(data.error || 'Failed to complete action.');
+                        }
+                        window.location.reload();
+                    }
+                } else {
+                    // Not application/json
+                    const text = await res.text();
+                    console.error('Backend returned HTML instead of JSON:', text);
+                    window.location.reload();
+                }
+            };
+
+            if (action === 'delete_forever') {
+                openSmConfirm({
+                    title: 'Permanently Delete Selected?',
+                    message: 'You are about to permanently delete the selected emails.<br><br>This action cannot be undone. Deleted emails and their associated attachments will be removed permanently.',
+                    confirmText: 'Delete Forever',
+                    confirmVariant: 'red',
+                    icon: 'alert-triangle',
+                    actionIcon: 'trash-2',
+                    onConfirm: doAction
+                });
+            } else if (action === 'empty_trash') {
+                openSmConfirm({
+                    title: 'Permanently Delete Emails?',
+                    message: 'You are about to permanently delete all emails currently in Trash.<br><br>This action cannot be undone. Deleted emails and their associated attachments will be removed permanently.',
+                    confirmText: 'Delete Forever',
+                    confirmVariant: 'red',
+                    icon: 'alert-triangle',
+                    actionIcon: 'trash-2',
+                    onConfirm: doAction
+                });
+            } else {
+                try {
+                    await doAction();
+                } catch(err) {
+                    console.error(err);
+                    window.location.reload();
+                }
+            }
+        }
+    });
 </script>
 {% endblock %}

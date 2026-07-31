@@ -1,0 +1,163 @@
+<!-- Confirmation Modal -->
+<div id="sm-confirm-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <!-- Backdrop Blur with dark overlay -->
+    <div id="sm-confirm-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="closeSmConfirm()"></div>
+    
+    <!-- Modal Content -->
+    <div id="sm-confirm-content" class="relative bg-white dark:bg-gray-900 rounded-[16px] p-8 max-w-md w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300">
+        
+        <div class="flex items-center gap-3 mb-4">
+            <div id="sm-confirm-icon-wrapper" class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+                <i id="sm-confirm-icon" data-lucide="alert-triangle" class="w-5 h-5 text-red-600"></i>
+            </div>
+            <h3 id="sm-confirm-title" class="text-xl font-bold text-gray-900 dark:text-white">Confirm Action</h3>
+        </div>
+        
+        <div id="sm-confirm-message" class="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+            Are you sure you want to proceed?
+        </div>
+        
+        <div class="flex justify-end gap-3">
+            <button type="button" id="sm-confirm-cancel" onclick="closeSmConfirm()" class="px-5 py-2.5 rounded-xl font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 hover:-translate-y-0.5 transition-all focus:ring-2 focus:ring-gray-400 outline-none">
+                Cancel
+            </button>
+            <button type="button" id="sm-confirm-action" class="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold bg-red-600 text-white hover:bg-red-700 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30 transition-all focus:ring-2 focus:ring-red-500 outline-none disabled:opacity-70 disabled:cursor-not-allowed">
+                <span id="sm-confirm-action-text">Confirm</span>
+                <i id="sm-confirm-action-icon" data-lucide="trash-2" class="w-4 h-4"></i>
+                <svg id="sm-confirm-spinner" class="hidden animate-spin w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let smConfirmResolver = null;
+    let smConfirmOnConfirm = null;
+    let smConfirmOnCancel = null;
+
+    function openSmConfirm(options) {
+        return new Promise((resolve) => {
+            smConfirmResolver = resolve;
+            smConfirmOnConfirm = options.onConfirm;
+            smConfirmOnCancel = options.onCancel;
+            
+            // Populate content
+            document.getElementById('sm-confirm-title').textContent = options.title || 'Confirm Action';
+            document.getElementById('sm-confirm-message').innerHTML = options.message || 'Are you sure you want to proceed?';
+            document.getElementById('sm-confirm-cancel').textContent = options.cancelText || 'Cancel';
+            document.getElementById('sm-confirm-action-text').textContent = options.confirmText || 'Confirm';
+            
+            // Set variants
+            const actionBtn = document.getElementById('sm-confirm-action');
+            const iconWrapper = document.getElementById('sm-confirm-icon-wrapper');
+            const mainIcon = document.getElementById('sm-confirm-icon');
+            const actionIcon = document.getElementById('sm-confirm-action-icon');
+            
+            // Reset classes
+            actionBtn.className = 'flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white transition-all focus:ring-2 outline-none disabled:opacity-70 disabled:cursor-not-allowed transform hover:-translate-y-0.5 hover:shadow-lg';
+            
+            if (options.confirmVariant === 'red') {
+                actionBtn.classList.add('bg-red-600', 'hover:bg-red-700', 'hover:shadow-red-500/30', 'focus:ring-red-500');
+                iconWrapper.className = 'w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center shrink-0';
+                mainIcon.setAttribute('data-lucide', options.icon || 'alert-triangle');
+                mainIcon.className = 'w-5 h-5 text-red-600';
+            } else {
+                actionBtn.classList.add('bg-blue-600', 'hover:bg-blue-700', 'hover:shadow-blue-500/30', 'focus:ring-blue-500');
+                iconWrapper.className = 'w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0';
+                mainIcon.setAttribute('data-lucide', options.icon || 'info');
+                mainIcon.className = 'w-5 h-5 text-blue-600';
+            }
+            
+            if (options.actionIcon) {
+                actionIcon.setAttribute('data-lucide', options.actionIcon);
+                actionIcon.classList.remove('hidden');
+            } else {
+                actionIcon.classList.add('hidden');
+            }
+            
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+            
+            // Reset states
+            actionBtn.disabled = false;
+            document.getElementById('sm-confirm-spinner').classList.add('hidden');
+            
+            // Show modal
+            const modal = document.getElementById('sm-confirm-modal');
+            const backdrop = document.getElementById('sm-confirm-backdrop');
+            const content = document.getElementById('sm-confirm-content');
+            
+            modal.classList.remove('hidden');
+            // Trigger reflow
+            void modal.offsetWidth;
+            
+            backdrop.classList.remove('opacity-0');
+            content.classList.remove('scale-95', 'opacity-0');
+            
+            // Focus trap
+            setTimeout(() => {
+                document.getElementById('sm-confirm-cancel').focus();
+            }, 100);
+            
+            // Handle Confirm Click
+            actionBtn.onclick = async () => {
+                if (smConfirmOnConfirm) {
+                    // Set loading
+                    actionBtn.disabled = true;
+                    actionIcon.classList.add('hidden');
+                    document.getElementById('sm-confirm-spinner').classList.remove('hidden');
+                    
+                    try {
+                        await smConfirmOnConfirm();
+                        closeSmConfirm();
+                        resolve(true);
+                    } catch (err) {
+                        console.error(err);
+                        // Reset loading if failed so user can try again
+                        actionBtn.disabled = false;
+                        actionIcon.classList.remove('hidden');
+                        document.getElementById('sm-confirm-spinner').classList.add('hidden');
+                    }
+                } else {
+                    closeSmConfirm();
+                    resolve(true);
+                }
+            };
+        });
+    }
+
+    function closeSmConfirm() {
+        const modal = document.getElementById('sm-confirm-modal');
+        const backdrop = document.getElementById('sm-confirm-backdrop');
+        const content = document.getElementById('sm-confirm-content');
+        
+        backdrop.classList.add('opacity-0');
+        content.classList.add('scale-95', 'opacity-0');
+        
+        if (smConfirmOnCancel && typeof smConfirmOnCancel === 'function') {
+            smConfirmOnCancel();
+        }
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            if (smConfirmResolver) {
+                smConfirmResolver(false);
+                smConfirmResolver = null;
+            }
+        }, 300);
+    }
+
+    // Keyboard ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('sm-confirm-modal');
+            if (modal && !modal.classList.contains('hidden')) {
+                closeSmConfirm();
+            }
+        }
+    });
+</script>

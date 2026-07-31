@@ -4,14 +4,16 @@ from reportlab.platypus import SimpleDocTemplate
 from .paginator import ReportPaginator
 from .sections import (
     build_header,
+    build_overview,
     build_executive_summary,
-    build_ai_investigation,
-    build_red_flags,
-    build_threat_indicators,
-    build_iocs_and_auth,
-    build_email_metadata,
-    build_original_content,
-    build_timeline
+    build_risk_breakdown,
+    build_authentication,
+    build_sender_intelligence,
+    build_header_analysis,
+    build_url_investigation,
+    build_ml_assessment,
+    build_attachments_analysis,
+    build_investigation_timeline
 )
 
 class ForensicPDFReport:
@@ -32,14 +34,16 @@ class ForensicPDFReport:
         
         # Build document structure
         story.extend(build_header(self.context))
+        story.extend(build_overview(self.context))
         story.extend(build_executive_summary(self.context))
-        story.extend(build_ai_investigation(self.context))
-        story.extend(build_red_flags(self.context))
-        story.extend(build_threat_indicators(self.context))
-        story.extend(build_iocs_and_auth(self.context))
-        story.extend(build_timeline(self.context))
-        story.extend(build_email_metadata(self.context))
-        story.extend(build_original_content(self.context))
+        story.extend(build_risk_breakdown(self.context))
+        story.extend(build_authentication(self.context))
+        story.extend(build_sender_intelligence(self.context))
+        story.extend(build_header_analysis(self.context))
+        story.extend(build_url_investigation(self.context))
+        story.extend(build_ml_assessment(self.context))
+        story.extend(build_attachments_analysis(self.context))
+        story.extend(build_investigation_timeline(self.context))
         
         doc.build(story)
         
