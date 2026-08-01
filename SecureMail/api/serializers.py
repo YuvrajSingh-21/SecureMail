@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from ..models import Profile, EmailMessage, ThreatIndicator
+from ..services.risk_engine import RiskEngine
+
+_risk_engine = RiskEngine()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,9 +35,7 @@ class EmailSerializer(serializers.ModelSerializer):
 
     def get_analysis(self, obj):
         try:
-            from ..services.risk_engine import RiskEngine
-            engine = RiskEngine()
             report = obj.analysis.detailed_report
-            return engine.normalize_payload(report)
-        except:
+            return _risk_engine.normalize_payload(report)
+        except Exception:
             return {}

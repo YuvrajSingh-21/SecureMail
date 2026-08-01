@@ -1,0 +1,25 @@
+{
+  "passed": false,
+  "total_requests": 384,
+  "total_failures": 0,
+  "throughput_rps": 6.42,
+  "avg_latency_ms": 292.97,
+  "median_latency_ms": 35,
+  "sla_checks": {
+    "p95_latency_ms": {
+      "actual": 810,
+      "target": 350.0,
+      "passed": false
+    },
+    "p99_latency_ms": {
+      "actual": 8300,
+      "target": 800.0,
+      "passed": false
+    },
+    "error_rate_percent": {
+      "actual": 0.0,
+      "target": 0.1,
+      "passed": true
+    }
+  }
+}

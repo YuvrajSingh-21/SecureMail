@@ -31,13 +31,13 @@ class EmailMessageManager(models.Manager):
         return self.filter(user=user, is_remote_deleted=False)
 
     def inbox(self, user):
-        return self.active(user).filter(in_trash=False).order_by('-timestamp')
+        return self.active(user).filter(in_trash=False).select_related('analysis').prefetch_related('indicators').order_by('-timestamp')
     
     def starred(self, user):
-        return self.active(user).filter(starred=True, in_trash=False).order_by('-timestamp')
+        return self.active(user).filter(starred=True, in_trash=False).select_related('analysis').prefetch_related('indicators').order_by('-timestamp')
     
     def trash(self, user):
-        return self.active(user).filter(in_trash=True).order_by('-timestamp')
+        return self.active(user).filter(in_trash=True).select_related('analysis').prefetch_related('indicators').order_by('-timestamp')
 
 class EmailMessage(models.Model):
     RISK_LEVELS = (
