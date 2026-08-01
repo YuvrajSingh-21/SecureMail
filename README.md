@@ -440,7 +440,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 ## 👤 Author
 
 **SecureMail**
-- GitHub: [@yourusername](https://github.com/yourusername)
+- GitHub: [@YuvrajSingh-21](https://github.com/YuvrajSingh-21)
 
 ---
 
