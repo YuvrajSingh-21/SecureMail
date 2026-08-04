@@ -35,19 +35,15 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 if '*' in ALLOWED_HOSTS:
     raise ValueError("Wildcard hosts are not allowed in ALLOWED_HOSTS.")
 
-# CSRF_TRUSTED_ORIGINS = [
-#     origin.strip()
-#     for origin in os.getenv(
-#         'CSRF_TRUSTED_ORIGINS',
-#         'https://*.azurewebsites.net,https://*.railway.app'
-#     ).split(',')
-#     if origin.strip()
-# ]
-
-CSRF_TRUSTED_ORIGINS = os.getenv(
+csrf_trusted_raw = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    ""
-).split(",")
+    "https://*.azurewebsites.net,https://*.railway.app"
+)
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in csrf_trusted_raw.split(",")
+    if origin.strip() and (origin.strip().startswith("http://") or origin.strip().startswith("https://"))
+]
 
 # Application definition
 
@@ -152,7 +148,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'SecureMail' / 'static',
 ]
@@ -166,6 +162,9 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# Graceful fallback for missing manifest entries (prevents HTTP 500 crashes)
+WHITENOISE_MANIFEST_STRICT = False
 
 # Media Configuration
 MEDIA_URL = '/media/'
