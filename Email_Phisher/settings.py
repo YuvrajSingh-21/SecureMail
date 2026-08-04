@@ -35,6 +35,19 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 if '*' in ALLOWED_HOSTS:
     raise ValueError("Wildcard hosts are not allowed in ALLOWED_HOSTS.")
 
+# CSRF_TRUSTED_ORIGINS = [
+#     origin.strip()
+#     for origin in os.getenv(
+#         'CSRF_TRUSTED_ORIGINS',
+#         'https://*.azurewebsites.net,https://*.railway.app'
+#     ).split(',')
+#     if origin.strip()
+# ]
+
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    ""
+).split(",")
 
 # Application definition
 
@@ -99,6 +112,10 @@ DATABASES = {
         'CONN_MAX_AGE': 600,
     }
 }
+
+DB_SSLMODE = os.getenv('DB_SSLMODE')
+if DB_SSLMODE:
+    DATABASES['default']['OPTIONS'] = {'sslmode': DB_SSLMODE}
 
 
 # Password validation
@@ -237,7 +254,8 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Production Security Hardening
 if not DEBUG:
-    # 1. HTTPS Security
+    # 1. HTTPS Security & Reverse Proxy Header
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     
     # 2. Secure Cookies
