@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔐 SecureMail
+# 🔐 SecuraMail
 
 ### AI-Powered Email Threat Detection & Forensic Analysis
 
@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-83%20Passing-brightgreen?style=for-the-badge)](#testing)
 
-**SecureMail is an open-source cybersecurity platform that connects to your Gmail account and automatically analyzes every incoming email for phishing attempts, malicious links, and dangerous attachments using a multi-layer forensic analysis engine.**
+**SecuraMail is an open-source cybersecurity platform that connects to your Gmail account and automatically analyzes every incoming email for phishing attempts, malicious links, and dangerous attachments using a multi-layer forensic analysis engine.**
 
 [Features](#-key-features) · [Architecture](#-architecture-overview) · [Installation](#-installation) · [Documentation](#-documentation) · [Contributing](#-contributing)
 
@@ -48,13 +48,13 @@
 
 ## 🌐 Overview
 
-SecureMail is a Django-based cybersecurity web application that integrates with Gmail via Google OAuth to provide automated, multi-layer threat detection for incoming emails. It combines machine learning heuristics, external threat intelligence APIs, deep file forensics, and AI-powered explanations to help users identify and understand phishing emails, malicious links, and dangerous attachments — without requiring any security expertise.
+SecuraMail is a Django-based cybersecurity web application that integrates with Gmail via Google OAuth to provide automated, multi-layer threat detection for incoming emails. It combines machine learning heuristics, external threat intelligence APIs, deep file forensics, and AI-powered explanations to help users identify and understand phishing emails, malicious links, and dangerous attachments — without requiring any security expertise.
 
 ---
 
 ## ❗ Problem Statement
 
-Modern phishing attacks bypass traditional spam filters by using legitimate-looking domains, sophisticated social engineering, and zero-day malware in attachments. Most email clients provide minimal threat context and no forensic detail. SecureMail bridges this gap by providing deep, automated security analysis with human-readable explanations of every detected threat.
+Modern phishing attacks bypass traditional spam filters by using legitimate-looking domains, sophisticated social engineering, and zero-day malware in attachments. Most email clients provide minimal threat context and no forensic detail. SecuraMail bridges this gap by providing deep, automated security analysis with human-readable explanations of every detected threat.
 
 ---
 
@@ -79,7 +79,7 @@ Modern phishing attacks bypass traditional spam filters by using legitimate-look
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        SecureMail                           │
+│                        SecuraMail                           │
 │                                                             │
 │  ┌──────────┐    ┌─────────────┐    ┌──────────────────┐  │
 │  │  Browser │───▶│ Django Views│───▶│  Service Layer   │  │
@@ -199,7 +199,7 @@ The `RiskEngine` is the authoritative single source of truth for the final verdi
 
 ## 🔬 Attachment Threat Analysis Engine (ATAE)
 
-> **IMPORTANT**: ATAE analyzes **only attachments received through emails inside SecureMail**. It is not a general-purpose file upload scanner. No public upload endpoint exists.
+> **IMPORTANT**: ATAE analyzes **only attachments received through emails inside SecuraMail**. It is not a general-purpose file upload scanner. No public upload endpoint exists.
 
 ATAE performs deep, non-execution forensic analysis on email attachments:
 
@@ -219,7 +219,7 @@ ATAE performs deep, non-execution forensic analysis on email attachments:
 
 ## 🤖 Machine Learning Engine
 
-SecureMail uses offline-trained XGBoost models deployed locally (no cloud ML inference required):
+SecuraMail uses offline-trained XGBoost models deployed locally (no cloud ML inference required):
 
 - **Phishing Predictor**: Trained on labeled email datasets. Combines TF-IDF text vectorization with 26 engineered behavioral features (sender heuristics, URL patterns, credential keywords, urgency signals).
 - **Category Classifier**: Multi-class classifier (16 categories: BANKING, OTP, NEWSLETTER, PHISHING, etc.).
@@ -291,8 +291,8 @@ After automated analysis, users can request a plain-English explanation of the t
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/SecureMail.git
-cd SecureMail/Email_Phisher
+git clone https://github.com/yourusername/SecuraMail.git
+cd SecuraMail/Email_Phisher
 
 # 2. Create and activate a virtual environment
 python -m venv venv
@@ -390,7 +390,7 @@ python run_adversarial_testing.py
 
 ## 🧪 Testing
 
-SecureMail maintains a comprehensive test suite of **83 tests** across multiple modules:
+SecuraMail maintains a comprehensive test suite of **83 tests** across multiple modules:
 
 ```bash
 python manage.py test --verbosity=2
@@ -439,7 +439,7 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## 👤 Author
 
-**SecureMail**
+**SecuraMail**
 - GitHub: [@YuvrajSingh-21](https://github.com/YuvrajSingh-21)
 
 ---

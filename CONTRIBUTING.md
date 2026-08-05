@@ -1,6 +1,6 @@
-# Contributing to SecureMail
+# Contributing to SecuraMail
 
-Thank you for your interest in contributing to SecureMail. This document outlines the process for contributing code, documentation, and bug reports.
+Thank you for your interest in contributing to SecuraMail. This document outlines the process for contributing code, documentation, and bug reports.
 
 ## Getting Started
 
@@ -8,11 +8,11 @@ Thank you for your interest in contributing to SecureMail. This document outline
 
 ```bash
 # Fork the repository on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/SecureMail.git
-cd SecureMail/Email_Phisher
+git clone https://github.com/YOUR_USERNAME/SecuraMail.git
+cd SecuraMail/Email_Phisher
 
 # Add upstream remote
-git remote add upstream https://github.com/ORIGINAL_OWNER/SecureMail.git
+git remote add upstream https://github.com/ORIGINAL_OWNER/SecuraMail.git
 ```
 
 ### 2. Set Up Your Development Environment
@@ -51,7 +51,7 @@ git checkout -b fix/your-descriptive-branch-name
 
 ## Critical Rules
 
-1. **Do not modify the ATAE email-only invariant.** ATAE must only analyze attachments received through emails inside SecureMail. Do not add public upload endpoints.
+1. **Do not modify the ATAE email-only invariant.** ATAE must only analyze attachments received through emails inside SecuraMail. Do not add public upload endpoints.
 2. **Do not break existing security controls.** CSRF, safe redirects, rate limiting, and ownership enforcement are mandatory.
 3. **Do not change models without a migration.** Always run `python manage.py makemigrations` after model changes.
 4. **Do not hardcode secrets.** All secrets must come from environment variables.
@@ -133,4 +133,4 @@ All PRs require at least one review before merging. Reviewers will check:
 
 ## Questions?
 
-Open a [GitHub Discussion](https://github.com/ORIGINAL_OWNER/SecureMail/discussions) for general questions about the codebase.
+Open a [GitHub Discussion](https://github.com/ORIGINAL_OWNER/SecuraMail/discussions) for general questions about the codebase.

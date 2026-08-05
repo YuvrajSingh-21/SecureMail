@@ -1,8 +1,8 @@
-# SecureMail Architecture Decision Records (ADRs)
+# SecuraMail Architecture Decision Records (ADRs)
 
 ## 1. Executive Summary
 
-This document formalizes the key architectural, technological, and security trade-offs made during the design and implementation of SecureMail v1.0.
+This document formalizes the key architectural, technological, and security trade-offs made during the design and implementation of SecuraMail v1.0.
 
 ---
 

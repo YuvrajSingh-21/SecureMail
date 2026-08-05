@@ -1,4 +1,4 @@
-# SecureMail Production Deployment Guide
+# SecuraMail Production Deployment Guide
 
 ## 1. System Requirements
 
@@ -70,7 +70,7 @@ CSRF_TRUSTED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
 Create `/etc/systemd/system/securemail.service`:
 ```ini
 [Unit]
-Description=SecureMail Gunicorn Daemon
+Description=SecuraMail Gunicorn Daemon
 After=network.target postgresql.service
 
 [Service]

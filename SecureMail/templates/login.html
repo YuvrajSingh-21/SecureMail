@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Authenticate - SecureMail{% endblock %}
+{% block title %}Authenticate - SecuraMail{% endblock %}
 
 {% block content %}
     <div class="w-full min-h-full flex items-center justify-center p-6" class="w-full min-h-full">
         <div class="w-full max-w-md animate-slide-up">
             <div class="text-center mb-8">
                 <a href="{% url 'index' %}" class="inline-block">
-                    <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="SecureMail">
+                    <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="SecuraMail">
                 </a>
-                <h1 class="text-2xl font-bold text-[var(--sys-text)] tracking-tight">SecureMail</h1>
+                <h1 class="text-2xl font-bold text-[var(--sys-text)] tracking-tight">SecuraMail</h1>
                 <p class="text-[var(--sys-text-secondary)] text-sm mt-1">Protect your Gmail with AI-powered security.</p>
             </div>
             
             <div class="sys-card rounded-2xl p-8 shadow-2xl">
                 <div class="space-y-3">
                     <a href="{% url 'google_login' %}" class="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-white hover:bg-gray-50 text-[var(--sys-text)] font-medium transition shadow-sm">
-                        <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="SecureMail">
+                        <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="SecuraMail">
                         Continue with Google
                     </a>
                 </div>

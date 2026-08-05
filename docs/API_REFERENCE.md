@@ -1,4 +1,4 @@
-# SecureMail REST API Reference Manual (v1.0)
+# SecuraMail REST API Reference Manual (v1.0)
 
 ## 1. Authentication & Headers
 

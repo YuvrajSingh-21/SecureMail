@@ -1,15 +1,15 @@
-# SecureMail Project Context
+# SecuraMail Project Context
 
 ## 1. Project Purpose
-SecureMail is a Django-based cybersecurity SaaS web application designed for advanced email threat detection. It enables users to connect their Google accounts via OAuth, automatically synchronizes their Gmail inboxes, and runs a comprehensive security analysis pipeline on incoming emails. This pipeline uses machine learning for heuristic detection, queries threat intelligence APIs for URL analysis, and utilizes a custom Attachment Threat Analysis Engine (ATAE) for deep file scanning. The system provides users with a threat dashboard, a categorized inbox, and AI-generated forensic explanations of security verdicts using the Gemini API.
+SecuraMail is a Django-based cybersecurity SaaS web application designed for advanced email threat detection. It enables users to connect their Google accounts via OAuth, automatically synchronizes their Gmail inboxes, and runs a comprehensive security analysis pipeline on incoming emails. This pipeline uses machine learning for heuristic detection, queries threat intelligence APIs for URL analysis, and utilizes a custom Attachment Threat Analysis Engine (ATAE) for deep file scanning. The system provides users with a threat dashboard, a categorized inbox, and AI-generated forensic explanations of security verdicts using the Gemini API.
 
 ## 2. Core Project Rules
-- **Application Type**: SecureMail is fundamentally an email security and threat-analysis application.
+- **Application Type**: SecuraMail is fundamentally an email security and threat-analysis application.
 - **Database**: PostgreSQL is the active database. Do NOT describe the active DB as SQLite.
 - **Integration**: Google OAuth and Gmail integration are core, active components of the application.
 - **Stability**: Existing working functionality must NOT be redesigned unnecessarily.
 - **Security Fixes**: Any future security fixes must preserve existing functional behavior.
-- **CRITICAL ATAE RULE**: The Attachment Threat Analysis Engine (ATAE) analyzes ONLY attachments received through emails inside SecureMail. ATAE is NOT a general-purpose arbitrary user-upload file scanner. Future development MUST preserve this invariant unless the project owner explicitly changes the requirement.
+- **CRITICAL ATAE RULE**: The Attachment Threat Analysis Engine (ATAE) analyzes ONLY attachments received through emails inside SecuraMail. ATAE is NOT a general-purpose arbitrary user-upload file scanner. Future development MUST preserve this invariant unless the project owner explicitly changes the requirement.
 
 ## 3. Current Technology Stack
 - **Language**: Python 3.14
@@ -24,17 +24,17 @@ SecureMail is a Django-based cybersecurity SaaS web application designed for adv
 
 ## 4. Current Architecture
 - **Django Configuration**: `Email_Phisher/` contains the `settings.py`, `urls.py`, and WSGI/ASGI configurations.
-- **SecureMail Application**: The core Django app residing in `SecureMail/`.
+- **SecuraMail Application**: The core Django app residing in `SecuraMail/`.
 - **Models**: Defines users, profiles, OAuth accounts, email messages, attachments, threat analyses, and audit logs.
 - **Views**: UI controllers (`views.py`), API endpoints (`api_views.py`), and Google Auth handlers (`google_auth_views.py`).
-- **Services (`SecureMail/services/`)**:
+- **Services (`SecuraMail/services/`)**:
   - `SyncManager`: Handles background fetching of Gmail messages.
   - `EmailPipeline`: Orchestrates the ML, URL, and ATAE analysis phases.
   - `GeminiService`: Communicates with Google's Gemini API for threat explanations.
   - `SafeBrowsingService` / `VirusTotalService`: URL threat intelligence.
-- **Machine Learning (`SecureMail/ml/`)**: Contains offline-trained vectorizers/models (`model.joblib`, `vectorizer.joblib`) and extraction logic.
-- **ATAE (`SecureMail/services/atae/`)**: The modular Attachment Threat Analysis Engine.
-- **Templates**: Reside in `SecureMail/templates/`.
+- **Machine Learning (`SecuraMail/ml/`)**: Contains offline-trained vectorizers/models (`model.joblib`, `vectorizer.joblib`) and extraction logic.
+- **ATAE (`SecuraMail/services/atae/`)**: The modular Attachment Threat Analysis Engine.
+- **Templates**: Reside in `SecuraMail/templates/`.
 - **Security Utilities**: `utils.py` contains safe redirection logic.
 - **Tests**: Spread across `tests.py`, `tests_production.py`, `tests_csrf.py`, `tests_redirect.py`.
 
@@ -54,9 +54,9 @@ SecureMail is a Django-based cybersecurity SaaS web application designed for adv
 *Note*: The transition from Sync to Pipeline is handled by `SyncManager` calling `analyze_attachment_task` or the pipeline directly.
 
 ## 6. ATAE Architecture
-**Invariant Reminder**: ATAE analyzes ONLY attachments received through emails inside SecureMail.
-- **Entry Point**: `ATAEOrchestrator` (`SecureMail/services/atae/integration/orchestrator.py`).
-- **Triage**: Uses magic bytes and MIME types (`SecureMail/services/atae/triage/`) to route files to specific analyzers.
+**Invariant Reminder**: ATAE analyzes ONLY attachments received through emails inside SecuraMail.
+- **Entry Point**: `ATAEOrchestrator` (`SecuraMail/services/atae/integration/orchestrator.py`).
+- **Triage**: Uses magic bytes and MIME types (`SecuraMail/services/atae/triage/`) to route files to specific analyzers.
 - **Services**: 
   - **Entropy**: Calculates Shannon entropy to detect packed/encrypted payloads.
   - **Metadata**: Extracts EXIF/file properties.

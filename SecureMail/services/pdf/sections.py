@@ -9,7 +9,7 @@ import datetime
 def build_header(context):
     story = []
     
-    # SecureMail Logo
+    # SecuraMail Logo
     logo = get_logo_image(76, 76)
     
     # Title Block

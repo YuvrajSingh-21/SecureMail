@@ -85,7 +85,7 @@ class Command(BaseCommand):
             },
             {
                 'sender_name': 'System Draft',
-                'sender_email': 'me@securemail.ai',
+                'sender_email': 'me@securamail.ai',
                 'subject': '[Draft] Project Proposal Revisions',
                 'body': 'Draft content for the upcoming project proposal...',
                 'risk': 'safe',

@@ -1,8 +1,8 @@
-# SecureMail Architecture Specification (v1.0)
+# SecuraMail Architecture Specification (v1.0)
 
 ## 1. Executive Summary
 
-SecureMail is an enterprise-grade AI email threat detection and digital forensics platform. It is designed to inspect inbound emails, analyze attachments via the Attachment Threat Analysis Engine (ATAE), evaluate threat indicators through local Machine Learning and external Threat Intelligence APIs (Google Safe Browsing, VirusTotal), and produce explainable forensic threat scores via a stateless Risk Engine and Google Gemini Pro 1.5.
+SecuraMail is an enterprise-grade AI email threat detection and digital forensics platform. It is designed to inspect inbound emails, analyze attachments via the Attachment Threat Analysis Engine (ATAE), evaluate threat indicators through local Machine Learning and external Threat Intelligence APIs (Google Safe Browsing, VirusTotal), and produce explainable forensic threat scores via a stateless Risk Engine and Google Gemini Pro 1.5.
 
 The platform is built on Django 5.x, PostgreSQL 16, Google OAuth 2.0 with PKCE, ReportLab for forensic PDF compilation, and scikit-learn for local inference.
 

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to SecureMail are documented in this file.
+All notable changes to SecuraMail are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### 🎉 Initial Production Release
 
-This is the first stable release of SecureMail — a complete, security-hardened, feature-complete cybersecurity email threat analysis platform.
+This is the first stable release of SecuraMail — a complete, security-hardened, feature-complete cybersecurity email threat analysis platform.
 
 ---
 

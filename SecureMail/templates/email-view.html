@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ email.subject }} - SecureMail{% endblock %}
+{% block title %}{{ email.subject }} - SecuraMail{% endblock %}
 
 {% block content %}
 <div class="flex flex-col h-full overflow-hidden bg-slate-50  transition-colors duration-300">
@@ -793,7 +793,7 @@
             iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
             if (window.syncHeights) window.syncHeights();
         } catch (e) {
-            console.warn('SecureMail: Iframe resize calculation suppressed.', e);
+            console.warn('SecuraMail: Iframe resize calculation suppressed.', e);
         }
     };
 
@@ -832,7 +832,7 @@
             if (loader) loader.style.display = 'none';
 
         } catch (e) {
-            console.error("SecureMail: Intelligence parsing failed.", e);
+            console.error("SecuraMail: Intelligence parsing failed.", e);
         }
 
         // --- 3. PDF Export Logic ---

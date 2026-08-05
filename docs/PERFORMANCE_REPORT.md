@@ -1,4 +1,4 @@
-# SecureMail Performance Engineering & Benchmark Report
+# SecuraMail Performance Engineering & Benchmark Report
 
 ## 1. Test Environment & Specifications
 

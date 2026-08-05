@@ -8,7 +8,7 @@
 
 ## Security Features
 
-SecureMail implements multiple defense-in-depth security controls:
+SecuraMail implements multiple defense-in-depth security controls:
 
 ### Authentication
 - Django's native authentication with PBKDF2 password hashing.
@@ -64,14 +64,14 @@ When `DEBUG=False`, the following are automatically enabled:
 - Logs intentionally exclude OAuth tokens, passwords, API keys, and raw email bodies.
 
 ## Privacy Notes
-- SecureMail processes email metadata and content locally for analysis.
-- Email content summaries are sent to the Google Gemini API only when the user explicitly requests an AI explanation.
-- No email data is sold, shared with third parties, or used for training purposes by SecureMail.
+- SecuraMail processes email metadata and content locally for analysis.
+- Third-party API calls (VirusTotal, Safe Browsing, Gemini) transmit only extracted URLs/hashes or structured threat summaries — not raw email bodies.
+- No email data is sold, shared with third parties, or used for training purposes by SecuraMail.
 - Users can disconnect their Gmail account at any time, which revokes OAuth tokens and removes all stored credentials.
 
 ## Responsible Disclosure
 
-We take security vulnerabilities seriously. If you discover a security issue in SecureMail, please follow responsible disclosure:
+We take security vulnerabilities seriously. If you discover a security issue in SecuraMail, please follow responsible disclosure:
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 

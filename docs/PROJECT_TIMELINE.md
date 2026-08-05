@@ -1,12 +1,12 @@
-# SecureMail Engineering & Development Timeline
+# SecuraMail Engineering & Development Timeline
 
 ## 1. Project Inception & Timeline Overview
 
-SecureMail was developed, hardened, optimized, and validated through an engineering lifecycle adhering to strict milestones.
+SecuraMail was developed, hardened, optimized, and validated through an engineering lifecycle adhering to strict milestones.
 
 ```mermaid
 gantt
-    title SecureMail v1.0 Engineering Lifecycle
+    title SecuraMail v1.0 Engineering Lifecycle
     dateFormat  YYYY-MM-DD
     section Phase 1: Planning
     System Design & Architecture        :2026-07-25, 2d

@@ -1,8 +1,8 @@
-# SecureMail Security Architecture & Audit Report
+# SecuraMail Security Architecture & Audit Report
 
 ## 1. Security Overview
 
-SecureMail is designed according to Defense-in-Depth and Zero-Trust principles. This document provides a comprehensive audit of authentication, authorization, cryptographic operations, input validation, and threat mitigation mechanisms implemented across the platform.
+SecuraMail is designed according to Defense-in-Depth and Zero-Trust principles. This document provides a comprehensive audit of authentication, authorization, cryptographic operations, input validation, and threat mitigation mechanisms implemented across the platform.
 
 ---
 
@@ -16,7 +16,7 @@ SecureMail is designed according to Defense-in-Depth and Zero-Trust principles. 
 ### 2.2 Object-Level Authorization (IDOR Defense)
 - Every data access path enforces tenant isolation via `request.user`:
   ```python
-  # Example from SecureMail views
+  # Example from SecuraMail views
   email = get_object_or_404(EmailMessage, id=email_id, user=request.user)
   ```
 - Unauthenticated users receive an HTTP 302 redirect to the login gateway.
@@ -31,7 +31,7 @@ SecureMail is designed according to Defense-in-Depth and Zero-Trust principles. 
 - Cryptographic keys are loaded via environment variables (`SECRET_KEY`, `ENCRYPTION_KEY`) and are never committed to version control.
 
 ### 3.2 Passwordless Architecture
-- SecureMail contains zero plaintext or hashed user passwords in its database. All identity authentication is federated exclusively through Google OAuth 2.0.
+- SecuraMail contains zero plaintext or hashed user passwords in its database. All identity authentication is federated exclusively through Google OAuth 2.0.
 
 ---
 
@@ -96,4 +96,4 @@ Production configuration in `settings.py` enforces the following security header
 ## 8. Audit Verdict
 
 **SECURITY STATUS: VERIFIED HARDENED**  
-SecureMail exhibits zero critical vulnerabilities, complete tenant isolation, robust cryptographic token storage, and comprehensive defense against OWASP Top 10 risks.
+SecuraMail exhibits zero critical vulnerabilities, complete tenant isolation, robust cryptographic token storage, and comprehensive defense against OWASP Top 10 risks.

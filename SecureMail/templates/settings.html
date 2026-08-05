@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Settings - SecureMail{% endblock %}
+{% block title %}Settings - SecuraMail{% endblock %}
 
 {% block content %}
 <div class="flex flex-col h-full overflow-hidden bg-slate-50  transition-colors duration-300">
@@ -274,7 +274,7 @@
                                         <div class="flex items-center justify-between p-6 sys-card/50 rounded-2xl border border-gray-100 ">
                                             <div class="flex items-center gap-5">
                                                 <div class="w-14 h-14 rounded-2xl sys-card flex items-center justify-center shadow-md">
-                                                    <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-md" alt="SecureMail">
+                                                    <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-md" alt="SecuraMail">
                                                 </div>
                                                 <div>
                                                     <p class="text-base font-black text-[var(--sys-text)] ">Google Workspace</p>
@@ -289,7 +289,7 @@
                                                 </div>
                                             </div>
                                             {% if user.google_account %}
-                                                <a href="{% url 'google_disconnect' %}" onclick="event.preventDefault(); openSmConfirm({ title: 'Disconnect Google Account?', message: 'Are you sure you want to disconnect your Google Workspace account? SecureMail will no longer be able to analyze your emails.', confirmText: 'Revoke Access', confirmVariant: 'red', icon: 'link-2-off', actionIcon: 'trash-2', onConfirm: () => { window.location.href = this.href; } });" class="px-6 py-2.5 sys-card text-red-600 border border-gray-200  hover:bg-red-50  hover:border-red-200  rounded-xl text-xs font-black transition-all">
+                                                <a href="{% url 'google_disconnect' %}" onclick="event.preventDefault(); openSmConfirm({ title: 'Disconnect Google Account?', message: 'Are you sure you want to disconnect your Google Workspace account? SecuraMail will no longer be able to analyze your emails.', confirmText: 'Revoke Access', confirmVariant: 'red', icon: 'link-2-off', actionIcon: 'trash-2', onConfirm: () => { window.location.href = this.href; } });" class="px-6 py-2.5 sys-card text-red-600 border border-gray-200  hover:bg-red-50  hover:border-red-200  rounded-xl text-xs font-black transition-all">
                                                     Revoke Access
                                                 </a>
                                             {% else %}

@@ -1,8 +1,8 @@
-# SecureMail Known Limitations & Engineering Roadmap
+# SecuraMail Known Limitations & Engineering Roadmap
 
 ## 1. Document Purpose
 
-This document provides a transparent accounting of known architectural constraints and engineering boundaries in SecureMail v1.0, accompanied by concrete architectural remediation strategies planned for subsequent releases.
+This document provides a transparent accounting of known architectural constraints and engineering boundaries in SecuraMail v1.0, accompanied by concrete architectural remediation strategies planned for subsequent releases.
 
 ---
 

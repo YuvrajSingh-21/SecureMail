@@ -1,4 +1,4 @@
-# SECUREMAIL: ENTERPRISE SOFTWARE DESIGN DOCUMENT & SYSTEM SPECIFICATION
+# SECURAMAIL: ENTERPRISE SOFTWARE DESIGN DOCUMENT & SYSTEM SPECIFICATION
 **System Version**: 1.0.0-PROD  
 **Document Classification**: Enterprise Architecture / Technical Portfolio Reference  
 **Last Revised**: August 2026  
@@ -37,7 +37,7 @@
 
 ## 1. Abstract
 
-SecureMail is a full-stack, enterprise-grade AI email security and digital forensics platform designed to protect organizations from advanced spear-phishing, credential harvesting, business email compromise (BEC), and malicious payload delivery. Combining local machine learning classifiers, a deep Attachment Threat Analysis Engine (ATAE), multi-feed external threat intelligence (Google Safe Browsing & VirusTotal), and Google Gemini Pro 1.5 explainable LLM analytics, SecureMail automates SOC email triage with sub-30ms response latencies and zero data leakage.
+SecuraMail is a full-stack, enterprise-grade AI email security and digital forensics platform designed to protect organizations from advanced spear-phishing, credential harvesting, business email compromise (BEC), and malicious payload delivery. Combining local machine learning classifiers, a deep Attachment Threat Analysis Engine (ATAE), multi-feed external threat intelligence (Google Safe Browsing & VirusTotal), and Google Gemini Pro 1.5 explainable LLM analytics, SecuraMail automates SOC email triage with sub-30ms response latencies and zero data leakage.
 
 ---
 
@@ -76,7 +76,7 @@ Modern corporate email threats have evolved beyond simple spam:
 graph TB
     Client[SOC Analyst / Corporate User] -->|HTTPS| Nginx[Nginx Reverse Proxy]
     Nginx -->|Unix Socket| Gunicorn[Gunicorn Application Server]
-    Gunicorn --> DjangoCore[SecureMail Core Engine]
+    Gunicorn --> DjangoCore[SecuraMail Core Engine]
 
     subgraph Security Layer
         DjangoCore --> SecMW[Security & Rate-Limiting Middleware]
@@ -228,7 +228,7 @@ EmailMessage.objects.filter(user=user).select_related("analysis").prefetch_relat
 
 ## 10. Comprehensive Validation & Load Testing (Phases 1 – 8)
 
-Over an 8-phase testing campaign, SecureMail executed **22,724 live requests** with **0 failures**:
+Over an 8-phase testing campaign, SecuraMail executed **22,724 live requests** with **0 failures**:
 
 ```
 Phase 1: Setup & Isolation      -> PASSED

@@ -1,16 +1,16 @@
-# SecureMail — Attachment Threat Analysis Engine
+# SecuraMail — Attachment Threat Analysis Engine
 ## Software Design Specification (SDS)
 
 **Document Version:** 1.0
 **Module:** Attachment Threat Analysis Engine (ATAE)
 **Classification:** Internal Engineering — Architecture Blueprint
-**Scope:** New module only. Integrates with existing SecureMail platform (Gmail Integration, Email Sync, Parsing, Header/URL/Sender Analysis, SPF/DKIM/DMARC, Reputation, VirusTotal, Safe Browsing, ML Classifier, Gemini Explainability, PDF Reporting, Django/PostgreSQL backend).
+**Scope:** New module only. Integrates with existing SecuraMail platform (Gmail Integration, Email Sync, Parsing, Header/URL/Sender Analysis, SPF/DKIM/DMARC, Reputation, VirusTotal, Safe Browsing, ML Classifier, Gemini Explainability, PDF Reporting, Django/PostgreSQL backend).
 
 ---
 
 ## 1. Module Overview
 
-The Attachment Threat Analysis Engine (ATAE) is a self-contained analysis subsystem responsible for the deterministic, forensic-grade inspection of email attachments processed by SecureMail. It receives attachment payloads (and associated metadata) from the existing Email Parsing module, performs multi-layered static and structural analysis, extracts indicators of compromise (IOCs), computes a risk score, and emits a structured "Attachment Verdict" object that downstream modules (ML Classifier, Gemini Explainability, PDF Report Generator, Threat Detection) consume.
+The Attachment Threat Analysis Engine (ATAE) is a self-contained analysis subsystem responsible for the deterministic, forensic-grade inspection of email attachments processed by SecuraMail. It receives attachment payloads (and associated metadata) from the existing Email Parsing module, performs multi-layered static and structural analysis, extracts indicators of compromise (IOCs), computes a risk score, and emits a structured "Attachment Verdict" object that downstream modules (ML Classifier, Gemini Explainability, PDF Report Generator, Threat Detection) consume.
 
 ATAE is explicitly **not** a signature-based antivirus replacement. It does not attempt dynamic execution, sandbox detonation, or behavioral emulation in this phase. Its purpose is to perform static forensic decomposition of a file — parsing its structure, extracting embedded objects, identifying known attack techniques (macros, OLE objects, PDF JavaScript, packers, archive bombs, etc.), computing entropy and IOC data, and correlating findings with threat intelligence (VirusTotal hashes, YARA rule matches). The output is deterministic, explainable, and reproducible — critical properties for a forensic security tool whose findings may be reviewed by a human analyst or fed into an AI explainability layer.
 
@@ -544,7 +544,7 @@ Record contents:
 ## 34. Deployment Requirements
 
 - Containerized worker image, isolated network egress policy (only VirusTotal/Safe Browsing endpoints via the existing integration layer reachable; no general internet egress from the parsing process itself).
-- Horizontally scalable via a job queue (existing platform infrastructure pattern, if already used for other async modules; otherwise a standard broker such as the one already selected elsewhere in SecureMail's stack).
+- Horizontally scalable via a job queue (existing platform infrastructure pattern, if already used for other async modules; otherwise a standard broker such as the one already selected elsewhere in SecuraMail's stack).
 - YARA rule corpus and analyzer plugin set deployed as a versioned artifact alongside the worker image, enabling rollback.
 - Resource requests/limits (CPU, memory) defined per worker replica, sized against the performance targets in §4.
 

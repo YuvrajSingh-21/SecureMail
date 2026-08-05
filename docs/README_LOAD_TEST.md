@@ -1,8 +1,8 @@
-# SecureMail Load Testing Framework Manual
+# SecuraMail Load Testing Framework Manual
 
 ## 1. Overview
 
-The SecureMail load testing harness is built on Locust. It is designed to evaluate system throughput, latency percentiles, error rates, and resource utilization across various workloads while strictly enforcing SLA limits.
+The SecuraMail load testing harness is built on Locust. It is designed to evaluate system throughput, latency percentiles, error rates, and resource utilization across various workloads while strictly enforcing SLA limits.
 
 ---
 
