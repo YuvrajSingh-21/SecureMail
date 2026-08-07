@@ -66,7 +66,7 @@ class ClientIPExtractionTests(TestCase):
         self.assertEqual(get_client_ip(request), '2001:db8::1')
 
     def test_audit_service_persists_valid_ip(self):
-        user = User.objects.create_user(username='test_audit_user', email='audit@secureamail.me')
+        user = User.objects.create_user(username='test_audit_user', email='audit@securamail.me')
         request = self.factory.get('/', REMOTE_ADDR='157.48.193.106:47818')
         
         log = AuditService.log(user, 'test_action', category='auth', request=request)
@@ -80,7 +80,7 @@ class ClientIPExtractionTests(TestCase):
 
 class EndToEndRegressionTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='syncuser', email='syncuser@secureamail.me', password='password123')
+        self.user = User.objects.create_user(username='syncuser', email='syncuser@securamail.me', password='password123')
 
     @patch('SecureMail.services.sync_manager.SyncManager.start_sync')
     def test_sync_gmail_with_port_in_remote_addr_does_not_500(self, mock_start_sync):
@@ -111,7 +111,7 @@ class EndToEndRegressionTests(TestCase):
         
         mock_oauth_service = MagicMock()
         mock_build.return_value = mock_oauth_service
-        mock_oauth_service.userinfo().get().execute.return_value = {'email': 'newuser@secureamail.me'}
+        mock_oauth_service.userinfo().get().execute.return_value = {'email': 'newuser@securamail.me'}
         
         session = client.session
         session['oauth_state'] = 'teststate123'
@@ -126,7 +126,7 @@ class EndToEndRegressionTests(TestCase):
         self.assertEqual(response.url, '/inbox/')
         
         # Check user created and logged
-        user = User.objects.get(email='newuser@secureamail.me')
+        user = User.objects.get(email='newuser@securamail.me')
         log = AuditLog.objects.filter(user=user, action='login').latest('created_at')
         self.assertEqual(log.ip_address, '157.48.193.106')
 
@@ -143,7 +143,7 @@ class EndToEndRegressionTests(TestCase):
         
         mock_oauth_service = MagicMock()
         mock_build.return_value = mock_oauth_service
-        mock_oauth_service.userinfo().get().execute.return_value = {'email': 'syncuser@secureamail.me'}
+        mock_oauth_service.userinfo().get().execute.return_value = {'email': 'syncuser@securamail.me'}
         
         session = client.session
         session['oauth_state'] = 'teststate456'
