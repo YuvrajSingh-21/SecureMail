@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Authenticate — SecureMail{% endblock %}
+{% block title %}Authenticate — Securamail{% endblock %}
 
 {% block content %}
     <div class="w-full min-h-full flex items-center justify-center p-6">
         <div class="w-full max-w-md animate-slide-up">
             <div class="text-center mb-8">
                 <a href="{% url 'index' %}" class="inline-block mb-3">
-                    <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="SecureMail">
+                    <img src="{% static 'SecureMail/images/logo.png' %}" class="app-logo app-logo-lg" alt="Securamail">
                 </a>
-                <h1 class="text-2xl font-bold text-[var(--sys-text)] tracking-tight">SecureMail</h1>
+                <h1 class="text-2xl font-bold text-[var(--sys-text)] tracking-tight">Securamail</h1>
                 <p class="text-[var(--sys-text-secondary)] text-sm mt-1">Intelligent Email Security & Threat Intelligence</p>
             </div>
             
@@ -28,7 +28,7 @@
                 </div>
                 <div class="mt-6 pt-4 border-t border-[var(--sys-border)] text-center">
                     <p class="text-xs text-[var(--sys-text-secondary)]">
-                        By continuing, you agree to SecureMail's <a href="{% url 'terms' %}" class="text-[var(--sys-primary)] underline">Terms</a> and <a href="{% url 'privacy' %}" class="text-[var(--sys-primary)] underline">Privacy Policy</a>.
+                        By continuing, you agree to Securamail's <a href="{% url 'terms' %}" class="text-[var(--sys-primary)] underline">Terms</a> and <a href="{% url 'privacy' %}" class="text-[var(--sys-primary)] underline">Privacy Policy</a>.
                     </p>
                 </div>
             </div>

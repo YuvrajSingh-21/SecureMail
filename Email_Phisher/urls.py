@@ -43,7 +43,7 @@ def robots_txt(request):
         "Disallow: /admin/",
         "Disallow: /api/",
         "",
-        "Sitemap: https://secureamail.me/sitemap.xml",
+        "Sitemap: https://securamail.me/sitemap.xml",
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
 
@@ -51,37 +51,37 @@ def sitemap_xml(request):
     content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://secureamail.me/</loc>
+    <loc>https://securamail.me/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://secureamail.me/about/</loc>
+    <loc>https://securamail.me/about/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://secureamail.me/privacy/</loc>
+    <loc>https://securamail.me/privacy/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://secureamail.me/terms/</loc>
+    <loc>https://securamail.me/terms/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://secureamail.me/contact/</loc>
+    <loc>https://securamail.me/contact/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://secureamail.me/support/</loc>
+    <loc>https://securamail.me/support/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://secureamail.me/cookie/</loc>
+    <loc>https://securamail.me/cookie/</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

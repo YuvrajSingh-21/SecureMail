@@ -35,7 +35,7 @@ ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
         'ALLOWED_HOSTS',
-        'localhost,127.0.0.1,secureamail.me,www.secureamail.me,securemail-web-app.azurewebsites.net'
+        'localhost,127.0.0.1,securamail.me,www.securamail.me,secureamail.me,www.secureamail.me,securemail-web-app.azurewebsites.net'
     ).split(',')
     if host.strip()
 ]
@@ -44,7 +44,7 @@ if '*' in ALLOWED_HOSTS:
 
 csrf_trusted_raw = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
-    "https://secureamail.me,https://www.secureamail.me,https://*.azurewebsites.net,https://*.railway.app"
+    "https://securamail.me,https://www.securamail.me,https://secureamail.me,https://www.secureamail.me,https://*.azurewebsites.net,https://*.railway.app"
 )
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()

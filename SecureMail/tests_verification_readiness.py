@@ -7,13 +7,13 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
 
     def test_public_pages_accessible_anonymously(self):
         public_urls = [
-            ('/', 'SecureMail — Intelligent Email Security'),
-            ('/about/', 'About Us — SecureMail'),
-            ('/privacy/', 'Privacy Policy — SecureMail'),
-            ('/terms/', 'Terms of Service — SecureMail'),
-            ('/contact/', 'Contact Support — SecureMail'),
-            ('/support/', 'Help & Support — SecureMail'),
-            ('/cookie/', 'Cookie Policy — SecureMail'),
+            ('/', 'Securamail — Intelligent Email Security'),
+            ('/about/', 'About Us — Securamail'),
+            ('/privacy/', 'Privacy Policy — Securamail'),
+            ('/terms/', 'Terms of Service — Securamail'),
+            ('/contact/', 'Contact Support — Securamail'),
+            ('/support/', 'Help & Support — Securamail'),
+            ('/cookie/', 'Cookie Policy — Securamail'),
             ('/robots.txt', None),
             ('/sitemap.xml', None),
         ]
@@ -28,8 +28,9 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content.decode('utf-8')
         
-        # Check domain & developer email
-        self.assertIn('https://secureamail.me/', content)
+        # Check domain & developer email & brand
+        self.assertIn('Securamail', content)
+        self.assertIn('https://securamail.me/', content)
         self.assertIn('team.asteroids.2024@gmail.com', content)
         
         # Check Google API Services User Data Policy & Limited Use
@@ -48,7 +49,8 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
         self.assertEqual(response.status_code, 200)
         content = response.content.decode('utf-8')
         
-        self.assertIn('https://secureamail.me/', content)
+        self.assertIn('Securamail', content)
+        self.assertIn('https://securamail.me/', content)
         self.assertIn('team.asteroids.2024@gmail.com', content)
         self.assertIn('Google OAuth', content)
         self.assertIn('Limitation of Liability', content)
@@ -56,10 +58,10 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
     def test_robots_and_sitemap(self):
         robots_res = self.client.get('/robots.txt')
         self.assertEqual(robots_res.status_code, 200)
-        self.assertIn('Sitemap: https://secureamail.me/sitemap.xml', robots_res.content.decode('utf-8'))
+        self.assertIn('Sitemap: https://securamail.me/sitemap.xml', robots_res.content.decode('utf-8'))
         
         sitemap_res = self.client.get('/sitemap.xml')
         self.assertEqual(sitemap_res.status_code, 200)
-        self.assertIn('https://secureamail.me/', sitemap_res.content.decode('utf-8'))
-        self.assertIn('https://secureamail.me/privacy/', sitemap_res.content.decode('utf-8'))
-        self.assertIn('https://secureamail.me/terms/', sitemap_res.content.decode('utf-8'))
+        self.assertIn('https://securamail.me/', sitemap_res.content.decode('utf-8'))
+        self.assertIn('https://securamail.me/privacy/', sitemap_res.content.decode('utf-8'))
+        self.assertIn('https://securamail.me/terms/', sitemap_res.content.decode('utf-8'))

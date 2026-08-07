@@ -1,6 +1,6 @@
 {% extends "public_base.html" %}
 
-{% block title %}Help & Support — SecureMail{% endblock %}
+{% block title %}Help & Support — Securamail{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto">
@@ -30,7 +30,7 @@
                 <i data-lucide="refresh-cw" class="w-6 h-6"></i>
             </div>
             <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Sync & Email Analysis</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">How SecureMail reads and inspects incoming messages in your inbox.</p>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">How Securamail reads and inspects incoming messages in your inbox.</p>
         </a>
 
         <!-- Threat Detection -->
@@ -79,31 +79,31 @@
             
             <details id="oauth" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    Why does SecureMail require Google OAuth authorization?
+                    Why does Securamail require Google OAuth authorization?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    SecureMail uses Google OAuth 2.0 to access your email messages directly through the official Gmail API. This allows our analysis engines to inspect message headers, hyperlinks, and attachments for phishing threats without ever needing or storing your Google account password.
+                    Securamail uses Google OAuth 2.0 to access your email messages directly through the official Gmail API. This allows our analysis engines to inspect message headers, hyperlinks, and attachments for phishing threats without ever needing or storing your Google account password.
                 </div>
             </details>
 
             <details id="account" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    Does SecureMail modify or delete my emails in Gmail?
+                    Does Securamail modify or delete my emails in Gmail?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    No. SecureMail is designed for security inspection and threat triage. We do not modify, delete, or alter your messages inside your actual Google Workspace or Gmail mailbox.
+                    No. Securamail is designed for security inspection and threat triage. We do not modify, delete, or alter your messages inside your actual Google Workspace or Gmail mailbox.
                 </div>
             </details>
 
             <details id="privacy-faq" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    Does SecureMail sell my data or train public AI models?
+                    Does Securamail sell my data or train public AI models?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    Never. SecureMail strictly complies with the Google API Services User Data Policy. We do not sell personal data or email contents to any third party, nor do we use Gmail data to train generalized AI models.
+                    Never. Securamail strictly complies with the Google API Services User Data Policy. We do not sell personal data or email contents to any third party, nor do we use Gmail data to train generalized AI models.
                 </div>
             </details>
 
@@ -113,7 +113,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    You can disconnect your account at any time from your SecureMail Settings or Profile page. Alternatively, you can revoke access at any time through Google Account Security Settings at https://myaccount.google.com/permissions.
+                    You can disconnect your account at any time from your Securamail Settings or Profile page. Alternatively, you can revoke access at any time through Google Account Security Settings at https://myaccount.google.com/permissions.
                 </div>
             </details>
 
@@ -123,7 +123,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    SecureMail evaluates emails on a 0–100 risk scale. The engine checks sender authentication (SPF/DKIM/DMARC), compares hyperlinks against Google Safe Browsing and VirusTotal reputation databases, inspects attachments using our Attachment Threat Analysis Engine (ATAE), and analyzes message text for deceptive phrasing.
+                    Securamail evaluates emails on a 0–100 risk scale. The engine checks sender authentication (SPF/DKIM/DMARC), compares hyperlinks against Google Safe Browsing and VirusTotal reputation databases, inspects attachments using our Attachment Threat Analysis Engine (ATAE), and analyzes message text for deceptive phrasing.
                 </div>
             </details>
         </div>

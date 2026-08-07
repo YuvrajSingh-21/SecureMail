@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}SecureMail — Intelligent Email Security{% endblock %}
+{% block title %}Securamail — Intelligent Email Security{% endblock %}
 
 {% block content %}
     <div class="w-full min-h-full">
@@ -12,13 +12,13 @@
         <section class="max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col lg:flex-row items-center gap-12">
             <div class="flex-1 animate-slide-up">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--sys-bg)] border border-[var(--sys-border)] text-[var(--sys-primary)] text-[10px] font-black uppercase tracking-widest mb-6">
-                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> SecureMail Email Security Platform
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Securamail Email Security Platform
                 </div>
                 <h1 class="text-4xl md:text-6xl font-black text-[var(--sys-text)] leading-tight mb-6">
                     Intelligent Email Security & <span class="text-[var(--sys-primary)]">Threat Detection</span>
                 </h1>
                 <p class="text-lg text-[var(--sys-text-secondary)] mb-8 max-w-xl font-medium leading-relaxed">
-                    SecureMail is a cybersecurity-focused email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.
+                    Securamail is an AI-powered email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     {% if not user.is_authenticated %}
@@ -34,7 +34,7 @@
                     {% endif %}
                     <a href="{% url 'about' %}" class="sys-card hover:bg-[var(--sys-bg)] transition flex items-center justify-center gap-2 px-8 py-4 font-bold text-[var(--sys-text)]">
                         <i data-lucide="info" class="w-5 h-5"></i>
-                        About SecureMail
+                        About Securamail
                     </a>
                 </div>
                 <div class="mt-10 flex flex-wrap items-center gap-6 text-[11px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">
@@ -50,7 +50,7 @@
                             <div class="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50"></div>
                             <div class="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50"></div>
                             <div class="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50"></div>
-                            <span class="text-[var(--sys-text-secondary)] text-[10px] ml-2 font-mono font-bold">https://secureamail.me/inbox</span>
+                            <span class="text-[var(--sys-text-secondary)] text-[10px] ml-2 font-mono font-bold">https://securamail.me/inbox</span>
                         </div>
                         <div class="space-y-4">
                             <div class="flex items-center gap-4 p-4 rounded-2xl bg-red-50 border border-red-100">
@@ -131,22 +131,22 @@
         <section class="max-w-7xl mx-auto px-6 pb-32">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
                 <div class="animate-slide-up">
-                    <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">About SecureMail</h2>
+                    <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">About Securamail</h2>
                     <p class="text-[var(--sys-text-secondary)] font-bold text-lg leading-relaxed mb-6">
-                        SecureMail is an email security application dedicated to helping users detect and prevent phishing, deceptive communications, malicious links, and dangerous attachments.
+                        Securamail is an AI-powered email security platform dedicated to helping users detect and prevent phishing, deceptive communications, malicious links, and dangerous attachments.
                     </p>
                     <p class="text-[var(--sys-text-secondary)] font-medium text-base leading-relaxed mb-8">
-                        By integrating with the official Gmail API via Google OAuth 2.0, SecureMail performs transparent security evaluations on incoming messages without exposing credentials or sharing personal data with third parties.
+                        By integrating with the official Gmail API via Google OAuth 2.0, Securamail performs transparent security evaluations on incoming messages without exposing credentials or sharing personal data with third parties.
                     </p>
                     <div class="flex flex-wrap gap-4">
-                        <a href="{% url 'about' %}" class="sys-btn-primary text-sm px-6 py-3">Learn More About SecureMail</a>
+                        <a href="{% url 'about' %}" class="sys-btn-primary text-sm px-6 py-3">Learn More About Securamail</a>
                         <a href="{% url 'privacy' %}" class="sys-card px-6 py-3 text-sm font-bold text-[var(--sys-text)] hover:bg-gray-100 transition">Read Privacy Policy</a>
                     </div>
                 </div>
                 <div class="grid gap-6 animate-slide-up delay-1">
                     <div class="sys-card p-8 transition-all duration-300 group">
                         <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-[var(--sys-primary)] transition-colors">Privacy & Token Security</h4>
-                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">OAuth access and refresh tokens are encrypted at rest using AES-256. SecureMail never sells user information.</p>
+                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">OAuth access and refresh tokens are encrypted at rest using AES-256. Securamail never sells user information.</p>
                     </div>
                     <div class="sys-card p-8 transition-all duration-300 group">
                         <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-purple-500 transition-colors">Explainable Threat Scores</h4>
@@ -166,7 +166,7 @@
                 <div class="relative z-10">
                     <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">Security & Developer Information</h2>
                     <p class="text-[var(--sys-text-secondary)] font-medium max-w-2xl mx-auto mb-12">
-                        Hosted on <strong>secureamail.me</strong> and operated by the Asteroids development team. Contact us anytime at <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold hover:underline">team.asteroids.2024@gmail.com</a>.
+                        Hosted on <strong>securamail.me</strong> and operated by the Asteroids development team. Contact us anytime at <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold hover:underline">team.asteroids.2024@gmail.com</a>.
                     </p>
                     <div class="flex flex-wrap justify-center gap-8 md:gap-12">
                         <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="shield" class="w-5 h-5 text-blue-500"></i>Google OAuth 2.0</div>
