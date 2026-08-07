@@ -14,6 +14,7 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
             ('/contact/', 'Contact Support — Securamail'),
             ('/support/', 'Help & Support — Securamail'),
             ('/cookie/', 'Cookie Policy — Securamail'),
+            ('/login/', 'Authenticate — Securamail'),
             ('/robots.txt', None),
             ('/sitemap.xml', None),
         ]
@@ -22,6 +23,22 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
             self.assertEqual(response.status_code, 200, f"URL {url} failed with status {response.status_code}")
             if expected_title:
                 self.assertContains(response, expected_title, html=False)
+
+    def test_home_page_purpose_and_metadata(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode('utf-8')
+        
+        # Verify app name & domain & canonical
+        self.assertIn('Securamail', content)
+        self.assertIn('<link rel="canonical" href="https://securamail.me/">', content)
+        self.assertIn('<meta property="og:site_name" content="Securamail">', content)
+        
+        # Verify clear explanation of purpose
+        self.assertIn('AI-powered email security platform', content)
+        self.assertIn('connect their Gmail account', content)
+        self.assertIn('analyze email content for phishing', content)
+        self.assertIn('identify potentially dangerous emails and attachments', content)
 
     def test_privacy_policy_compliance_content(self):
         response = self.client.get('/privacy/')

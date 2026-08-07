@@ -6,6 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Securamail — Intelligent Email Security{% endblock %}</title>
     <meta name="description" content="Securamail is an AI-powered email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.">
+    <link rel="canonical" href="https://securamail.me{{ request.path }}">
+    
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://securamail.me{{ request.path }}">
+    <meta property="og:title" content="Securamail — Intelligent Email Security">
+    <meta property="og:description" content="Securamail is an AI-powered email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.">
+    <meta property="og:site_name" content="Securamail">
+
     <link rel="icon" type="image/png" href="{% static 'SecureMail/images/logo.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     
