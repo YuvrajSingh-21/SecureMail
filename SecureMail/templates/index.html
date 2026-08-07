@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Securamail — Intelligent Email Security{% endblock %}
+{% block title %}Securamail — AI-Powered Email Security & Threat Detection{% endblock %}
 
 {% block content %}
     <div class="w-full min-h-full">
@@ -18,7 +18,7 @@
                     Intelligent Email Security & <span class="text-[var(--sys-primary)]">Threat Detection</span>
                 </h1>
                 <p class="text-lg text-[var(--sys-text-secondary)] mb-8 max-w-xl font-medium leading-relaxed">
-                    Securamail is an AI-powered email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.
+                    Securamail is an AI-powered email security platform that securely connects to your Gmail account to detect phishing, malicious emails, suspicious links, and potentially dangerous attachments. It analyzes email threats and provides security insights to help protect your inbox.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     {% if not user.is_authenticated %}

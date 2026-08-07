@@ -7,7 +7,7 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
 
     def test_public_pages_accessible_anonymously(self):
         public_urls = [
-            ('/', 'Securamail — Intelligent Email Security'),
+            ('/', 'Securamail — AI-Powered Email Security & Threat Detection'),
             ('/about/', 'About Us — Securamail'),
             ('/privacy/', 'Privacy Policy — Securamail'),
             ('/terms/', 'Terms of Service — Securamail'),
@@ -35,10 +35,10 @@ class GoogleOAuthVerificationReadinessTests(TestCase):
         self.assertIn('<meta property="og:site_name" content="Securamail">', content)
         
         # Verify clear explanation of purpose
-        self.assertIn('AI-powered email security platform', content)
-        self.assertIn('connect their Gmail account', content)
-        self.assertIn('analyze email content for phishing', content)
-        self.assertIn('identify potentially dangerous emails and attachments', content)
+        self.assertIn('Securamail is an AI-powered email security platform', content)
+        self.assertIn('securely connects to your Gmail account', content)
+        self.assertIn('detect phishing, malicious emails, suspicious links, and potentially dangerous attachments', content)
+        self.assertIn('analyzes email threats and provides security insights to help protect your inbox', content)
 
     def test_privacy_policy_compliance_content(self):
         response = self.client.get('/privacy/')

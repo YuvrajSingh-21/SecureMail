@@ -53,7 +53,7 @@ class ReportPaginator(BaseDocTemplate):
         canvas.setFillColor(colors.HexColor('#64748B'))
         
         # Left side: Branding
-        branding = "SecuraMail Threat Intelligence Platform"
+        branding = "Securamail Threat Intelligence Platform"
         canvas.drawString(doc.leftMargin, doc.bottomMargin - 0.4 * inch, branding)
         
         # Center left: TLP

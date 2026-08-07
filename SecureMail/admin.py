@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import Profile, EmailMessage, Attachment, ThreatIndicator, ThreatAnalysis, Notification, LinkAnalysis, RiskScore, ConnectedAccount
 
-admin.site.site_header = "SecuraMail Administration"
-admin.site.site_title = "SecuraMail Admin Portal"
-admin.site.index_title = "Welcome to SecuraMail Security Management"
+admin.site.site_header = "Securamail Administration"
+admin.site.site_title = "Securamail Admin Portal"
+admin.site.index_title = "Welcome to Securamail Security Management"
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
