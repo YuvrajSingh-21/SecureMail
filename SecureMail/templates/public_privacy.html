@@ -1,96 +1,218 @@
 {% extends "public_base.html" %}
 
-{% block title %}Privacy Policy - SecuraMail{% endblock %}
+{% block title %}Privacy Policy — SecureMail{% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto">
     <!-- Hero Section -->
     <div class="mb-16 text-center space-y-6 mt-8">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full sys-card text-sm font-medium text-[var(--sys-primary)] mb-4 border-blue-500/20">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            Last Updated: July 2026
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            Effective Date: August 2026
         </div>
-        <h1 class="text-5xl md:text-6xl font-black text-[var(--sys-text)] tracking-tight">Privacy <span class="gradient-text">Policy</span></h1>
-        <p class="text-xl text-[var(--sys-text-secondary)] max-w-2xl mx-auto leading-relaxed">
-            We believe your data is yours. Here is how we securely process your emails to keep you safe from threats while respecting your privacy.
+        <h1 class="text-4xl md:text-6xl font-black text-[var(--sys-text)] tracking-tight">Privacy <span class="text-[var(--sys-primary)]">Policy</span></h1>
+        <p class="text-lg text-[var(--sys-text-secondary)] max-w-2xl mx-auto leading-relaxed">
+            SecureMail is committed to protecting your privacy and securing your email data. This policy explains how we collect, process, protect, and handle your information when you use <a href="https://secureamail.me/" class="text-[var(--sys-primary)] font-bold">https://secureamail.me/</a>.
         </p>
     </div>
 
-    <!-- Content Cards -->
+    <!-- Content Sections -->
     <div class="space-y-8">
-        <!-- Section 1 -->
-        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 hover:border-blue-500/30 group">
+        
+        <!-- Section 1: Overview & Identity -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-[var(--sys-primary)] group-hover:scale-110 transition-transform">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[var(--sys-primary)]">
+                    <i data-lucide="info" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">1. Overview & Application Purpose</h2>
+            </div>
+            <div class="prose prose-blue max-w-none text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    <strong>SecureMail</strong> ("we", "us", "our") is a cybersecurity-focused email security application accessible at <a href="https://secureamail.me/" class="text-[var(--sys-primary)] underline">https://secureamail.me/</a>. The platform helps users identify email threats, phishing attempts, suspicious hyperlinks, and dangerous attachments in their connected Gmail accounts.
+                </p>
+                <p>
+                    The platform is maintained and operated by the Asteroids development team. For any privacy or security inquiries, please contact us at <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold">team.asteroids.2024@gmail.com</a>.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Data We Access and Process -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
                     <i data-lucide="database" class="w-6 h-6"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-[var(--sys-text)]">Data We Collect</h2>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">2. Information We Access and Process</h2>
             </div>
-            <div class="prose prose-blue max-w-none text-[var(--sys-text-secondary)] space-y-4">
-                <p>To provide you with top-tier threat detection, we collect the bare minimum needed for our systems to function:</p>
-                <ul class="space-y-2">
-                    <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sys-primary)] shrink-0 mt-0.5"></i> <span><strong>Account Information:</strong> Basic profile information (name, email) provided through Google Auth.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sys-primary)] shrink-0 mt-0.5"></i> <span><strong>Email Metadata:</strong> Senders, subjects, and timestamps required for behavioral analysis.</span></li>
-                    <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--sys-primary)] shrink-0 mt-0.5"></i> <span><strong>Email Content:</strong> Evaluated dynamically and securely in memory; never permanently stored unless you explicitly request a copy.</span></li>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>To provide automated security analysis, SecureMail accesses the following categories of data with your explicit authorization:</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-purple-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Google Account Information:</strong> Your primary email address, full name, and avatar URL provided through Google OAuth 2.0 authentication to create and manage your secure account.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-purple-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Gmail API Email Data:</strong> Email headers (sender, recipient, timestamp, subject, SPF/DKIM/DMARC authentication results), message body text (plain text / HTML), extracted URLs, and attachment files necessary to scan for security risks.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-purple-600 shrink-0 mt-0.5"></i>
+                        <span><strong>OAuth Tokens:</strong> Google OAuth 2.0 access and refresh tokens used to authenticate API requests to Google servers on your behalf.</span>
+                    </li>
                 </ul>
             </div>
         </section>
 
-        <!-- Section 2 -->
-        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 hover:border-purple-500/30 group">
+        <!-- Section 3: Why We Process Data -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
             <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                    <i data-lucide="key" class="w-6 h-6"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-[var(--sys-text)]">Google OAuth Integration</h2>
-            </div>
-            <div class="prose prose-blue max-w-none text-[var(--sys-text-secondary)] space-y-4">
-                <p>SecuraMail integrates seamlessly with Gmail using industry-standard OAuth 2.0. We request specific scopes solely to fetch and analyze incoming mail for potential threats.</p>
-                <p><strong>Strict Boundaries:</strong> We do not sell your data, nor do we use it to train any public language models. We adhere strictly to the Google API Services User Data Policy, ensuring your inbox remains private.</p>
-            </div>
-        </section>
-
-        <!-- Section 3 -->
-        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 hover:border-emerald-500/30 group">
-            <div class="flex items-center gap-4 mb-6">
-                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
                     <i data-lucide="cpu" class="w-6 h-6"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-[var(--sys-text)]">Threat Analysis & Local ML</h2>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">3. How & Why We Use Your Data</h2>
             </div>
-            <div class="prose prose-blue max-w-none text-[var(--sys-text-secondary)] space-y-4">
-                <p>To analyze sensitive content without compromising your privacy, we deploy <strong>Local Machine Learning Models</strong> directly on our infrastructure. Your email bodies are never routed to third-party commercial LLM endpoints.</p>
-                <p>We do query reputation databases (like VirusTotal or Google Safe Browsing) strictly using anonymous indicators, such as file hashes or domain strings, rather than raw payload files.</p>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>We process your email data exclusively to perform cybersecurity evaluations and present threat reports to you:</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="shield-alert" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Phishing & Spoofing Detection:</strong> Machine learning models and heuristic rules analyze email headers and text to identify deceptive senders, brand impersonation, urgent language, and credential theft attempts.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="link" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                        <span><strong>URL Reputation Inspection:</strong> Hyperlinks found in emails are queried against security intelligence feeds (including Google Safe Browsing and VirusTotal) to detect known malicious and phishing domains.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="paperclip" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Attachment Forensic Analysis:</strong> Attachments are evaluated by our Attachment Threat Analysis Engine (ATAE) for malicious macros, executable payloads, double extensions, and anomalous MIME types.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-amber-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Explainable Threat Insights:</strong> When requested by the user, summary explanations and threat breakdowns are generated using the Google Gemini AI API to provide transparent diagnostic guidance.</span>
+                    </li>
+                </ul>
             </div>
         </section>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Section 4 -->
-            <section class="sys-card p-8 rounded-3xl transition-all duration-300 hover:border-orange-500/30 group">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-400">
-                        <i data-lucide="archive" class="w-5 h-5"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-[var(--sys-text)]">Data Retention</h2>
-                </div>
-                <div class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">
-                    <p>Threat reports and basic metadata are stored in our secure databases for historical analysis. Full email payloads are kept purely in-memory during scans and flushed immediately after analysis. When you delete your account, all associated data is purged.</p>
-                </div>
-            </section>
 
-            <!-- Section 5 -->
-            <section class="sys-card p-8 rounded-3xl transition-all duration-300 hover:border-indigo-500/30 group">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                        <i data-lucide="user-cog" class="w-5 h-5"></i>
+        <!-- Section 4: Google API Services User Data Policy Compliance -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl border-2 border-blue-500/30 transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[var(--sys-primary)]">
+                    <i data-lucide="shield" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">4. Google API User Data Policy & Commitments</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    SecureMail's use and transfer to any other app of information received from Google APIs adheres to the <strong><a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener noreferrer" class="text-[var(--sys-primary)] underline">Google API Services User Data Policy</a></strong>, including the <strong>Limited Use</strong> requirements:
+                </p>
+                <div class="p-6 rounded-2xl bg-gray-50 border border-gray-100 space-y-3 font-medium">
+                    <div class="flex items-center gap-3 text-red-600 font-bold">
+                        <i data-lucide="x-circle" class="w-5 h-5"></i>
+                        <span>NO DATA SELLING: SecureMail does NOT sell personal data, Google user data, or email content to any third parties.</span>
                     </div>
-                    <h2 class="text-xl font-bold text-[var(--sys-text)]">Your Rights</h2>
+                    <div class="flex items-center gap-3 text-red-600 font-bold">
+                        <i data-lucide="x-circle" class="w-5 h-5"></i>
+                        <span>NO PUBLIC AI TRAINING: We do NOT use Gmail data to train, fine-tune, or improve generalized or public AI/ML models.</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-red-600 font-bold">
+                        <i data-lucide="x-circle" class="w-5 h-5"></i>
+                        <span>NO ADVERTISING: We do NOT use or transfer your email data for personalized advertising, retargeting, or marketing.</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-green-600 font-bold">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                        <span>LIMITED USE ONLY: All data accessed is strictly limited to providing and improving user-facing email threat analysis and security monitoring.</span>
+                    </div>
                 </div>
-                <div class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">
-                    <p>You have full control. You can access, correct, or request deletion of your data at any time. Revoking OAuth access instantly terminates our ability to read your inbox. We comply fully with modern privacy regulations.</p>
+            </div>
+        </section>
+
+        <!-- Section 5: Data Storage, Retention & Token Protection -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <i data-lucide="lock" class="w-6 h-6"></i>
                 </div>
-            </section>
-        </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">5. Storage, Retention & Token Security</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    <strong>Encrypted Token Storage:</strong> All OAuth access tokens and refresh tokens are stored in the database using <strong>AES-256 encryption at rest</strong>. Credentials are never written in plain text or logged.
+                </p>
+                <p>
+                    <strong>Tenant Isolation:</strong> Synced email records and threat assessments are stored in a relational PostgreSQL database with strict tenant isolation, ensuring only the authenticated account owner can view their data.
+                </p>
+                <p>
+                    <strong>Data Retention:</strong> Synced email records and reports are retained only for as long as your account remains active, enabling historical security triage and threat trends on your dashboard.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 6: Third-Party Services -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
+                    <i data-lucide="external-link" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">6. Third-Party Services & APIs</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>SecureMail interacts with the following third-party services exclusively to provide security capabilities:</p>
+                <ul class="space-y-2">
+                    <li>• <strong>Google OAuth 2.0 & Gmail API:</strong> For user authentication and retrieving email messages for threat inspection.</li>
+                    <li>• <strong>Google Safe Browsing API:</strong> For checking URLs against known phishing and malicious domain lists.</li>
+                    <li>• <strong>VirusTotal API:</strong> For reputation queries on suspicious domains, URLs, and file hashes.</li>
+                    <li>• <strong>Google Gemini API:</strong> For generating on-demand plain-language explanations of detected security indicators.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 7: User Rights, Disconnection & Data Deletion -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+                    <i data-lucide="user-x" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">7. User Rights: Disconnection & Data Deletion</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>You maintain full control over your Google account connection and stored data:</p>
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-rose-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Disconnecting Google Account:</strong> You can disconnect your Gmail account at any time from your SecureMail Settings or Profile page. Disconnecting immediately revokes our API tokens and stops all email synchronization.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-rose-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Revoking via Google Security:</strong> You can also revoke SecureMail's access at any time through your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" class="text-[var(--sys-primary)] underline">Google Account Security Permissions</a>.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i data-lucide="check" class="w-5 h-5 text-rose-600 shrink-0 mt-0.5"></i>
+                        <span><strong>Requesting Data Deletion:</strong> You can delete individual email reports from the application or contact <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold">team.asteroids.2024@gmail.com</a> to request full account and data deletion. Requests are processed promptly.</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 8: Contact Information -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[var(--sys-primary)]">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">8. Contact Information</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-3 text-sm leading-relaxed">
+                <p>If you have any questions, concerns, or requests regarding this Privacy Policy, please contact our team:</p>
+                <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 space-y-1">
+                    <p><strong>Application:</strong> SecureMail</p>
+                    <p><strong>Website:</strong> <a href="https://secureamail.me/" class="text-[var(--sys-primary)]">https://secureamail.me/</a></p>
+                    <p><strong>Developer / Support Email:</strong> <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold">team.asteroids.2024@gmail.com</a></p>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>
 {% endblock %}

@@ -4,7 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SecuraMail{% endblock %}</title>
+    <title>{% block title %}SecureMail — Intelligent Email Security{% endblock %}</title>
+    <meta name="description" content="SecureMail is a cybersecurity-focused email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.">
+    <link rel="canonical" href="https://secureamail.me{{ request.path }}">
+    
+    <!-- Open Graph / Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://secureamail.me{{ request.path }}">
+    <meta property="og:title" content="SecureMail — Intelligent Email Security">
+    <meta property="og:description" content="Cybersecurity-focused email security platform analyzing emails for phishing, malicious links, and dangerous attachments.">
+    <meta property="og:site_name" content="SecureMail">
+    
     <link rel="icon" type="image/png" href="{% static 'SecureMail/images/logo.png' %}">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

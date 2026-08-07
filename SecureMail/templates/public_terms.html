@@ -1,67 +1,178 @@
 {% extends "public_base.html" %}
 
-{% block title %}Terms of Service - SecuraMail{% endblock %}
+{% block title %}Terms of Service — SecureMail{% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto">
     <!-- Hero Section -->
     <div class="mb-16 text-center space-y-6 mt-8">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full sys-card text-sm font-medium text-[var(--sys-primary)] mb-4 border-blue-500/20">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            Last Updated: July 2026
+            <i data-lucide="scale" class="w-4 h-4"></i>
+            Effective Date: August 2026
         </div>
-        <h1 class="text-5xl md:text-6xl font-black text-[var(--sys-text)] tracking-tight">Terms of <span class="gradient-text">Service</span></h1>
-        <p class="text-xl text-[var(--sys-text-secondary)] max-w-2xl mx-auto leading-relaxed">
-            Please read these terms carefully before using SecuraMail. These terms set out the rules and guidelines for using our platform.
+        <h1 class="text-4xl md:text-6xl font-black text-[var(--sys-text)] tracking-tight">Terms of <span class="text-[var(--sys-primary)]">Service</span></h1>
+        <p class="text-lg text-[var(--sys-text-secondary)] max-w-2xl mx-auto leading-relaxed">
+            Please read these Terms of Service carefully before accessing or using SecureMail at <a href="https://secureamail.me/" class="text-[var(--sys-primary)] font-bold">https://secureamail.me/</a>.
         </p>
     </div>
 
     <!-- Content Sections -->
     <div class="space-y-8">
-        <section class="sys-card p-8 md:p-10 rounded-3xl border-l-4 border-blue-500">
-            <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">1. Acceptance of Terms</h2>
-            <p class="text-[var(--sys-text-secondary)] leading-relaxed">
-                By creating an account, authenticating via Google, or otherwise using SecuraMail ("Service", "we", "us"), you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you do not have permission to access the Service.
-            </p>
+        
+        <!-- Section 1: Acceptance -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[var(--sys-primary)]">
+                    <i data-lucide="check-square" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">1. Acceptance of Terms</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    By accessing or using <strong>SecureMail</strong> (<a href="https://secureamail.me/" class="text-[var(--sys-primary)]">https://secureamail.me/</a>), connecting your Google account, or utilizing our email threat analysis capabilities, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you must discontinue use of the service.
+                </p>
+            </div>
         </section>
 
-        <section class="sys-card p-8 md:p-10 rounded-3xl border-l-4 border-purple-500">
-            <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">2. Description of Service</h2>
-            <p class="text-[var(--sys-text-secondary)] leading-relaxed">
-                SecuraMail provides advanced email threat detection by analyzing your inbox contents for phishing, malware, and other security risks. Our platform leverages local machine learning and external threat intelligence APIs to flag suspicious messages. We are a security utility designed to supplement, not replace, your own judgment and general cybersecurity hygiene.
-            </p>
+        <!-- Section 2: Description of Service -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600">
+                    <i data-lucide="shield" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">2. Description of Service</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    SecureMail is a cybersecurity-focused email security platform designed to assist users in identifying phishing emails, suspicious hyperlinks, deceptive headers, and potentially dangerous attachments in their connected Gmail accounts.
+                </p>
+                <p>
+                    The service operates by utilizing Google OAuth 2.0 to access email headers and bodies, executing algorithmic pattern matching and machine learning models, querying reputation intelligence databases (e.g., Google Safe Browsing, VirusTotal), and displaying actionable risk indicators.
+                </p>
+            </div>
         </section>
 
-        <section class="sys-card p-8 md:p-10 rounded-3xl border-l-4 border-emerald-500">
-            <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">3. User Responsibilities</h2>
-            <ul class="space-y-4 text-[var(--sys-text-secondary)]">
-                <li class="flex items-start gap-3">
-                    <i data-lucide="shield-alert" class="w-6 h-6 text-emerald-400 shrink-0"></i>
-                    <span><strong>Account Security:</strong> You are responsible for safeguarding the credentials you use to access SecuraMail. Since we use Google OAuth, you must secure your Google account.</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <i data-lucide="alert-triangle" class="w-6 h-6 text-emerald-400 shrink-0"></i>
-                    <span><strong>Acceptable Use:</strong> You agree not to misuse the Service or help anyone else do so. You must only connect inboxes that you own or have explicit authorization to monitor.</span>
-                </li>
-            </ul>
+        <!-- Section 3: Google OAuth & Authorization -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                    <i data-lucide="key" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">3. Google OAuth & Account Authorization</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    By connecting your Gmail account via Google OAuth 2.0, you grant SecureMail explicit permission to access email messages and metadata solely for the purpose of threat evaluation.
+                </p>
+                <p>
+                    You may revoke this access at any time through your SecureMail account settings or directly in your Google Account Security Settings (<a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer" class="text-[var(--sys-primary)] underline">https://myaccount.google.com/permissions</a>).
+                </p>
+            </div>
         </section>
 
-        <section class="sys-card p-8 md:p-10 rounded-3xl border-l-4 border-orange-500">
-            <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">4. Limitation of Liability</h2>
-            <p class="text-[var(--sys-text-secondary)] leading-relaxed mb-4">
-                SecuraMail is provided on an "AS IS" and "AS AVAILABLE" basis. While our detection models are highly advanced, no security tool is perfect. We do not guarantee that our Service will catch every threat or that it will never produce false positives.
-            </p>
-            <p class="text-[var(--sys-text-secondary)] leading-relaxed mt-4">
-                In no event shall SecuraMail, nor its directors, employees, partners, agents, or suppliers, be liable for any indirect, incidental, special, consequential or punitive damages, including without limitation, loss of profits, data, or goodwill, resulting from your access to or use of (or inability to access or use) the Service.
-            </p>
+        <!-- Section 4: Acceptable Use Policy -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <i data-lucide="user-check" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">4. User Responsibilities & Acceptable Use</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-3 text-sm leading-relaxed">
+                <p>You agree that you will:</p>
+                <ul class="space-y-2">
+                    <li>• Only connect Google accounts that you personally own or are expressly authorized to manage.</li>
+                    <li>• Not use SecureMail for any unlawful, fraudulent, or malicious activities.</li>
+                    <li>• Not attempt to disrupt, exploit, probe, reverse engineer, or degrade the security of SecureMail's infrastructure.</li>
+                    <li>• Maintain the confidentiality of your session credentials and report any security concerns immediately.</li>
+                </ul>
+            </div>
         </section>
 
-        <section class="sys-card p-8 md:p-10 rounded-3xl border-l-4 border-indigo-500">
-            <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-4">5. Termination</h2>
-            <p class="text-[var(--sys-text-secondary)] leading-relaxed">
-                We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms. Upon termination, your right to use the Service will immediately cease. You can terminate your account at any time by navigating to your settings and disconnecting your inbox.
-            </p>
+        <!-- Section 5: Security Disclaimers & Limitations -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl border-2 border-amber-500/30 transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                    <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">5. Security Disclaimers & Detection Limitations</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    <strong>Automated Threat Analysis Disclaimer:</strong> SecureMail provides automated heuristic risk evaluations, machine learning classification, and threat intelligence lookups. While we continuously refine our detection mechanisms, <strong>no security solution can guarantee 100% detection of all cyber threats, zero false positives, or total immunity from email-borne attacks.</strong>
+                </p>
+                <p>
+                    SecureMail serves as an assistive diagnostic tool. Users are advised to exercise independent caution and adhere to organizational cybersecurity best practices when opening links or downloading attachments.
+                </p>
+            </div>
         </section>
+
+        <!-- Section 6: Third-Party Services -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
+                    <i data-lucide="external-link" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">6. Third-Party Services & Dependencies</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    SecureMail interacts with third-party APIs including Google APIs, Google Safe Browsing, VirusTotal, and Google Gemini AI. The availability, accuracy, and latency of these external services are subject to their respective providers' operational status and terms.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 7: Service Availability & Disconnection -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">7. Service Availability & Account Termination</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    The service is provided on an "AS IS" and "AS AVAILABLE" basis. We reserve the right to update, modify, or temporarily suspend features for maintenance or security upgrades.
+                </p>
+                <p>
+                    You may terminate your use of SecureMail at any time by disconnecting your Google account. We reserve the right to restrict or terminate access to accounts engaging in abusive or unauthorized activity.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 8: Limitation of Liability -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">8. Limitation of Liability</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-4 text-sm leading-relaxed">
+                <p>
+                    To the maximum extent permitted by applicable law, in no event shall the SecureMail developers, operators, or contributors be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the platform.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 9: Contact Information -->
+        <section class="sys-card p-8 md:p-10 rounded-3xl transition-all duration-300 group">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-[var(--sys-primary)]">
+                    <i data-lucide="mail" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-[var(--sys-text)]">9. Contact Information</h2>
+            </div>
+            <div class="text-[var(--sys-text-secondary)] space-y-3 text-sm leading-relaxed">
+                <p>For inquiries regarding these Terms of Service, please contact the development team:</p>
+                <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 space-y-1">
+                    <p><strong>Application:</strong> SecureMail</p>
+                    <p><strong>Website:</strong> <a href="https://secureamail.me/" class="text-[var(--sys-primary)]">https://secureamail.me/</a></p>
+                    <p><strong>Developer / Support Email:</strong> <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold">team.asteroids.2024@gmail.com</a></p>
+                </div>
+            </div>
+        </section>
+
     </div>
 </div>
 {% endblock %}

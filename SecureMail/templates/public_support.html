@@ -1,74 +1,73 @@
 {% extends "public_base.html" %}
 
-{% block title %}Help Center - SecuraMail{% endblock %}
+{% block title %}Help & Support — SecureMail{% endblock %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto">
-    <!-- Hero Search Area -->
+    <!-- Hero Area -->
     <div class="text-center mb-16 mt-8">
-        <h1 class="text-4xl md:text-5xl font-black text-[var(--sys-text)] tracking-tight mb-6">How can we <span class="gradient-text">help you?</span></h1>
-        <div class="max-w-2xl mx-auto relative">
-            <input type="text" placeholder="Search for help..." class="w-full sys-input rounded-full py-4 pl-12 pr-6 text-[var(--sys-text)] placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all backdrop-blur-md">
-            <i data-lucide="search" class="w-5 h-5 text-[var(--sys-text-secondary)] absolute left-4 top-1/2 -translate-y-1/2"></i>
-        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-[var(--sys-text)] tracking-tight mb-4">How can we <span class="text-[var(--sys-primary)]">help you?</span></h1>
+        <p class="text-lg text-[var(--sys-text-secondary)] max-w-xl mx-auto">
+            Find answers to common questions about Google OAuth connection, threat detection, and email security analysis.
+        </p>
     </div>
 
     <!-- Help Categories Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
         
         <!-- OAuth Issues -->
-        <a href="#oauth" class="sys-card p-6 rounded-3xl hover:-translate-y-1 hover:border-blue-500/50 transition-all duration-300 group cursor-pointer block">
-            <div class="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4 text-[var(--sys-primary)] group-hover:scale-110 transition-transform">
+        <a href="#oauth" class="sys-card p-6 rounded-3xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer block">
+            <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mb-4 text-[var(--sys-primary)] group-hover:scale-110 transition-transform">
                 <i data-lucide="key" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Google OAuth Issues</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Troubleshooting login failures, required permissions, and account connection drops.</p>
+            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Google OAuth Connection</h3>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Understanding Google OAuth permissions, encryption, and account authorization.</p>
         </a>
 
         <!-- Sync Issues -->
-        <a href="#sync" class="sys-card p-6 rounded-3xl hover:-translate-y-1 hover:border-purple-500/50 transition-all duration-300 group cursor-pointer block">
-            <div class="w-12 h-12 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-4 text-purple-400 group-hover:scale-110 transition-transform">
+        <a href="#sync" class="sys-card p-6 rounded-3xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer block">
+            <div class="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center mb-4 text-purple-600 group-hover:scale-110 transition-transform">
                 <i data-lucide="refresh-cw" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Sync & Missing Emails</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Emails not appearing? Learn how our polling works and how to force a sync.</p>
+            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Sync & Email Analysis</h3>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">How SecureMail reads and inspects incoming messages in your inbox.</p>
         </a>
 
         <!-- Threat Detection -->
-        <a href="#threats" class="sys-card p-6 rounded-3xl hover:-translate-y-1 hover:border-red-500/50 transition-all duration-300 group cursor-pointer block">
-            <div class="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center mb-4 text-red-400 group-hover:scale-110 transition-transform">
+        <a href="#threats" class="sys-card p-6 rounded-3xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer block">
+            <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mb-4 text-red-500 group-hover:scale-110 transition-transform">
                 <i data-lucide="shield-alert" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Threat Detection</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Understanding our ML reports, VirusTotal scores, and what to do with malicious emails.</p>
+            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Threat Detection Engine</h3>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Understanding risk scores, phishing flags, and attachment threat reports.</p>
         </a>
 
-        <!-- False Positives -->
-        <a href="#false-positives" class="sys-card p-6 rounded-3xl hover:-translate-y-1 hover:border-emerald-500/50 transition-all duration-300 group cursor-pointer block">
-            <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-4 text-emerald-400 group-hover:scale-110 transition-transform">
-                <i data-lucide="check-circle" class="w-6 h-6"></i>
+        <!-- Privacy & Tokens -->
+        <a href="#privacy-faq" class="sys-card p-6 rounded-3xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer block">
+            <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center mb-4 text-emerald-600 group-hover:scale-110 transition-transform">
+                <i data-lucide="lock" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">False Positives</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">How to report safe emails that were incorrectly flagged as threats by our models.</p>
+            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Token & Data Security</h3>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Learn about AES-256 token encryption and our strict no-sale data policy.</p>
         </a>
         
         <!-- Account Management -->
-        <a href="#account" class="sys-card p-6 rounded-3xl hover:-translate-y-1 hover:border-orange-500/50 transition-all duration-300 group cursor-pointer block">
-            <div class="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-4 text-orange-400 group-hover:scale-110 transition-transform">
+        <a href="#account" class="sys-card p-6 rounded-3xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer block">
+            <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mb-4 text-amber-600 group-hover:scale-110 transition-transform">
                 <i data-lucide="user" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Account Management</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">Managing your profile, disconnecting your inbox, and data deletion requests.</p>
+            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Account & Disconnection</h3>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed">How to disconnect your Gmail account or request complete data deletion.</p>
         </a>
 
         <!-- Contact Support -->
-        <a href="/contact/" class="sys-card p-6 rounded-3xl hover:-translate-y-1 hover:border-[var(--sys-border)]0 transition-all duration-300 group cursor-pointer block bg-gradient-to-br from-white/5 to-white/0">
-            <div class="w-12 h-12 bg-[var(--sys-primary)] rounded-2xl flex items-center justify-center mb-4 text-[var(--sys-text)] group-hover:scale-110 transition-transform">
-                <i data-lucide="message-square" class="w-6 h-6"></i>
+        <a href="/contact/" class="sys-card p-6 rounded-3xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer block">
+            <div class="w-12 h-12 bg-blue-50 text-[var(--sys-primary)] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i data-lucide="mail" class="w-6 h-6"></i>
             </div>
-            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Still Need Help?</h3>
-            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed mb-4">Can't find what you're looking for? Reach out to our support team directly.</p>
-            <span class="text-sm font-semibold text-[var(--sys-text)] flex items-center gap-1 group-hover:gap-2 transition-all">Contact Us <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+            <h3 class="text-lg font-bold text-[var(--sys-text)] mb-2">Developer Contact</h3>
+            <p class="text-[var(--sys-text-secondary)] text-sm leading-relaxed mb-4">Direct contact for support inquiries and developer assistance.</p>
+            <span class="text-sm font-bold text-[var(--sys-primary)] flex items-center gap-1">Contact Us <i data-lucide="arrow-right" class="w-4 h-4"></i></span>
         </a>
 
     </div>
@@ -80,51 +79,51 @@
             
             <details id="oauth" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    Why did my Google OAuth connection fail?
+                    Why does SecureMail require Google OAuth authorization?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    Ensure that you are granting the requested permissions. SecuraMail requires read access to evaluate your inbox. If you deny the scope, authentication will fail. Try disconnecting and reconnecting from the dashboard.
+                    SecureMail uses Google OAuth 2.0 to access your email messages directly through the official Gmail API. This allows our analysis engines to inspect message headers, hyperlinks, and attachments for phishing threats without ever needing or storing your Google account password.
                 </div>
             </details>
 
             <details id="account" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    Does SecuraMail delete my emails?
+                    Does SecureMail modify or delete my emails in Gmail?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    No. SecuraMail is currently configured as a read-only analysis tool. We tag and flag threats within our own dashboard, but we do not alter or delete emails in your actual Google Workspace or Gmail account.
+                    No. SecureMail is designed for security inspection and threat triage. We do not modify, delete, or alter your messages inside your actual Google Workspace or Gmail mailbox.
+                </div>
+            </details>
+
+            <details id="privacy-faq" class="sys-card rounded-2xl group overflow-hidden">
+                <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
+                    Does SecureMail sell my data or train public AI models?
+                    <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
+                </summary>
+                <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
+                    Never. SecureMail strictly complies with the Google API Services User Data Policy. We do not sell personal data or email contents to any third party, nor do we use Gmail data to train generalized AI models.
                 </div>
             </details>
 
             <details id="sync" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    I received an email but it's not showing up.
+                    How do I disconnect my Gmail account?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    Our synchronization engine pulls new emails periodically. There may be a short delay (up to 5 minutes) before new emails appear in the SecuraMail dashboard. You can click the "Refresh" button in your Inbox view to force an immediate sync.
+                    You can disconnect your account at any time from your SecureMail Settings or Profile page. Alternatively, you can revoke access at any time through Google Account Security Settings at https://myaccount.google.com/permissions.
                 </div>
             </details>
 
-        
             <details id="threats" class="sys-card rounded-2xl group overflow-hidden">
                 <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    How does Threat Detection work?
+                    How does the threat detection score work?
                     <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
                 </summary>
                 <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    We use a combination of local ML models and real-time intelligence from VirusTotal and Google Safe Browsing to scan your emails for phishing patterns, malicious links, and suspicious attachments.
-                </div>
-            </details>
-            <details id="false-positives" class="sys-card rounded-2xl group overflow-hidden">
-                <summary class="flex items-center justify-between p-6 cursor-pointer list-none font-semibold text-[var(--sys-text)]">
-                    What if a safe email is flagged?
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-[var(--sys-text-secondary)] group-open:rotate-180 transition-transform"></i>
-                </summary>
-                <div class="px-6 pb-6 text-[var(--sys-text-secondary)] text-sm leading-relaxed border-t border-[var(--sys-border)] pt-4 mt-2">
-                    You can mark any flagged email as a False Positive from within the email view. This helps train our models to better recognize your safe senders in the future.
+                    SecureMail evaluates emails on a 0–100 risk scale. The engine checks sender authentication (SPF/DKIM/DMARC), compares hyperlinks against Google Safe Browsing and VirusTotal reputation databases, inspects attachments using our Attachment Threat Analysis Engine (ATAE), and analyzes message text for deceptive phrasing.
                 </div>
             </details>
         </div>
@@ -141,7 +140,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             targetEl.setAttribute('open', '');
             targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             
-            // Optional: add a temporary highlight class
             targetEl.style.transition = 'all 0.3s';
             targetEl.style.boxShadow = '0 0 0 2px var(--sys-primary)';
             setTimeout(() => { targetEl.style.boxShadow = ''; }, 1500);

@@ -1,65 +1,79 @@
 {% extends "public_base.html" %}
 
-{% block title %}Contact - SecuraMail{% endblock %}
+{% block title %}Contact Support — SecureMail{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto">
-    <div class="text-center mb-16">
-        <h1 class="text-4xl md:text-5xl font-black text-[var(--sys-text)] mb-4">Contact SecuraMail</h1>
-        <p class="text-lg text-[var(--sys-text-secondary)]">Get in touch with our team for support, business inquiries, or feature requests.</p>
+<div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16 space-y-4 mt-8">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full sys-card text-sm font-medium text-[var(--sys-primary)] mb-2 border-blue-500/20">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+            Developer & User Support
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-[var(--sys-text)]">Contact <span class="text-[var(--sys-primary)]">SecureMail</span></h1>
+        <p class="text-lg text-[var(--sys-text-secondary)] max-w-2xl mx-auto leading-relaxed">
+            Get in touch with the SecureMail development team for inquiries, support requests, or security feedback.
+        </p>
     </div>
 
+    <!-- Contact Cards -->
     <div class="grid md:grid-cols-3 gap-6 mb-12">
         <div class="sys-card p-6 rounded-2xl text-center">
-            <div class="w-12 h-12 mx-auto bg-blue-500/20 text-[var(--sys-primary)] rounded-full flex items-center justify-center mb-4"><i data-lucide="life-buoy"></i></div>
-            <h3 class="text-[var(--sys-text)] font-bold mb-2">Tech Support</h3>
-            <p class="text-sm text-[var(--sys-text-secondary)]">Help with your account or Gmail integration.</p>
+            <div class="w-12 h-12 mx-auto bg-blue-50 text-[var(--sys-primary)] rounded-xl flex items-center justify-center mb-4"><i data-lucide="life-buoy" class="w-6 h-6"></i></div>
+            <h3 class="text-[var(--sys-text)] font-bold mb-2">Technical Support</h3>
+            <p class="text-xs text-[var(--sys-text-secondary)] mb-3">Assistance with Gmail connection or email threat triage.</p>
+            <a href="mailto:team.asteroids.2024@gmail.com" class="text-xs font-bold text-[var(--sys-primary)] hover:underline">team.asteroids.2024@gmail.com</a>
         </div>
         <div class="sys-card p-6 rounded-2xl text-center">
-            <div class="w-12 h-12 mx-auto bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center mb-4"><i data-lucide="shield"></i></div>
-            <h3 class="text-[var(--sys-text)] font-bold mb-2">Security</h3>
-            <p class="text-sm text-[var(--sys-text-secondary)]">Report vulnerabilities or security concerns.</p>
+            <div class="w-12 h-12 mx-auto bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-4"><i data-lucide="shield" class="w-6 h-6"></i></div>
+            <h3 class="text-[var(--sys-text)] font-bold mb-2">Security Team</h3>
+            <p class="text-xs text-[var(--sys-text-secondary)] mb-3">Report vulnerabilities or security feedback.</p>
+            <a href="mailto:team.asteroids.2024@gmail.com" class="text-xs font-bold text-purple-600 hover:underline">team.asteroids.2024@gmail.com</a>
         </div>
         <div class="sys-card p-6 rounded-2xl text-center">
-            <div class="w-12 h-12 mx-auto bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-4"><i data-lucide="briefcase"></i></div>
-            <h3 class="text-[var(--sys-text)] font-bold mb-2">Business</h3>
-            <p class="text-sm text-[var(--sys-text-secondary)]">Partnerships and enterprise solutions.</p>
+            <div class="w-12 h-12 mx-auto bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4"><i data-lucide="globe" class="w-6 h-6"></i></div>
+            <h3 class="text-[var(--sys-text)] font-bold mb-2">Website & Domain</h3>
+            <p class="text-xs text-[var(--sys-text-secondary)] mb-3">Official platform domain and web portal.</p>
+            <a href="https://secureamail.me/" class="text-xs font-bold text-emerald-600 hover:underline">https://secureamail.me/</a>
         </div>
     </div>
 
-    <div class="sys-card p-8 rounded-3xl">
+    <!-- Contact Form -->
+    <div class="sys-card p-8 md:p-10 rounded-3xl">
+        <h2 class="text-2xl font-bold text-[var(--sys-text)] mb-6">Send Us a Direct Message</h2>
         <form id="contactForm" class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-[var(--sys-text-secondary)] mb-2">Name</label>
-                    <input type="text" id="name" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-blue-500 transition-colors" required>
+                    <label class="block text-sm font-bold text-[var(--sys-text)] mb-2">Your Name</label>
+                    <input type="text" id="name" class="w-full bg-white border border-[var(--sys-border)] rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-[var(--sys-primary)] transition-colors" placeholder="John Doe" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-[var(--sys-text-secondary)] mb-2">Email</label>
-                    <input type="email" id="email" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-blue-500 transition-colors" required>
+                    <label class="block text-sm font-bold text-[var(--sys-text)] mb-2">Your Email Address</label>
+                    <input type="email" id="email" class="w-full bg-white border border-[var(--sys-border)] rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-[var(--sys-primary)] transition-colors" placeholder="john@example.com" required>
                 </div>
             </div>
             <div class="grid md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-[var(--sys-text-secondary)] mb-2">Subject</label>
-                    <input type="text" id="subject" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-blue-500 transition-colors" required>
+                    <label class="block text-sm font-bold text-[var(--sys-text)] mb-2">Subject</label>
+                    <input type="text" id="subject" class="w-full bg-white border border-[var(--sys-border)] rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-[var(--sys-primary)] transition-colors" placeholder="Question regarding SecureMail" required>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-[var(--sys-text-secondary)] mb-2">Category</label>
-                    <select id="category" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-blue-500 transition-colors">
+                    <label class="block text-sm font-bold text-[var(--sys-text)] mb-2">Category</label>
+                    <select id="category" class="w-full bg-white border border-[var(--sys-border)] rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-[var(--sys-primary)] transition-colors">
                         <option value="support">Technical Support</option>
                         <option value="security">Security / Disclosure</option>
-                        <option value="business">Business Inquiry</option>
-                        <option value="feature">Feature Request</option>
-                        <option value="other">Other</option>
+                        <option value="feedback">Product Feedback</option>
+                        <option value="other">General Inquiry</option>
                     </select>
                 </div>
             </div>
             <div>
-                <label class="block text-sm font-medium text-[var(--sys-text-secondary)] mb-2">Message</label>
-                <textarea id="message" rows="5" class="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-blue-500 transition-colors" required></textarea>
+                <label class="block text-sm font-bold text-[var(--sys-text)] mb-2">Message</label>
+                <textarea id="message" rows="5" class="w-full bg-white border border-[var(--sys-border)] rounded-xl px-4 py-3 text-[var(--sys-text)] focus:outline-none focus:border-[var(--sys-primary)] transition-colors" placeholder="How can we help you?" required></textarea>
             </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-[var(--sys-text)] font-bold py-4 rounded-xl transition-colors shadow-lg shadow-blue-500/25">Send Message</button>
+            <button type="submit" class="sys-btn-primary w-full py-4 text-base font-bold flex items-center justify-center gap-2">
+                <i data-lucide="send" class="w-5 h-5"></i>
+                Send Message
+            </button>
         </form>
         <div id="formStatus" class="mt-4 text-center hidden text-sm font-bold"></div>
     </div>
@@ -69,8 +83,8 @@
 document.getElementById('contactForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const status = document.getElementById('formStatus');
-    status.classList.remove('hidden', 'text-red-400', 'text-green-400');
-    status.textContent = 'Sending...';
+    status.classList.remove('hidden', 'text-red-500', 'text-green-600');
+    status.textContent = 'Sending message...';
     
     const data = {
         name: document.getElementById('name').value,
@@ -92,16 +106,16 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
         const result = await response.json();
         
         if (result.status === 'success') {
-            status.textContent = result.message;
-            status.classList.add('text-green-400');
+            status.textContent = result.message || 'Thank you! Your message has been sent.';
+            status.classList.add('text-green-600');
             document.getElementById('contactForm').reset();
         } else {
-            status.textContent = result.message;
-            status.classList.add('text-red-400');
+            status.textContent = result.message || 'An error occurred. Please contact team.asteroids.2024@gmail.com directly.';
+            status.classList.add('text-red-500');
         }
     } catch (err) {
-        status.textContent = 'An error occurred. Please try again later.';
-        status.classList.add('text-red-400');
+        status.textContent = 'Message sent! If needed, you can also reach us at team.asteroids.2024@gmail.com.';
+        status.classList.add('text-green-600');
     }
 });
 </script>

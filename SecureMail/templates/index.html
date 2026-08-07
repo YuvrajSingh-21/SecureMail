@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}SecuraMail - Intelligent Email Security{% endblock %}
+{% block title %}SecureMail — Intelligent Email Security{% endblock %}
 
 {% block content %}
-    <div class="w-full min-h-full" class="w-full min-h-full">
+    <div class="w-full min-h-full">
         <!-- Navigation -->
         {% include "components/navbar.html" %}
 
@@ -12,25 +12,35 @@
         <section class="max-w-7xl mx-auto px-6 pt-20 pb-32 flex flex-col lg:flex-row items-center gap-12">
             <div class="flex-1 animate-slide-up">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--sys-bg)] border border-[var(--sys-border)] text-[var(--sys-primary)] text-[10px] font-black uppercase tracking-widest mb-6">
-                    <i data-lucide="shield" class="w-3 h-3"></i> Intelligent Threat Detection
+                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> SecureMail Email Security Platform
                 </div>
-                <h1 class="text-4xl md:text-6xl font-black text-[var(--sys-text)] leading-tight mb-6">Secure Your Inbox Against <span class="text-[var(--sys-primary)]">Phishing & Fraud</span></h1>
-                <p class="text-lg text-[var(--sys-text-secondary)] mb-8 max-w-xl font-medium">Read, analyze, and manage emails safely with intelligent threat detection and local ML analysis.</p>
+                <h1 class="text-4xl md:text-6xl font-black text-[var(--sys-text)] leading-tight mb-6">
+                    Intelligent Email Security & <span class="text-[var(--sys-primary)]">Threat Detection</span>
+                </h1>
+                <p class="text-lg text-[var(--sys-text-secondary)] mb-8 max-w-xl font-medium leading-relaxed">
+                    SecureMail is a cybersecurity-focused email security platform that helps users securely connect their Gmail account, analyze email content for phishing and malicious threats, and identify potentially dangerous emails and attachments.
+                </p>
                 <div class="flex flex-wrap gap-4">
                     {% if not user.is_authenticated %}
-                        <a href="{% url 'register' %}" class="sys-btn-primary text-lg px-8 py-4">Connect Gmail</a>
+                        <a href="{% url 'register' %}" class="sys-btn-primary text-lg px-8 py-4 flex items-center gap-2">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                            Connect Gmail
+                        </a>
                     {% else %}
-                        <a href="{% url 'inbox' %}" class="sys-btn-primary text-lg px-8 py-4">Back to Inbox</a>
+                        <a href="{% url 'inbox' %}" class="sys-btn-primary text-lg px-8 py-4 flex items-center gap-2">
+                            <i data-lucide="inbox" class="w-5 h-5"></i>
+                            Go to Inbox
+                        </a>
                     {% endif %}
-                    <a href="{% url 'dashboard' %}" class="sys-card hover:bg-[var(--sys-bg)] transition flex items-center justify-center gap-2 px-8 py-4 font-bold text-[var(--sys-text)]">
-                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                        Explore Dashboard
+                    <a href="{% url 'about' %}" class="sys-card hover:bg-[var(--sys-bg)] transition flex items-center justify-center gap-2 px-8 py-4 font-bold text-[var(--sys-text)]">
+                        <i data-lucide="info" class="w-5 h-5"></i>
+                        About SecureMail
                     </a>
                 </div>
-                <div class="mt-10 flex items-center gap-6 text-[11px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">
-                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> No credit card</span>
-                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Local ML Analysis</span>
-                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> GDPR Compliant</span>
+                <div class="mt-10 flex flex-wrap items-center gap-6 text-[11px] font-black text-[var(--sys-text-secondary)] uppercase tracking-widest">
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Google OAuth 2.0</span>
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Phishing Detection</span>
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i> Encrypted Credentials</span>
                 </div>
             </div>
             <div class="flex-1 animate-slide-up delay-2">
@@ -40,29 +50,27 @@
                             <div class="w-3 h-3 rounded-full bg-red-500 shadow-lg shadow-red-500/50"></div>
                             <div class="w-3 h-3 rounded-full bg-yellow-500 shadow-lg shadow-yellow-500/50"></div>
                             <div class="w-3 h-3 rounded-full bg-green-500 shadow-lg shadow-green-500/50"></div>
-                            <span class="text-[var(--sys-text-secondary)] text-[10px] ml-2 font-mono font-bold">securamail-ai://inbox</span>
+                            <span class="text-[var(--sys-text-secondary)] text-[10px] ml-2 font-mono font-bold">https://secureamail.me/inbox</span>
                         </div>
                         <div class="space-y-4">
                             <div class="flex items-center gap-4 p-4 rounded-2xl bg-red-50 border border-red-100">
-                                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400"></i>
+                                <i data-lucide="alert-triangle" class="w-6 h-6 text-red-500 shrink-0"></i>
                                 <div class="flex-1">
-                                    <p class="text-[var(--sys-text)] text-sm font-black uppercase tracking-tight">Phishing Detected</p>
-                                    <p class="text-[var(--sys-text-secondary)] text-[11px] font-medium">security@amaz0n-verify.com</p>
+                                    <p class="text-[var(--sys-text)] text-sm font-black uppercase tracking-tight">Phishing Threat Flagged</p>
+                                    <p class="text-[var(--sys-text-secondary)] text-[11px] font-medium truncate">security-notice@amaz0n-verify.com</p>
                                 </div>
-                                <span class="px-3 py-1 text-[11px] font-black rounded-full bg-red-500 text-[var(--sys-text)]">92 / 100</span>
+                                <span class="px-3 py-1 text-[11px] font-black rounded-full bg-red-500 text-white">Risk: 92 / 100</span>
                             </div>
                             <div class="flex items-center gap-4 p-4 rounded-2xl bg-green-50 border border-green-100">
-                                <i data-lucide="check-circle" class="w-6 h-6 text-green-400"></i>
+                                <i data-lucide="shield-check" class="w-6 h-6 text-green-500 shrink-0"></i>
                                 <div class="flex-1">
-                                    <p class="text-[var(--sys-text)] text-sm font-black uppercase tracking-tight">Safe Email</p>
-                                    <p class="text-[var(--sys-text-secondary)] text-[11px] font-medium">john.smith@company.com</p>
+                                    <p class="text-[var(--sys-text)] text-sm font-black uppercase tracking-tight">Verified Senders (SPF/DKIM)</p>
+                                    <p class="text-[var(--sys-text-secondary)] text-[11px] font-medium truncate">billing@company.com</p>
                                 </div>
-                                <span class="px-3 py-1 text-[11px] font-black rounded-full bg-green-500 text-[var(--sys-text)]">8 / 100</span>
+                                <span class="px-3 py-1 text-[11px] font-black rounded-full bg-green-500 text-white">Risk: 8 / 100</span>
                             </div>
                         </div>
                     </div>
-                    
-                    
                 </div>
             </div>
         </section>
@@ -70,79 +78,83 @@
         <!-- Features Section -->
         <section id="features" class="max-w-7xl mx-auto px-6 pb-32">
             <div class="text-center mb-20 animate-slide-up delay-1">
-                <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-4 tracking-tight">Powerful Security Features</h2>
-                <p class="text-[var(--sys-text-secondary)] max-w-2xl mx-auto font-bold text-lg">Intelligent tools to keep your inbox safe from phishing and deceptive content.</p>
+                <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-4 tracking-tight">Core Security Capabilities</h2>
+                <p class="text-[var(--sys-text-secondary)] max-w-2xl mx-auto font-bold text-lg">Comprehensive defense and actionable security insights designed for your Gmail inbox.</p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="sys-card p-8 transition-all duration-300 group animate-slide-up delay-1 hover:-translate-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-                        <i data-lucide="brain" class="w-7 h-7 text-blue-400"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg text-[var(--sys-primary)]">
+                        <i data-lucide="key" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Local ML Threat Detection</h3>
-                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Detect phishing and deceptive patterns using on-device machine learning models.</p>
+                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Secure Gmail Integration</h3>
+                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Connect via standard Google OAuth 2.0 with minimal required permissions. Tokens are encrypted at rest using AES-256.</p>
                 </div>
                 <div class="sys-card p-8 transition-all duration-300 group animate-slide-up delay-2 hover:-translate-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-                        <i data-lucide="link" class="w-7 h-7 text-[var(--sys-primary)]"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg text-red-500">
+                        <i data-lucide="shield-alert" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">URL Threat Analysis</h3>
-                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Deep inspection of suspicious links using real-time security databases.</p>
+                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Email Threat Detection</h3>
+                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Multi-factor inspection analyzing sender identity, email authentication (SPF, DKIM, DMARC), and header anomalies.</p>
                 </div>
                 <div class="sys-card p-8 transition-all duration-300 group animate-slide-up delay-3 hover:-translate-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-                        <i data-lucide="refresh-cw" class="w-7 h-7 text-purple-400"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg text-amber-500">
+                        <i data-lucide="brain" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Real-Time Gmail Sync</h3>
-                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Seamlessly sync and protect your inbox in the background with secure OAuth2.</p>
+                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Phishing Detection</h3>
+                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Machine learning algorithms trained to flag credential harvesting, deceptive patterns, and urgent coercive language.</p>
                 </div>
                 <div class="sys-card p-8 transition-all duration-300 group animate-slide-up delay-4 hover:-translate-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-orange-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-                        <i data-lucide="gauge" class="w-7 h-7 text-orange-400"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg text-cyan-600">
+                        <i data-lucide="link" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Risk Scoring</h3>
-                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Generate a security score from 0–100 for every email based on multiple factors.</p>
+                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Suspicious URL Analysis</h3>
+                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Inspects hyperlinks against threat intelligence feeds, including Google Safe Browsing and VirusTotal, for malicious domains.</p>
                 </div>
                 <div class="sys-card p-8 transition-all duration-300 group animate-slide-up delay-5 hover:-translate-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-                        <i data-lucide="message-circle" class="w-7 h-7 text-green-400"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg text-purple-600">
+                        <i data-lucide="paperclip" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Explainable Analysis</h3>
-                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Receive human-readable explanations for every threat detected by the engine.</p>
+                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Attachment Threat Analysis</h3>
+                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Forensic analysis evaluating attachments for dangerous file types, suspicious macros, and anomalous payload structures.</p>
                 </div>
                 <div class="sys-card p-8 transition-all duration-300 group animate-slide-up delay-6 hover:-translate-y-2">
-                    <div class="w-14 h-14 rounded-2xl bg-pink-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg">
-                        <i data-lucide="shield" class="w-7 h-7 text-pink-400"></i>
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6 group-hover:scale-110 transition shadow-lg text-emerald-600">
+                        <i data-lucide="gauge" class="w-7 h-7"></i>
                     </div>
-                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Privacy-Focused</h3>
-                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">All email analysis is performed locally on the server; your data remains private.</p>
+                    <h3 class="text-[var(--sys-text)] font-black text-xl mb-3 tracking-tight">Security Insights & Risk Scores</h3>
+                    <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Computes transparent 0–100 risk indicators and delivers clear, explainable summaries for flagged emails.</p>
                 </div>
             </div>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="max-w-7xl mx-auto px-6 pb-32">
+        <!-- About Overview Section -->
+        <section class="max-w-7xl mx-auto px-6 pb-32">
             <div class="grid lg:grid-cols-2 gap-16 items-center">
                 <div class="animate-slide-up">
-                    <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">Why SecuraMail?</h2>
+                    <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">About SecureMail</h2>
                     <p class="text-[var(--sys-text-secondary)] font-bold text-lg leading-relaxed mb-6">
-                        SecuraMail is a privacy-focused email security platform designed to help users identify phishing attempts, suspicious links, and deceptive emails using local machine learning analysis.
+                        SecureMail is an email security application dedicated to helping users detect and prevent phishing, deceptive communications, malicious links, and dangerous attachments.
                     </p>
-                    <p class="text-[var(--sys-text-secondary)] font-bold text-base leading-relaxed">
-                        The platform integrates directly with Gmail and provides explainable threat analysis without relying on external AI APIs.
+                    <p class="text-[var(--sys-text-secondary)] font-medium text-base leading-relaxed mb-8">
+                        By integrating with the official Gmail API via Google OAuth 2.0, SecureMail performs transparent security evaluations on incoming messages without exposing credentials or sharing personal data with third parties.
                     </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="{% url 'about' %}" class="sys-btn-primary text-sm px-6 py-3">Learn More About SecureMail</a>
+                        <a href="{% url 'privacy' %}" class="sys-card px-6 py-3 text-sm font-bold text-[var(--sys-text)] hover:bg-gray-100 transition">Read Privacy Policy</a>
+                    </div>
                 </div>
                 <div class="grid gap-6 animate-slide-up delay-1">
                     <div class="sys-card p-8 transition-all duration-300 group">
-                        <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-blue-400 transition-colors">Local ML Analysis</h4>
-                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">All email analysis runs locally using trained machine learning models.</p>
+                        <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-[var(--sys-primary)] transition-colors">Privacy & Token Security</h4>
+                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">OAuth access and refresh tokens are encrypted at rest using AES-256. SecureMail never sells user information.</p>
                     </div>
                     <div class="sys-card p-8 transition-all duration-300 group">
-                        <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-[var(--sys-primary)] transition-colors">Explainable Detection</h4>
-                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Every threat score includes transparent reasons and indicators.</p>
+                        <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-purple-500 transition-colors">Explainable Threat Scores</h4>
+                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Every flagged email provides clear reasoning, highlighting specific suspicious URLs, sender mismatches, or attachment anomalies.</p>
                     </div>
                     <div class="sys-card p-8 transition-all duration-300 group">
-                        <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-green-400 transition-colors">Privacy Focused</h4>
-                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Your email data is processed securely with OAuth-based authentication.</p>
+                        <h4 class="text-[var(--sys-text)] font-black text-xl mb-2 tracking-tight group-hover:text-emerald-500 transition-colors">User Control & Revocation</h4>
+                        <p class="text-[var(--sys-text-secondary)] text-sm font-medium leading-relaxed">Users have full control to disconnect their Google account at any time and purge associated stored threat reports.</p>
                     </div>
                 </div>
             </div>
@@ -150,18 +162,20 @@
 
         <!-- Trust Section -->
         <section class="max-w-7xl mx-auto px-6 pb-20">
-            <div class="bg-white backdrop-blur-xl border border-white/10 rounded-[40px] p-12 md:p-20 text-center shadow-2xl relative overflow-hidden">
+            <div class="bg-white backdrop-blur-xl border border-gray-100 rounded-[40px] p-12 md:p-20 text-center shadow-xl relative overflow-hidden">
                 <div class="relative z-10">
-                    <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">Privacy-Focused Email Security</h2>
-                    <p class="text-[var(--sys-text-secondary)] font-bold max-w-xl mx-auto mb-12">Built with secure authentication, local ML analysis, and modern security practices.</p>
+                    <h2 class="text-3xl md:text-5xl font-black text-[var(--sys-text)] mb-6 tracking-tight">Security & Developer Information</h2>
+                    <p class="text-[var(--sys-text-secondary)] font-medium max-w-2xl mx-auto mb-12">
+                        Hosted on <strong>secureamail.me</strong> and operated by the Asteroids development team. Contact us anytime at <a href="mailto:team.asteroids.2024@gmail.com" class="text-[var(--sys-primary)] font-bold hover:underline">team.asteroids.2024@gmail.com</a>.
+                    </p>
                     <div class="flex flex-wrap justify-center gap-8 md:gap-12">
-                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="shield" class="w-5 h-5 text-green-400"></i>OAuth 2.0</div>
-                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="lock" class="w-5 h-5 text-green-400"></i>Local Analysis</div>
-                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="users" class="w-5 h-5 text-green-400"></i>GDPR Compliant</div>
-                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="database" class="w-5 h-5 text-green-400"></i>PostgreSQL</div>
+                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="shield" class="w-5 h-5 text-blue-500"></i>Google OAuth 2.0</div>
+                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="lock" class="w-5 h-5 text-emerald-500"></i>AES-256 Tokens</div>
+                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="eye-off" class="w-5 h-5 text-purple-500"></i>No Data Selling</div>
+                        <div class="flex items-center gap-3 text-[var(--sys-text)] font-black text-xs uppercase tracking-widest"><i data-lucide="database" class="w-5 h-5 text-amber-500"></i>Isolated Storage</div>
                     </div>
                 </div>
-                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/10 to-transparent"></div>
+                <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
             </div>
         </section>
 
