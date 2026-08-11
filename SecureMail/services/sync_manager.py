@@ -47,13 +47,96 @@ class SyncManager:
         # To meet the < 3s login requirement while still importing all messages:
         # We run the sync process in a separate thread.
         import threading
-        thread = threading.Thread(target=self._run_sync_thread, args=(job, full_sync))
+        thread = threading.Thread(target=self._run_sync_thread, args=(job, full_sync, True))
         thread.daemon = True
         thread.start()
             
         return job
 
-    def _run_sync_thread(self, job, full_sync):
+    def sync_synchronously(self, full_sync=False):
+        """Runs the sync in the current thread and returns."""
+        if not self.gmail:
+            return None
+            
+        # Cancel any existing running jobs for this user
+        SyncJob.objects.filter(user=self.user, status='RUNNING').update(status='FAILED', error_message='Overridden by new job')
+
+        job = SyncJob.objects.create(
+            user=self.user,
+            status='RUNNING',
+            total_messages=0,
+            synced_messages=0
+        )
+        self._run_sync_thread(job, full_sync, close_conn=False)
+        return job
+
+    def sync_single_message(self, msg_id):
+        """Synchronously fetch and process a single message from Gmail."""
+        if not self.gmail:
+            return None
+        full_msg = self.gmail.get_message(msg_id)
+        if not full_msg or (isinstance(full_msg, dict) and full_msg.get('error') == 404):
+            return None
+            
+        parsed = self.gmail.parse_message_data(full_msg)
+        labels = parsed['labels']
+        
+        folder = 'INBOX'
+        if 'SENT' in labels: folder = 'SENT'
+        elif 'DRAFT' in labels: folder = 'DRAFTS'
+        elif 'SPAM' in labels: folder = 'SPAM'
+        elif 'TRASH' in labels: folder = 'TRASH'
+
+        email_id = None
+        needs_analysis = False
+        with transaction.atomic():
+            email, created = EmailMessage.objects.update_or_create(
+                user=self.user,
+                gmail_message_id=parsed['gmail_id'],
+                defaults={
+                    'thread_id': parsed['thread_id'],
+                    'sender_email': self.gmail._extract_email(parsed['from']),
+                    'sender_name': self.gmail._extract_name(parsed['from']),
+                    'recipient_email': self.gmail._extract_email(parsed['to']),
+                    'subject': parsed['subject'],
+                    'body': parsed['plain_body'] or parsed['snippet'],
+                    'plain_body': parsed['plain_body'],
+                    'html_body': parsed['html_body'],
+                    'snippet': parsed['snippet'],
+                    'timestamp': parsed['date'],
+                    'unread': 'UNREAD' in labels,
+                    'starred': 'STARRED' in labels,
+                    'in_trash': 'TRASH' in labels,
+                    'is_remote_deleted': False,
+                    'has_attachments': parsed['has_attachments'],
+                    'folder': folder,
+                    'spf_pass': parsed.get('spf_pass', True),
+                    'dkim_pass': parsed.get('dkim_pass', True),
+                    'dmarc_pass': parsed.get('dmarc_pass', True)
+                }
+            )
+            email_id = email.id
+            if created:
+                self._process_attachments(email, parsed)
+                
+            if (created or not email.analysis_completed) and self.pipeline:
+                needs_analysis = True
+            elif email.analysis_completed and hasattr(email, 'analysis') and 'analysis' not in email.analysis.detailed_report and self.pipeline:
+                needs_analysis = True
+                
+        if needs_analysis and self.pipeline:
+            try:
+                email_obj = EmailMessage.objects.get(id=email_id)
+                email_obj.skip_analysis = True
+                self.pipeline.run(email_id)
+            except Exception as pe:
+                logger.error(f"Pipeline failed for {email_id}: {str(pe)}")
+                
+        return EmailMessage.objects.get(id=email_id)
+            
+        return job
+
+    def _run_sync_thread(self, job, full_sync, close_conn=True):
         """Wrapper for thread execution to handle errors and database connections."""
         from django.db import connection
         from django.core.cache import cache
@@ -65,7 +148,8 @@ class SyncManager:
             job.status = 'FAILED'
             job.error_message = 'Sync already in progress'
             job.save()
-            connection.close()
+            if close_conn:
+                connection.close()
             return
             
         try:
@@ -83,7 +167,8 @@ class SyncManager:
             logger.error(f"Background sync failed: {str(e)}")
         finally:
             cache.delete(lock_id)
-            connection.close()
+            if close_conn:
+                connection.close()
 
     def _execute_sync(self, job, limit=None):
         """Internal execution of the sync process."""

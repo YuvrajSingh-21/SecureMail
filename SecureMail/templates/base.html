@@ -48,6 +48,35 @@
                 window.lucide.createIcons();
             }
         });
+        
+        function updateLocalTimes() {
+            document.querySelectorAll('.local-time').forEach(el => {
+                const iso = el.getAttribute('data-timestamp');
+                const format = el.getAttribute('data-format');
+                if (iso) {
+                    try {
+                        const date = new Date(iso);
+                        if (format === 'time') {
+                            el.textContent = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        } else if (format === 'date') {
+                            el.textContent = date.toLocaleDateString([], {month: 'short', day: 'numeric'});
+                        } else if (format === 'full') {
+                            el.textContent = date.toLocaleDateString([], {month: 'long', day: 'numeric', year: 'numeric'}) + ' • ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        }
+                    } catch(e) {}
+                }
+            });
+        }
+        window.addEventListener('DOMContentLoaded', updateLocalTimes);
+        
+        // Setup observer to update times when inbox list is replaced
+        const observer = new MutationObserver((mutations) => {
+            updateLocalTimes();
+        });
+        window.addEventListener('DOMContentLoaded', () => {
+            const list = document.getElementById('email-list');
+            if (list) observer.observe(list, { childList: true, subtree: true });
+        });
     </script>
     
 

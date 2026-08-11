@@ -18,20 +18,21 @@ def sync_gmail(request):
     full_sync = request.POST.get('all') == 'true'
     is_auto = request.POST.get('auto') == '1'
     
+    manager = SyncManager(request.user)
     if is_auto:
         from .models import SyncJob
-        # Prevent starting a new sync if one is already running
+        # If auto sync, we wait synchronously
         if SyncJob.objects.filter(user=request.user, status='RUNNING').exists():
             from django.http import JsonResponse
             return JsonResponse({'status': 'already_running'})
-
-    manager = SyncManager(request.user)
-    job = manager.start_sync(full_sync=full_sync)
-    AuditService.log(request.user, 'mailbox_sync', category='system', metadata={'full_sync': full_sync}, request=request)
-    
-    if is_auto:
+            
+        job = manager.sync_synchronously(full_sync=False)
         from django.http import JsonResponse
         return JsonResponse({'status': 'started' if job else 'failed'})
+    
+    # Background sync
+    job = manager.start_sync(full_sync=full_sync)
+    AuditService.log(request.user, 'mailbox_sync', category='system', metadata={'full_sync': full_sync}, request=request)
     
     if job:
         sync_type = "Full" if full_sync else "Latest"
@@ -406,7 +407,14 @@ def compose(request):
         try:
             account = ConnectedAccount.objects.get(user=request.user)
             from .services.gmail_service import GmailService
-            GmailService(account).send_message(to, subject, body)
+            from .services.sync_manager import SyncManager
+            response = GmailService(account).send_message(to, subject, body)
+            
+            # Immediately sync the sent message into the database
+            msg_id = response.get('id') if isinstance(response, dict) else None
+            if msg_id:
+                SyncManager(request.user).sync_single_message(msg_id)
+                
             messages.success(request, "Email sent successfully via Gmail!")
             return redirect('inbox')
         except Exception as e:

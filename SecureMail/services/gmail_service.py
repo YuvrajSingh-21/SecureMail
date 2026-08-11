@@ -144,15 +144,20 @@ class GmailService:
             elif name == 'to':
                 data['to'] = header['value']
             elif name == 'date':
-                try:
-                    data['date'] = date_parser.parse(header['value'])
-                except:
-                    pass
+                pass # Handled via internalDate
             elif name == 'authentication-results':
                 val = header['value'].lower()
                 data['spf_pass'] = 'spf=pass' in val
                 data['dkim_pass'] = 'dkim=pass' in val
                 data['dmarc_pass'] = 'dmarc=pass' in val
+
+        import datetime
+        if 'internalDate' in msg_payload:
+            try:
+                ts = int(msg_payload['internalDate']) / 1000.0
+                data['date'] = datetime.datetime.fromtimestamp(ts, tz=datetime.timezone.utc)
+            except Exception:
+                pass
 
         parts = msg_payload['payload'].get('parts', [])
         data['attachments'] = []

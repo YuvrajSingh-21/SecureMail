@@ -1,5 +1,35 @@
 {% load static %}
-<aside id="main-sidebar" class="w-[260px] shrink-0 sys-sidebar p-4 flex flex-col h-full transition-[width] duration-300 ease-in-out z-20">
+<style>
+    #main-sidebar.collapsed {
+        width: 80px !important;
+    }
+    #main-sidebar.collapsed .sidebar-text {
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        visibility: hidden;
+    }
+    #main-sidebar.collapsed .security-widget {
+        display: none;
+    }
+    #main-sidebar.collapsed .sidebar-item {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    @media (max-width: 1024px) {
+        #main-sidebar {
+            position: fixed;
+            left: -260px;
+            background-color: var(--sys-bg, #f8fafc);
+        }
+        #main-sidebar.open {
+            left: 0;
+            box-shadow: 10px 0 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    }
+</style>
+<aside id="main-sidebar" class="w-[260px] shrink-0 sys-sidebar p-4 flex flex-col h-full transition-[width,left] duration-300 ease-in-out z-50">
     <a href="{% url 'compose' %}" title="Compose" class="compose-btn w-full sys-btn-primary flex items-center justify-center gap-3 font-black mb-8">
         <i data-lucide="pen-square" class="w-5 h-5 shrink-0"></i> <span class="sidebar-text whitespace-nowrap transition-opacity duration-300">Compose</span>
     </a>

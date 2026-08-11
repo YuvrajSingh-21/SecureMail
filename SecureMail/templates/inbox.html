@@ -241,8 +241,8 @@
                                 </div>
 
                                 <div class="w-20 shrink-0 text-right">
-                                    <p class="text-[11px] {% if email.unread %}font-bold text-blue-600{% else %}font-medium text-[var(--sys-text-secondary)]{% endif %}">{{ email.timestamp|date:"h:i A" }}</p>
-                                    <p class="text-[9px] font-bold text-[var(--sys-text-secondary)]  uppercase mt-0.5">{{ email.timestamp|date:"M d" }}</p>
+                                    <p class="text-[11px] {% if email.unread %}font-bold text-blue-600{% else %}font-medium text-[var(--sys-text-secondary)]{% endif %} local-time" data-timestamp="{{ email.timestamp.isoformat }}" data-format="time">{{ email.timestamp|date:"h:i A" }}</p>
+                                    <p class="text-[9px] font-bold text-[var(--sys-text-secondary)]  uppercase mt-0.5 local-time" data-timestamp="{{ email.timestamp.isoformat }}" data-format="date">{{ email.timestamp|date:"M d" }}</p>
                                 </div>
                             </div>
                             {% endfor %}
@@ -330,21 +330,46 @@
     }
 
     // Phase 4: Periodic sync — POST-only
-    setInterval(function() {
-        fetch('{% url "sync_gmail" %}', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            credentials: 'same-origin',
-            body: new URLSearchParams({'auto': '1'})
-        }).then(function() {
-            window.location.reload();
-        }).catch(function(e) {
+    setInterval(async function() {
+        try {
+            await fetch('{% url "sync_gmail" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                credentials: 'same-origin',
+                body: 'auto=1'
+            });
+            
+            const htmlRes = await fetch(window.location.href, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const html = await htmlRes.text();
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newList = doc.getElementById('email-list');
+            const oldList = document.getElementById('email-list');
+            
+            if (newList && oldList && newList.innerHTML !== oldList.innerHTML) {
+                oldList.innerHTML = newList.innerHTML;
+                if (window.lucide) window.lucide.createIcons();
+                
+                const countBadge = doc.querySelector('.animate-pulse')?.nextSibling?.textContent || "";
+                const countMatch = countBadge.match(/\d+/);
+                if (countMatch) {
+                    const badge = document.querySelector('.animate-pulse');
+                    if (badge && badge.parentNode) {
+                        badge.parentNode.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span> ${countMatch[0]} UNREAD`;
+                    }
+                }
+            }
+        } catch (e) {
             console.error('Automated sync failed', e);
-        });
-    }, 60000); // 60 seconds
+        }
+    }, 30000); // 30 seconds
 
     function toggleSelectDropdown(e) {
         e.stopPropagation();

@@ -84,7 +84,7 @@
                                                 <h2 class="text-xl font-black text-[var(--sys-text)] ">{{ email.sender_name|default:email.sender_email }}</h2>
                                                 <span class="text-blue-600  font-mono text-xs font-bold px-2 py-0.5 bg-blue-50  rounded-lg">&lt;{{ email.sender_email }}&gt;</span>
                                             </div>
-                                            <p class="text-xs font-bold text-[var(--sys-text-secondary)] mt-1 uppercase tracking-widest">Sent on {{ email.timestamp|date:"F d, Y • h:i A" }}</p>
+                                            <p class="text-xs font-bold text-[var(--sys-text-secondary)] mt-1 uppercase tracking-widest">Sent on <span class="local-time" data-timestamp="{{ email.timestamp.isoformat }}" data-format="full">{{ email.timestamp|date:"F d, Y • h:i A" }}</span></p>
                                         </div>
                                     </div>
                                     
