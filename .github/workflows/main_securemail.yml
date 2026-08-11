@@ -16,6 +16,21 @@ jobs:
     permissions:
       contents: read #This is required for actions/checkout
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: securemail
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -31,6 +46,20 @@ jobs:
           pip install -r requirements.txt
           
       - name: Run Django Tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          FIELD_ENCRYPTION_KEY: ${{ secrets.FIELD_ENCRYPTION_KEY }}
+          DB_NAME: securemail
+          DB_USER: user
+          DB_PASSWORD: password
+          DB_HOST: localhost
+          DB_PORT: 5432
+          GEMINI_API_KEY: "dummy-gemini-key"
+          GOOGLE_API_KEY: "dummy-google-key"
+          SAFE_BROWSING_API_KEY: "dummy-safebrowsing-key"
+          VIRUSTOTAL_API_KEY: "dummy-virustotal-key"
+          GOOGLE_CLIENT_ID: "dummy-client-id"
+          GOOGLE_CLIENT_SECRET: "dummy-client-secret"
         run: |
           source antenv/bin/activate
           python manage.py test --noinput
