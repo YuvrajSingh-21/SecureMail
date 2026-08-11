@@ -24,13 +24,16 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 🛠️ Local Build Section (Optional)
-      # The following section in your workflow is designed to catch build issues early on the client side, before deployment. This can be helpful for debugging and validation. However, if this step significantly increases deployment time and early detection is not critical for your workflow, you may remove this section to streamline the deployment process.
       - name: Create and Start virtual environment and Install dependencies
         run: |
           python -m venv antenv
           source antenv/bin/activate
           pip install -r requirements.txt
+          
+      - name: Run Django Tests
+        run: |
+          source antenv/bin/activate
+          python manage.py test --noinput
                 
       # By default, when you enable GitHub CI/CD integration through the Azure portal, the platform automatically sets the SCM_DO_BUILD_DURING_DEPLOYMENT application setting to true. This triggers the use of Oryx, a build engine that handles application compilation and dependency installation (e.g., pip install) directly on the platform during deployment. Hence, we exclude the antenv virtual environment directory from the deployment artifact to reduce the payload size. 
       - name: Upload artifact for deployment jobs
@@ -40,12 +43,8 @@ jobs:
           path: |
             .
             !antenv/
-
-      # 🚫 Opting Out of Oryx Build
-      # If you prefer to disable the Oryx build process during deployment, follow these steps:
-      # 1. Remove the SCM_DO_BUILD_DURING_DEPLOYMENT app setting from your Azure App Service Environment variables.
-      # 2. Refer to sample workflows for alternative deployment strategies: https://github.com/Azure/actions-workflow-samples/tree/master/AppService
-      
+            !playwright-report/
+            !test-results/
 
   deploy:
     runs-on: ubuntu-latest
@@ -73,4 +72,43 @@ jobs:
         with:
           app-name: 'SecureMail'
           slot-name: 'Production'
+
+      - name: Wait for Production Readiness
+        run: |
+          echo "Polling https://securamail.me until it returns HTTP 200..."
+          for i in {1..30}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://securamail.me/login/)
+            if [ "$STATUS" -eq 200 ]; then
+              echo "Production is ready!"
+              exit 0
+            fi
+            echo "Status is $STATUS. Retrying in 10s..."
+            sleep 10
+          done
+          echo "Production did not become ready in time."
+          exit 1
           
+      - name: Set up Node.js for Playwright
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Playwright and Dependencies
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+          
+      - name: Run Production Smoke Tests
+        env:
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+          BASE_URL: 'https://securamail.me'
+        run: npx playwright test tests/e2e/smoke.spec.js
+        
+      - name: Upload Playwright Artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

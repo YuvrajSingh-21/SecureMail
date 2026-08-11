@@ -1,0 +1,26 @@
+{
+  "name": "email_phisher",
+  "version": "1.0.0",
+  "description": "<div align=\"center\">",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuvrajSingh-21/SecureMail.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YuvrajSingh-21/SecureMail/issues"
+  },
+  "homepage": "https://github.com/YuvrajSingh-21/SecureMail#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
