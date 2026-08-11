@@ -30,6 +30,7 @@ if not SECRET_KEY:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
+TESTING = os.getenv('TESTING', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -262,7 +263,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 if not DEBUG:
     # 1. HTTPS Security & Reverse Proxy Header
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
+    SECURE_SSL_REDIRECT = not TESTING
     
     # 2. Secure Cookies
     SESSION_COOKIE_SECURE = True

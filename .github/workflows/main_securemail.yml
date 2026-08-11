@@ -47,6 +47,7 @@ jobs:
           
       - name: Run Django Tests
         env:
+          TESTING: "True"
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           FIELD_ENCRYPTION_KEY: ${{ secrets.FIELD_ENCRYPTION_KEY }}
           DB_NAME: securemail
