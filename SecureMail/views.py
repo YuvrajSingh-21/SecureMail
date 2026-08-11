@@ -21,12 +21,12 @@ def sync_gmail(request):
     manager = SyncManager(request.user)
     if is_auto:
         from .models import SyncJob
-        # If auto sync, we wait synchronously
+        # If auto sync, ensure we don't pile up jobs
         if SyncJob.objects.filter(user=request.user, status='RUNNING').exists():
             from django.http import JsonResponse
             return JsonResponse({'status': 'already_running'})
             
-        job = manager.sync_synchronously(full_sync=False)
+        job = manager.start_sync(full_sync=False)
         from django.http import JsonResponse
         return JsonResponse({'status': 'started' if job else 'failed'})
     
@@ -160,18 +160,18 @@ def inbox(request, folder=None):
             from SecureMail.context_processors import sidebar_stats
             counts = sidebar_stats(request)
             return JsonResponse({
-                'success': True, 
+                'success': True,
                 'status': 'ok',
                 'message': locals().get('msg_text', 'Action completed successfully.'),
                 'counts': counts
             })
-            
+
         return safe_redirect(request, request.META.get('HTTP_REFERER'), fallback='inbox')
 
     query = request.GET.get('q')
     msg_filter = request.GET.get('filter')
-    emails = EmailMessage.objects.filter(user=request.user).select_related('analysis')
-    
+    emails = EmailMessage.objects.filter(user=request.user)
+
     if msg_filter == 'unread':
         emails = emails.filter(unread=True)
     elif msg_filter == 'read':
@@ -225,15 +225,31 @@ def inbox(request, folder=None):
     paginator = Paginator(emails, 50) # 50 per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+
     unread_count = EmailMessage.objects.filter(user=request.user, unread=True, in_trash=False).count()
-    
+
     return render(request, 'inbox.html', {
         'emails': page_obj, 
         'page_obj': page_obj,
         'unread_count': unread_count,
         'current_folder': folder or 'inbox',
         'folder_title': title
+    })
+
+@login_required(login_url='login')
+def inbox_status(request):
+    """Lightweight endpoint for polling to see if the inbox changed."""
+    from django.http import JsonResponse
+    from django.db.models import Max
+
+    latest = EmailMessage.objects.filter(user=request.user).aggregate(
+        max_ts=Max('timestamp')
+    )
+    total = EmailMessage.objects.filter(user=request.user).count()
+
+    return JsonResponse({
+        'max_ts': latest['max_ts'].isoformat() if latest['max_ts'] else None,
+        'total': total
     })
 
 @login_required(login_url='login')

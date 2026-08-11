@@ -15,6 +15,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('inbox/', views.inbox, name='inbox'),
     path('inbox/<str:folder>/', views.inbox, name='inbox_folder'),
+    path('inbox_status/', views.inbox_status, name='inbox_status'),
     path('sync/', views.sync_gmail, name='sync_gmail'),
     path('email/<int:id>/', views.email_view, name='email_view'),
     path('email/<int:id>/generate-explanation/', views.generate_explanation, name='generate_explanation'),
