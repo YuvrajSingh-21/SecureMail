@@ -53,14 +53,14 @@ test.describe.serial('SecureMail Production Smoke Tests', () => {
     await page.waitForURL(/accounts\.google\.com/);
 
     // Fill Email
-    await page.fill('input[type="email"]', testEmail);
+    await page.fill('input[name="identifier"], #identifierId', testEmail);
     await page.click('#identifierNext');
 
     // Fill Password
-    await page.waitForSelector('input[type="password"]', { state: 'visible', timeout: 10000 });
+    await page.waitForSelector('input[name="Passwd"]', { state: 'visible', timeout: 10000 });
     // Small delay to let Google animations finish
     await page.waitForTimeout(1000); 
-    await page.fill('input[type="password"]', testPassword);
+    await page.fill('input[name="Passwd"]', testPassword);
     await page.click('#passwordNext');
 
     // Wait for redirect back to our app (Inbox)
